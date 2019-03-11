@@ -33,3 +33,7 @@ for FOLDER in ./*; do
     sudo make install
     popd
 done
+
+if ! [ -z "$1" ]; then
+    curl https://raw.githubusercontent.com/paperbenni/dotfiles/master/install.sh | bash
+fi
