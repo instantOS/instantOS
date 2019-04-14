@@ -1,0 +1,45 @@
+# Maintainer: Gaetan Bisson <bisson@archlinux.org>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor: Sebastian A. Liem <sebastian at liem dot se>
+
+pkgname=slock-git
+_pkgname=slock
+pkgver=20190310.52a6582
+pkgrel=1
+pkgdesc='Simple X display locker'
+url='https://github.com/paperbenni/slock'
+arch=('i686' 'x86_64' 'armv7h')
+license=('MIT')
+makedepends=('git')
+depends=('libxrandr')
+source=('git://github.com/paperbenni/slock.git')
+sha256sums=('SKIP')
+
+provides=("${_pkgname}")
+conflicts=("${_pkgname}")
+
+pkgver() {
+	cd "${srcdir}/${_pkgname}"
+	git log -1 --format='%cd.%h' --date=short | tr -d -
+}
+
+prepare() {
+	cd "${srcdir}/${_pkgname}"
+	sed '/group =/s/nogroup/nobody/' -i config.def.h
+	sed \
+		-e 's/CPPFLAGS =/CPPFLAGS +=/g' \
+		-e 's/CFLAGS =/CFLAGS +=/g' \
+		-e 's/LDFLAGS =/LDFLAGS +=/g' \
+		-i config.mk
+}
+
+build() {
+	cd "${srcdir}/${_pkgname}"
+	make X11INC=/usr/include/X11 X11LIB=/usr/lib/X11
+}
+
+package() {
+	cd "${srcdir}/${_pkgname}"
+	make PREFIX=/usr DESTDIR="${pkgdir}" install
+	install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+}

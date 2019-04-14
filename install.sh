@@ -17,7 +17,17 @@ cd ~/suckless
 
 gclone dwm
 gclone dmenu
-gclone slock
+
+if grep -i "Arch" </etc/os-release; then
+    mkdir slock-git
+    cd slock-git
+    wget https://raw.githubusercontent.com/paperbenni/suckless/master/slock/PKGBUILD
+    makepkg -Acs
+    sudo pacman -U *.pkg.tar.xz
+else
+    gclone slock
+fi
+
 gclone st
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
 sudo mv dwm.desktop /usr/share/xsessions/
@@ -27,6 +37,11 @@ for FOLDER in ./*; do
         echo "skipping $FOLDER"
         continue
     fi
+    case $FOLDER in
+    slock)
+        pushd
+        ;;
+    esac
     pushd "$FOLDER"
     rm config.h
     make
