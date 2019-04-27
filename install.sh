@@ -18,15 +18,11 @@ cd ~/suckless
 gclone dwm
 gclone dmenu
 
-if grep -i "Arch" </etc/os-release; then
-    mkdir slock-git
-    cd slock-git
-    wget https://raw.githubusercontent.com/paperbenni/suckless/master/slock/PKGBUILD
-    makepkg -Acs
-    sudo pacman -U *.pkg.tar.xz
-else
-    gclone slock
-fi
+command -v pacman && sudo pacman -S --noconfirm i3lock
+command -v apt-get && sudo apt install -y i3lock
+
+sudo curl "https://raw.githubusercontent.com/paperbenni/slock/master/slock" > /usr/bin/slock
+sudo chmod +x /usr/bin/slock
 
 gclone st
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
@@ -37,11 +33,6 @@ for FOLDER in ./*; do
         echo "skipping $FOLDER"
         continue
     fi
-    case $FOLDER in
-    slock)
-        pushd
-        ;;
-    esac
     pushd "$FOLDER"
     rm config.h
     make
