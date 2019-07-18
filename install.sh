@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+echo "installing paperbenni's suckless suite"
+
 gclone() {
     git clone --depth=1 https://github.com/paperbenni/"$1".git
 }
@@ -17,14 +19,9 @@ cd ~/suckless
 
 gclone dwm
 gclone dmenu
-
-command -v pacman && sudo pacman -S --noconfirm i3lock
-command -v apt-get && sudo apt install -y i3lock
-
-sudo curl "https://raw.githubusercontent.com/paperbenni/slock/master/slock" > /usr/bin/slock
-sudo chmod +x /usr/bin/slock
-
 gclone st
+gclone slock
+
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
 sudo mv dwm.desktop /usr/share/xsessions/
 
@@ -43,3 +40,12 @@ done
 if ! [ -z "$1" ]; then
     curl https://raw.githubusercontent.com/paperbenni/dotfiles/master/install.sh | bash
 fi
+
+# install window switcher
+LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
+
+sudo curl "$LINK/dswitch" >/usr/local/bin/dswitch
+sudo chmod +x /usr/local/bin/dswitch
+
+# install win + a menus for screenshots
+curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
