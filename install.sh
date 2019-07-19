@@ -44,7 +44,7 @@ fi
 # install window switcher
 LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
-sudo curl "$LINK/dswitch" >/usr/local/bin/dswitch
+curl "$LINK/dswitch" | sudo tee /usr/local/bin/dswitch
 sudo chmod +x /usr/local/bin/dswitch
 
 # install win + a menus for screenshots

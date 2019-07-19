@@ -7,7 +7,7 @@ curl https://raw.githubusercontent.com/paperbenni/suckless/master/install.sh | b
 ```
 ### Installation including config files like .bashrc
 
-###### WARNING THIS WILL OVERWRITE ANY EXISTING CONFIGURATION
+#### WARNING THIS WILL OVERWRITE ANY EXISTING CONFIGURATION
 ```sh
 curl https://raw.githubusercontent.com/paperbenni/dotfiles/master/install.sh | bash -s c
 ```
