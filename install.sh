@@ -4,8 +4,7 @@ echo "installing paperbenni's suckless suite"
 source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import.sh)
 pb install
 
-pinstall dash
-pinstall slop
+pinstall dash slop ffmpeg wmctrl
 
 gclone() {
     git clone --depth=1 https://github.com/paperbenni/"$1".git
