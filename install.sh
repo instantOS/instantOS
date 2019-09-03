@@ -29,6 +29,9 @@ gclone st
 gclone slock
 
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
+wget https://raw.githubusercontent.com/paperbenni/suckless/master/startdwm
+sudo mv startdwm bin/
+sudo chmod +x bin/startdwm
 sudo mv dwm.desktop /usr/share/xsessions/
 
 for FOLDER in ./*; do
