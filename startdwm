@@ -1,5 +1,8 @@
 #!/bin/bash
-while true; do
+
+touch ~/.dwmrunning
+
+while test -e ~/.dwmrunning; do
     # Log stderror to a file
     dwm 2> ~/.dwm.log
     # No error logging
