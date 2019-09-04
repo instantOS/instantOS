@@ -1,0 +1,7 @@
+#!/bin/bash
+answer=$(echo " " | dmenu -p "do you want to shut down?")
+if [ "$answer" = "y" ]; then
+    rm ~/.dwmrunning
+    sleep 1
+    shutdown now
+fi

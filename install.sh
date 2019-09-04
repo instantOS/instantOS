@@ -10,6 +10,12 @@ gclone() {
     git clone --depth=1 https://github.com/paperbenni/"$1".git
 }
 
+gprogram() {
+    wget "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
+    sudo mv $1 /bin/
+    sudo chmod +x /bin/$1
+}
+
 mkdir -p ~/.local/share/fonts
 
 pushd ~/.local/share/fonts
@@ -28,10 +34,10 @@ gclone st
 gclone slock
 
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
-wget https://raw.githubusercontent.com/paperbenni/suckless/master/startdwm
-sudo mv startdwm /bin/
-sudo chmod +x /bin/startdwm
 sudo mv dwm.desktop /usr/share/xsessions/
+
+gprogram startdwm
+gprogram sucklessshutdown
 
 for FOLDER in ./*; do
     if ! [ -d "$FOLDER" ]; then
