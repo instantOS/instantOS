@@ -58,6 +58,24 @@ fi
 # install window switcher
 LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
+if cat /etc/os-release | grep -i 'arch'; then
+    echo "setting up arch specific stuff"
+    # auto start script with dwm
+    ls ~/.dwm || mkdir ~/.dwm
+    curl $LINK/autostart.sh >~/.dwm/autostart.sh
+    if ! command -v xcompmgr; then
+        sudo pacman --noconfirm -S xcompmgr
+    fi
+
+    # install notification-center
+    if ! command -v deadd-notification-center; then
+        wget $LINK/bin/deadd.pkg.tar.xz
+        sudo pacman --noconfirm -U deadd.pkg.tar.xz
+        rm deadd.tar.xz
+    fi
+
+fi
+
 curl "$LINK/dswitch" | sudo tee /usr/local/bin/dswitch
 sudo chmod +x /usr/local/bin/dswitch
 
