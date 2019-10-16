@@ -63,21 +63,31 @@ if cat /etc/os-release | grep -i 'arch'; then
     # auto start script with dwm
     ls ~/.dwm || mkdir ~/.dwm
     curl $LINK/autostart.sh >~/.dwm/autostart.sh
-    if ! command -v xcompmgr; then
-        sudo pacman --noconfirm -S xcompmgr
+    if ! command -v compton; then
+        sudo pacman --noconfirm -S compton
     fi
 
     # install notification-center
     if ! command -v deadd-notification-center; then
         wget $LINK/bin/deadd.pkg.tar.xz
         sudo pacman --noconfirm -U deadd.pkg.tar.xz
-        rm deadd.tar.xz
+        rm deadd.pkg.tar.xz
     fi
 
 fi
 
+mkdir -p ~/.config/deadd
+curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
+
 curl "$LINK/dswitch" | sudo tee /usr/local/bin/dswitch
 sudo chmod +x /usr/local/bin/dswitch
+
+git clone https://github.com/phuhl/notify-send.py
+cd notify-send.py
+sudo pip install notify2
+sudo python setup.py install
+cd ..
+rm -rf notify-send.py
 
 # install win + a menus for screenshots
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash

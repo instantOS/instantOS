@@ -13,7 +13,7 @@ if command -v deadd-notification-center; then
 	deadd-notification-center &
 fi
 
-xcompmgr &
+compton &
 if ! pgrep mate-settings; then
 	while :; do
 		if command -v mate-settings-daemon; then
@@ -21,6 +21,15 @@ if ! pgrep mate-settings; then
 		else
 			/usr/lib/mate-settings-daemon/mate-settings-daemon
 		fi
+		sleep 1
+	done &
+fi
+
+sleep 1
+
+if ! pgrep deadd-notification-center; then
+	while :; do
+		deadd-notification-center
 		sleep 1
 	done
 fi
