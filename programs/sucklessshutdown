@@ -1,4 +1,9 @@
 #!/bin/bash
+
+#############################################
+## shut down pc and break dwm restart loop ##
+#############################################
+
 answer=$(echo " " | dmenu -p "do you want to shut down?")
 if [ "$answer" = "y" ]; then
     rm ~/.dwmrunning

@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+
+#############################################
+## installs all paperbenni suckless forks  ##
+## made for personal use, so be warned ;)  ##
+#############################################
+
 echo "installing paperbenni's suckless suite"
 
 source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import.sh)
