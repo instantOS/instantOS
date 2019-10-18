@@ -10,7 +10,7 @@ echo "installing paperbenni's suckless suite"
 source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import.sh)
 pb install
 
-pinstall dash slop ffmpeg wmctrl
+# pinstall dash slop ffmpeg wmctrl
 
 gclone() {
     git clone --depth=1 https://github.com/paperbenni/"$1".git
@@ -39,6 +39,7 @@ gclone dmenu
 gclone st
 gclone slock
 
+# session for lightdm
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
 sudo mv dwm.desktop /usr/share/xsessions/
 
@@ -74,26 +75,28 @@ if cat /etc/os-release | grep -i 'arch'; then
     fi
 
     # install notification-center
-    if ! command -v deadd-notification-center; then
-        wget $LINK/bin/deadd.pkg.tar.xz
-        sudo pacman --noconfirm -U deadd.pkg.tar.xz
-        rm deadd.pkg.tar.xz
+    if ! command -v deadd; then
+        wget $LINK/bin/deadd.xz
+        xz -d deadd.xz
+        sudo mv deadd /usr/bin/deadd
+        sudo chmod +x /usr/bin/deadd
     fi
 
 fi
 
-mkdir -p ~/.config/deadd
-curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
-
-curl "$LINK/dswitch" | sudo tee /usr/local/bin/dswitch
-sudo chmod +x /usr/local/bin/dswitch
-
+# notification program for deadd-center
 git clone https://github.com/phuhl/notify-send.py
 cd notify-send.py
 sudo pip install notify2
 sudo python setup.py install
 cd ..
 rm -rf notify-send.py
+
+mkdir -p ~/.config/deadd
+curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
+
+curl "$LINK/dswitch" | sudo tee /usr/local/bin/dswitch
+sudo chmod +x /usr/local/bin/dswitch
 
 # install win + a menus for screenshots
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash

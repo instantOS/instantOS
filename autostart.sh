@@ -15,10 +15,6 @@ done &
 
 feh --bg-scale ~/wallpapers/wallpaper.jpg
 
-if command -v deadd-notification-center; then
-	deadd-notification-center &
-fi
-
 compton &
 if ! pgrep mate-settings; then
 	while :; do
