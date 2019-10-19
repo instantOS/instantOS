@@ -97,7 +97,7 @@ curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
 
 # remove faulty installation
 sudo rm /usr/bin/deadd &>/dev/null
-sudo rm /usr/bin/deaddcenter &>/dev/null
+sudo rm /usr/bin/deadcenter &>/dev/null
 
 # main binary
 echo "installing deadd"
@@ -109,6 +109,6 @@ sudo chmod +x /usr/bin/deadd
 
 # toggle script
 echo "installing toggle script"
-wget -q $LINK/bin/deaddcenter
-sudo mv deaddcenter /usr/bin/deaddcenter
-sudo chmod +x /usr/bin/deaddcenter
+wget -q $LINK/bin/deadcenter
+sudo mv deadcenter /usr/bin/deadcenter
+sudo chmod +x /usr/bin/deadcenter
