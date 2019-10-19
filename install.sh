@@ -83,15 +83,15 @@ if ! command -v deadd; then
     xz -d deadd.xz
     sudo mv deadd /usr/bin/deadd
     sudo chmod +x /usr/bin/deadd
-    sudo mv deaddcenter /usr/bin/deadd
+    sudo mv deaddcenter /usr/bin/deaddcenter
     sudo chmod +x /usr/bin/deaddcenter
 fi
 
 # notification program for deadd-center
 git clone --depth=2 https://github.com/phuhl/notify-send.py
 cd notify-send.py
-sudo pip install notify2
-sudo python setup.py install
+sudo pip2 install notify2
+sudo python3 setup.py install
 cd ..
 sudo rm -rf notify-send.py
 
