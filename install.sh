@@ -112,3 +112,12 @@ echo "installing toggle script"
 wget -q $LINK/bin/deadcenter
 sudo mv deadcenter /usr/bin/deadcenter
 sudo chmod +x /usr/bin/deadcenter
+
+# fix java on dwm
+if ! grep 'dwm' </etc/profile; then
+    echo "fixing java windows for dwm in /etc/profile"
+    echo '# fix dwm java windows' | sudo tee -a /etc/profile
+    echo 'export _JAVA_AWT_WM_NONREPARENTING=1' | sudo tee -a /etc/profile
+else
+    echo "java workaround already applied"
+fi
