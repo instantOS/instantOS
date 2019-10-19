@@ -78,17 +78,24 @@ fi
 
 # install notification-center
 if ! command -v deadd; then
-    wget $LINK/bin/deadd.xz
-    wget $LINK/bin/deaddcenter
+    # remove faulty installation
+    sudo rm /usr/bin/deadd &>/dev/null
+    sudo rm /usr/bin/deaddcenter &>/dev/null
+
+    # main binary
+    curl -s $LINK/bin/deadd.xz >deadd.xz
     xz -d deadd.xz
     sudo mv deadd /usr/bin/deadd
     sudo chmod +x /usr/bin/deadd
+
+    # toggle script
+    curl -s $LINK/bin/deaddcenter >deaddcenter
     sudo mv deaddcenter /usr/bin/deaddcenter
     sudo chmod +x /usr/bin/deaddcenter
 fi
 
 # notification program for deadd-center
-git clone --depth=2 https://github.com/phuhl/notify-send.py
+git clone --depth=2 https://github.com/phuhl/notify-send.py &>/dev/null
 cd notify-send.py
 sudo pip2 install notify2
 sudo python3 setup.py install
