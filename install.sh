@@ -74,23 +74,26 @@ if cat /etc/os-release | grep -i 'arch'; then
         sudo pacman --noconfirm -S compton
     fi
 
-    # install notification-center
-    if ! command -v deadd; then
-        wget $LINK/bin/deadd.xz
-        xz -d deadd.xz
-        sudo mv deadd /usr/bin/deadd
-        sudo chmod +x /usr/bin/deadd
-    fi
+fi
 
+# install notification-center
+if ! command -v deadd; then
+    wget $LINK/bin/deadd.xz
+    wget $LINK/bin/deaddcenter
+    xz -d deadd.xz
+    sudo mv deadd /usr/bin/deadd
+    sudo chmod +x /usr/bin/deadd
+    sudo mv deaddcenter /usr/bin/deadd
+    sudo chmod +x /usr/bin/deaddcenter
 fi
 
 # notification program for deadd-center
-git clone https://github.com/phuhl/notify-send.py
+git clone --depth=2 https://github.com/phuhl/notify-send.py
 cd notify-send.py
 sudo pip install notify2
 sudo python setup.py install
 cd ..
-rm -rf notify-send.py
+sudo rm -rf notify-send.py
 
 mkdir -p ~/.config/deadd
 curl $LINK/deadd.conf >~/.config/deadd/deadd.conf

@@ -29,9 +29,9 @@ fi
 
 sleep 1
 
-if ! pgrep deadd-notification-center; then
+if ! pgrep deadd; then
 	while :; do
-		deadd-notification-center
+		deadd
 		sleep 1
 	done
 fi
