@@ -4,7 +4,6 @@
 ## script for paperbenni-dwm autostart            ##
 ####################################################
 
-
 while :; do
 	date="$(date)"
 	ping -q -c 1 -W 1 8.8.8.8 && date="$date|""🌍"
@@ -28,6 +27,10 @@ if ! pgrep mate-settings; then
 fi
 
 sleep 1
+
+if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
+	mpv ~/paperbenni/boot.wav
+fi
 
 if ! pgrep deadd; then
 	while :; do

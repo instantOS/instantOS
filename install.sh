@@ -113,6 +113,11 @@ wget -q $LINK/bin/deadcenter
 sudo mv deadcenter /usr/bin/deadcenter
 sudo chmod +x /usr/bin/deadcenter
 
+# add startup sound
+if command -v youtube-dl; then
+    youtube-dl -x --audio-format wav -o ~/paperbenni/boot.wav https://www.youtube.com/watch?v=i9qOJqNjalE
+fi
+
 # fix java on dwm
 if ! grep 'dwm' </etc/profile; then
     echo "fixing java windows for dwm in /etc/profile"
