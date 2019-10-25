@@ -10,19 +10,18 @@ fi &
 
 feh --bg-scale ~/wallpapers/wallpaper.jpg
 
-if pgrep autostart.sh; then
-	exit
+if ! [ -e ~/.dwmrunning ]; then
+	while :; do
+		date="$(date)"
+		ping -q -c 1 -W 1 8.8.8.8 && date="$date|""🌍"
+		date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
+		xsetroot -name "$date"
+		sleep 1m
+
+	done &
+	compton &
 fi
 
-while :; do
-	date="$(date)"
-	ping -q -c 1 -W 1 8.8.8.8 && date="$date|""🌍"
-	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
-	xsetroot -name "$date"
-	sleep 1m
-done &
-
-compton &
 if ! pgrep mate-settings; then
 	while :; do
 		if command -v mate-settings-daemon; then

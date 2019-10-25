@@ -7,6 +7,12 @@
 answer=$(echo " " | dmenu -p "do you want to shut down?")
 if [ "$answer" = "y" ]; then
     rm ~/.dwmrunning
-    sleep 1
+    sleep 0.4
     shutdown now
+fi
+
+if [ "$answer" = "r" ]; then
+    rm ~/.dwmrunning
+    sleep 0.4
+    reboot
 fi
