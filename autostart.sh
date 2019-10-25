@@ -4,6 +4,16 @@
 ## script for paperbenni-dwm autostart            ##
 ####################################################
 
+if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
+	mpv ~/paperbenni/boot.wav
+fi &
+
+feh --bg-scale ~/wallpapers/wallpaper.jpg
+
+if pgrep autostart.sh; then
+	exit
+fi
+
 while :; do
 	date="$(date)"
 	ping -q -c 1 -W 1 8.8.8.8 && date="$date|""🌍"
@@ -11,8 +21,6 @@ while :; do
 	xsetroot -name "$date"
 	sleep 1m
 done &
-
-feh --bg-scale ~/wallpapers/wallpaper.jpg
 
 compton &
 if ! pgrep mate-settings; then
@@ -27,10 +35,6 @@ if ! pgrep mate-settings; then
 fi
 
 sleep 1
-
-if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
-	mpv ~/paperbenni/boot.wav
-fi
 
 if ! pgrep deadd; then
 	while :; do
