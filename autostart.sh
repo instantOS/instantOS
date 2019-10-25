@@ -22,6 +22,8 @@ if ! [ -e ~/.dwmrunning ]; then
 	compton &
 fi
 
+touch ~/.dwmrunning
+
 if ! pgrep mate-settings; then
 	while :; do
 		if command -v mate-settings-daemon; then
