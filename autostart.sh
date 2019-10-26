@@ -8,8 +8,6 @@ if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
 	mpv ~/paperbenni/boot.wav
 fi &
 
-feh --bg-scale ~/wallpapers/wallpaper.jpg
-
 if ! [ -e ~/.dwmrunning ]; then
 	while :; do
 		date="$(date)"
@@ -41,5 +39,7 @@ if ! pgrep deadd; then
 	while :; do
 		deadd
 		sleep 1
-	done
+	done &
 fi
+
+bash ~/paperbenni/wallpaper.sh

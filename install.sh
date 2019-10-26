@@ -113,6 +113,18 @@ wget -q $LINK/bin/deadcenter
 sudo mv deadcenter /usr/bin/deadcenter
 sudo chmod +x /usr/bin/deadcenter
 
+mkdir ~/paperbenni &>/dev/null
+
+# automatic wallpaper changer
+gclone rwallpaper
+cd rwallpaper
+mv rwallpaper.py ~/paperbenni/
+chmod +x wallpaper.sh
+mv wallpaper.sh ~/paperbenni/
+sudo pip3 install -r requirements.txt
+cd ..
+rm -rf rwallpaper
+
 # add startup sound
 if command -v youtube-dl; then
     youtube-dl -x --audio-format wav -o ~/paperbenni/boot.wav https://www.youtube.com/watch?v=i9qOJqNjalE
