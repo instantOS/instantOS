@@ -4,6 +4,7 @@
 ## x session for paperbenni-dwm, use with lightdm ##
 ####################################################
 
+dwm 2>~/.dwm.log
 
 while test -e ~/.dwmrunning; do
     # Log stderror to a file
