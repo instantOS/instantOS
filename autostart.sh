@@ -42,4 +42,9 @@ if ! pgrep deadd; then
 	done &
 fi
 
-bash ~/paperbenni/wallpaper.sh
+if [ -e ~/paperbenni/wallpaper.sh ]
+then
+	bash ~/paperbenni/wallpaper.sh
+fi
+
+
