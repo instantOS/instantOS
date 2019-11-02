@@ -43,8 +43,15 @@ gclone slock
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
 sudo mv dwm.desktop /usr/share/xsessions/
 
+# x session wrapper
 gprogram startdwm
+# shutdown popup that breaks restart loop
 gprogram sucklessshutdown
+
+# dmenu run but in terminal emulator
+# only supported terminal apps
+gprogram dmenu_run_st
+curl $LINK/termprograms.txt >~/.cache/termprograms.txt
 
 for FOLDER in ./*; do
     if ! [ -d "$FOLDER" ]; then

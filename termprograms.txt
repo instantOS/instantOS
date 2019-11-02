@@ -1,0 +1,9 @@
+htop
+nvim
+sl
+emacs
+telnet
+tt++
+vim
+vi
+tig
