@@ -4,7 +4,8 @@
 ## script for paperbenni-dwm autostart            ##
 ####################################################
 
-for i in "$(pgrep autostart.sh)"; do
+for i in $(pidof -x autostart.sh); do
+	echo "pid $i"
 	if [ -z "$AUTOSTARTPID" ]; then
 		AUTOSTARTPID="$i"
 	else
