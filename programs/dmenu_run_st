@@ -1,4 +1,8 @@
 #!/bin/sh
 test -e ~/.cache/termprograms.txt ||
     curl https://raw.githubusercontent.com/paperbenni/suckless/master/termprograms.txt >~/.cache/termprograms.txt
-dmenu_path | fgrep -xf ~/.cache/termprograms.txt | dmenu "$@" | ${SHELL:-"/bin/sh"} &
+
+STCOMMAND="$(dmenu_path | fgrep -xf ~/.cache/termprograms.txt | dmenu)"
+if [ -n "$STCOMMAND" ]; then
+    st -e "$STCOMMAND" &
+fi
