@@ -4,8 +4,17 @@
 ## script for paperbenni-dwm autostart            ##
 ####################################################
 
+AUTOSTARTID="$(pgrep autostart.sh)"
+n="${AUTOSTARTID//[^\n]/}"
+if [ ${#n} -eq 1 ]; then
+	echo "No running instances found"
+else
+	echo "another instance already running, exiting"
+	exit
+fi
+
 if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
-	mpv ~/paperbenni/boot.wav
+	mpv ~/paperbenni/boot.wav &
 fi &
 
 if ! [ -e ~/.dwmrunning ]; then
@@ -42,9 +51,6 @@ if ! pgrep deadd; then
 	done &
 fi
 
-if [ -e ~/paperbenni/wallpaper.sh ]
-then
+if [ -e ~/paperbenni/wallpaper.sh ]; then
 	bash ~/paperbenni/wallpaper.sh
 fi
-
-
