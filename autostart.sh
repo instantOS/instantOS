@@ -48,6 +48,5 @@ if ! pgrep deadd; then
 	done &
 fi
 
-if [ -e ~/paperbenni/wallpaper.sh ]; then
-	bash ~/paperbenni/wallpaper.sh
-fi
+# chrome os wallpaper changer
+[ -e /home/benjamin/paperbenni/menus/dm/wg.sh ] && bash /home/benjamin/paperbenni/menus/dm/wg.sh
