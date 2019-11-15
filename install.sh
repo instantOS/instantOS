@@ -18,8 +18,7 @@ gclone() {
 
 gprogram() {
     wget "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
-    sudo mv $1 /bin/
-    sudo chmod +x /bin/$1
+    usrbin "$1"
 }
 
 mkdir -p ~/.local/share/fonts
@@ -47,6 +46,8 @@ sudo mv dwm.desktop /usr/share/xsessions/
 gprogram startdwm
 # shutdown popup that breaks restart loop
 gprogram sucklessshutdown
+
+gprogram autoclicker
 
 # dmenu run but in terminal emulator
 # only supported terminal apps

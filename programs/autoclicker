@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if pgrep xdotool; then
+    pkill xdotool
+    exit
+else
+    xdotool click --delay 75 --repeat 100 1
+fi
