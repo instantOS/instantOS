@@ -18,9 +18,18 @@ if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
 	mpv ~/paperbenni/boot.wav &
 fi &
 
+if buff="$(dmidecode --string chassis-type)"; then
+	ISLAPTOP="true"
+fi
+
+# status bar loop
 while :; do
 	date="$(date)"
 	ping -q -c 1 -W 1 8.8.8.8 && date="$date|""🌍"
+
+	# battery indicator on laptop
+	[ -n ISLAPTOP ] && date="$date|acpi | egrep -o '[0-9]*%'"
+
 	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
 	xsetroot -name "$date"
 	sleep 1m
@@ -49,4 +58,7 @@ if ! pgrep deadd; then
 fi
 
 # chrome os wallpaper changer
-[ -e /home/benjamin/paperbenni/menus/dm/wg.sh ] && bash /home/benjamin/paperbenni/menus/dm/wg.sh
+[ -e /home/benjamin/paperbenni/menus/dm/wg.sh ] &&
+	bash /home/benjamin/paperbenni/menus/dm/wg.sh
+
+[ -n "$ISLAPTOP" ] && nm-applet &
