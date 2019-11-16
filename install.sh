@@ -36,6 +36,11 @@ cd suckless
 gclone dwm
 gclone dmenu
 gclone st
+
+# needed for slock
+if grep -q 'nobody' </etc/groups; then
+    sudo groupadd nobody
+fi
 gclone slock
 
 # session for lightdm
