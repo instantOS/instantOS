@@ -22,16 +22,16 @@ gprogram() {
 }
 
 mkdir -p ~/.local/share/fonts
-
-pushd ~/.local/share/fonts
+cd ~/.local/share/fonts
 if ! [ -e monaco.ttf ]; then
     wget https://github.com/todylu/monaco.ttf/raw/master/monaco.ttf
 fi
-popd
 
-rm -rf ~/suckless
-mkdir ~/suckless
-cd ~/suckless
+cd
+
+rm -rf suckless
+mkdir suckless
+cd suckless
 
 gclone dwm
 gclone dmenu
@@ -48,9 +48,10 @@ gprogram startdwm
 gprogram sucklessshutdown
 
 gprogram autoclicker
-
-# dmenu run but in terminal emulator
-# only supported terminal apps
+# deadcenter toggle script
+gprogram deadcenter
+# dmenu run but in terminal emulator st
+# only supported terminal apps (less to search through)
 gprogram dmenu_run_st
 curl $LINK/termprograms.txt >~/.cache/termprograms.txt
 
@@ -66,11 +67,11 @@ for FOLDER in ./*; do
     popd
 done
 
+# install dotfiles like bash,git and tmux config
 if ! [ -z "$1" ]; then
     curl https://raw.githubusercontent.com/paperbenni/dotfiles/master/install.sh | bash
 fi
 
-# install window switcher
 LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
 if cat /etc/os-release | grep -i 'arch'; then
@@ -82,6 +83,22 @@ if cat /etc/os-release | grep -i 'arch'; then
         sudo pacman --noconfirm -S compton
     fi
 
+    if ! command -v panther_launcher; then
+        wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
+        sudo pacman -U --noconfirm panther_launcher*.pkg.tar.xz
+        rm panther_launcher*.pkg.tar.xz
+    fi
+
+fi
+
+# ubuntu specific stuff
+if grep -iq 'ubuntu' </etc/os-release; then
+    if ! command -v panther_launcher; then
+        wget "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
+        sudo dpkg -i panther-launcher*.deb
+        sudo apt-get install -fy
+        rm panther-launcher*.deb
+    fi
 fi
 
 # notification program for deadd-center
@@ -95,14 +112,14 @@ sudo rm -rf notify-send.py
 mkdir -p ~/.config/deadd
 curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
 
+# install window switcher
 curl "$LINK/dswitch" | sudo tee /usr/local/bin/dswitch
 sudo chmod +x /usr/local/bin/dswitch
 
-# install win + a menus for screenshots
+# install win + a menus for shortcuts like screenshots and shutdown
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
 
-# notification center
-
+## notification center ##
 # remove faulty installation
 sudo rm /usr/bin/deadd &>/dev/null
 sudo rm /usr/bin/deadcenter &>/dev/null
@@ -114,12 +131,6 @@ xz -d deadd.xz
 sleep 0.1
 sudo mv deadd /usr/bin/deadd
 sudo chmod +x /usr/bin/deadd
-
-# toggle script
-echo "installing toggle script"
-wget -q $LINK/bin/deadcenter
-sudo mv deadcenter /usr/bin/deadcenter
-sudo chmod +x /usr/bin/deadcenter
 
 mkdir ~/paperbenni &>/dev/null
 
