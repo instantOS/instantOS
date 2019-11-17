@@ -22,18 +22,23 @@ if buff="$(dmidecode --string chassis-type)"; then
 	ISLAPTOP="true"
 fi
 
+while :; do
+	if ping -q -c 1 -W 1 8.8.8.8; then
+		INTERNET="🌍"
+	else
+		INTERNET="X"
+	fi
+	sleep 1m
+done
+
 # status bar loop
 while :; do
-	date="$(date)"
-	ping -q -c 1 -W 1 8.8.8.8 && date="$date|""🌍"
-
+	date="$(date +'%d-%m-%Y 🕑%T')"
 	# battery indicator on laptop
 	[ -n ISLAPTOP ] && date="$date|acpi | egrep -o '[0-9]*%'"
-
-	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
+	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)|$INTERNET"
 	xsetroot -name "$date"
-	sleep 1m
-
+	sleep 10
 done &
 compton &
 

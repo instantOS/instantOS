@@ -81,9 +81,7 @@ LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
 if cat /etc/os-release | grep -i 'arch'; then
     echo "setting up arch specific stuff"
-    # auto start script with dwm
-    ls ~/.dwm || mkdir ~/.dwm
-    curl $LINK/autostart.sh >~/.dwm/autostart.sh
+
     if ! command -v compton; then
         sudo pacman --noconfirm -S compton
     fi
@@ -105,6 +103,10 @@ if grep -iq 'ubuntu' </etc/os-release; then
         rm panther-launcher*.deb
     fi
 fi
+
+# auto start script with dwm
+ls ~/.dwm || mkdir ~/.dwm
+curl $LINK/autostart.sh >~/.dwm/autostart.sh
 
 # notification program for deadd-center
 git clone --depth=2 https://github.com/phuhl/notify-send.py
