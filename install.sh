@@ -80,11 +80,20 @@ fi
 LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
 if cat /etc/os-release | grep -i 'arch'; then
+    pacinstall() {
+        for i in "$@"; do
+            { pacman -iQ "$i" || command -v "$i"; } &>/dev/null && continue
+            sudo pacman -S --noconfirm "$i"
+        done
+    }
     echo "setting up arch specific stuff"
 
-    if ! command -v compton; then
-        sudo pacman --noconfirm -S compton
-    fi
+    sudo pacman -Syu --noconfirm
+
+    pacinstall picom
+    pacinstall bash dash
+    pacinstall wget slop
+    pacinstall ffmpeg
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
@@ -96,6 +105,22 @@ fi
 
 # ubuntu specific stuff
 if grep -iq 'ubuntu' </etc/os-release; then
+
+    sudo apt-get update
+    sudo apt-get upgrade -y
+
+    aptinstall compton
+    aptinstall bash dash
+    aptinstall wget slop
+    aptinstall ffmpeg
+
+    aptinstall() {
+        for i in "$@"; do
+            { dpkg -l "$i" || command -v "$i"; } &>/dev/null && continue
+            sudo apt-get install -y "$i"
+        done
+    }
+
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
         sudo dpkg -i panther-launcher*.deb
@@ -109,12 +134,14 @@ ls ~/.dwm || mkdir ~/.dwm
 curl $LINK/autostart.sh >~/.dwm/autostart.sh
 
 # notification program for deadd-center
-git clone --depth=2 https://github.com/phuhl/notify-send.py
-cd notify-send.py
-sudo pip2 install notify2
-sudo python3 setup.py install
-cd ..
-sudo rm -rf notify-send.py
+if ! command -v notify-send.py &>/dev/null; then
+    git clone --depth=2 https://github.com/phuhl/notify-send.py
+    cd notify-send.py
+    sudo pip2 install notify2
+    sudo python3 setup.py install
+    cd ..
+    sudo rm -rf notify-send.py
+fi
 
 mkdir -p ~/.config/deadd
 curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
