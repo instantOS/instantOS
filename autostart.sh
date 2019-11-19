@@ -14,10 +14,6 @@ for i in $(pidof -x autostart.sh); do
 	fi
 done
 
-if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
-	mpv ~/paperbenni/boot.wav &
-fi &
-
 if buff="$(dmidecode --string chassis-type)"; then
 	ISLAPTOP="true"
 fi
@@ -29,13 +25,13 @@ while :; do
 		INTERNET="X"
 	fi
 	sleep 1m
-done
+done &
 
 # status bar loop
 while :; do
 	date="$(date +'%d-%m-%Y 🕑%T')"
 	# battery indicator on laptop
-	[ -n ISLAPTOP ] && date="$date|acpi | egrep -o '[0-9]*%'"
+	[ -n ISLAPTOP ] && date="$date|$(acpi | egrep -o '[0-9]*%')"
 	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)|$INTERNET"
 	xsetroot -name "$date"
 	sleep 10
@@ -60,6 +56,10 @@ if ! pgrep deadd; then
 		deadd
 		sleep 1
 	done &
+fi
+
+if command -v mpv && [ -e ~/paperbenni/boot.wav ]; then
+	mpv ~/paperbenni/boot.wav &
 fi
 
 # chrome os wallpaper changer
