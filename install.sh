@@ -99,6 +99,7 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall bash dash
     pacinstall wget slop
     pacinstall ffmpeg
+    pacinstall dmidecode
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
@@ -106,6 +107,10 @@ if cat /etc/os-release | grep -i 'arch'; then
         rm panther_launcher*.pkg.tar.xz
     fi
 
+fi
+
+if sudo dmidecode --string chassis-type | grep -iq 'laptop'; then
+    touch .cache/islaptop
 fi
 
 # ubuntu specific stuff
@@ -183,11 +188,6 @@ mv wallpaper.sh ~/paperbenni/
 sudo pip3 install -r requirements.txt
 cd ..
 rm -rf rwallpaper
-
-# add startup sound
-if command -v youtube-dl; then
-    youtube-dl -x --audio-format wav -o ~/paperbenni/boot.wav https://www.youtube.com/watch?v=i9qOJqNjalE
-fi
 
 # install things like fonts or gtk theme
 if ! [ -e ~/.config/paperthemes/$THEME.txt ]; then
