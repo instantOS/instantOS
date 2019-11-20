@@ -189,6 +189,16 @@ if command -v youtube-dl; then
     youtube-dl -x --audio-format wav -o ~/paperbenni/boot.wav https://www.youtube.com/watch?v=i9qOJqNjalE
 fi
 
+# install things like fonts or gtk theme
+if ! [ -e ~/.config/paperthemes/$THEME.txt ]; then
+    echo "installing theme"
+    curl -s "https://raw.githubusercontent.com/paperbenni/suckless/master/themes/$THEME.sh" | bash
+    mkdir ~/.config/paperthemes
+    touch ~/.config/paperthemes/$THEME.txt
+else
+    echo "theme installation already found"
+fi
+
 # fix java on dwm
 if ! grep 'dwm' </etc/profile; then
     echo "fixing java windows for dwm in /etc/profile"
