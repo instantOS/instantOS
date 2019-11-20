@@ -21,13 +21,12 @@ gprogram() {
     usrbin "$1"
 }
 
-mkdir -p ~/.local/share/fonts
-cd ~/.local/share/fonts
-if ! [ -e monaco.ttf ]; then
-    wget https://github.com/todylu/monaco.ttf/raw/master/monaco.ttf
+if [ "$1" = "dotfiles" ]; then
+    shift 1
+    DOTFILES="True"
 fi
 
-cd
+THEME="${1:-dracula}"
 
 rm -rf suckless
 mkdir suckless
@@ -66,14 +65,19 @@ for FOLDER in ./*; do
         continue
     fi
     pushd "$FOLDER"
-    rm config.h
-    make
-    sudo make install
+    if ! [ -e build.sh ]; then
+        rm config.h
+        make
+        sudo make install
+    else
+        chmod +x ./build.sh
+        ./build.sh "$THEME"
+    fi
     popd
 done
 
 # install dotfiles like bash,git and tmux config
-if ! [ -z "$1" ]; then
+if [ -n "$DOTFILES" ]; then
     curl https://raw.githubusercontent.com/paperbenni/dotfiles/master/install.sh | bash
 fi
 
@@ -90,6 +94,7 @@ if cat /etc/os-release | grep -i 'arch'; then
 
     sudo pacman -Syu --noconfirm
 
+    # utilities
     pacinstall picom
     pacinstall bash dash
     pacinstall wget slop
@@ -109,6 +114,7 @@ if grep -iq 'ubuntu' </etc/os-release; then
     sudo apt-get update
     sudo apt-get upgrade -y
 
+    # utilities
     aptinstall compton
     aptinstall bash dash
     aptinstall wget slop
