@@ -23,3 +23,6 @@ fi
 gtkicons McMojave-circle
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sfpro.sh" | bash
+
+gtkfont 'SF Pro Display 10'
+gtkdocumentfont 'SF Pro Text 10'

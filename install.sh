@@ -54,10 +54,12 @@ gprogram sucklessshutdown
 gprogram autoclicker
 # deadcenter toggle script
 gprogram deadcenter
+
 # dmenu run but in terminal emulator st
 # only supported terminal apps (less to search through)
 gprogram dmenu_run_st
-curl $LINK/termprograms.txt >~/.cache/termprograms.txt
+
+curl "$LINK/termprograms.txt" >~/.cache/termprograms.txt
 
 for FOLDER in ./*; do
     if ! [ -d "$FOLDER" ]; then

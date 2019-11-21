@@ -43,7 +43,7 @@ if ! pgrep mate-settings; then
 		else
 			/usr/lib/mate-settings-daemon/mate-settings-daemon
 		fi
-		sleep 1
+		sleep 20
 	done &
 fi
 
@@ -52,7 +52,7 @@ sleep 1
 if ! pgrep deadd; then
 	while :; do
 		deadd
-		sleep 1
+		sleep 30
 	done &
 fi
 
