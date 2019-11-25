@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ####################################################
 ## script for paperbenni-dwm autostart            ##
@@ -15,6 +15,17 @@ for i in $(pidof -x autostart.sh); do
 done
 
 [ -e ~/.cache/islaptop ] && ISLAPTOP="true"
+INTERNET="X"
+
+# status bar loop
+while :; do
+	date="$(date +'%d-%m-%Y|%T')"
+	# battery indicator on laptop
+	[ -n "$ISLAPTOP" ] && date="$date|$(acpi | egrep -o '[0-9]*%')"
+	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)|$INTERNET"
+	xsetroot -name "$date"
+	sleep 10
+done &
 
 while :; do
 	if ping -q -c 1 -W 1 8.8.8.8; then
@@ -25,16 +36,11 @@ while :; do
 	sleep 1m
 done &
 
-# status bar loop
-while :; do
-	date="$(date +'%d-%m-%Y|%T')"
-	# battery indicator on laptop
-	[ -n ISLAPTOP ] && date="$date|$(acpi | egrep -o '[0-9]*%')"
-	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)|$INTERNET"
-	xsetroot -name "$date"
-	sleep 10
-done &
-compton &
+if command -v picom; then
+	picom &
+else
+	compton &
+fi
 
 if ! pgrep mate-settings; then
 	while :; do

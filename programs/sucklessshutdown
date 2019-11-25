@@ -16,3 +16,9 @@ if [ "$answer" = "r" ]; then
     sleep 0.4
     reboot
 fi
+
+if [ "$answer" = "s" ]; then
+    rm ~/.dwmrunning
+    sleep 0.4
+    kill -9 -1
+fi
