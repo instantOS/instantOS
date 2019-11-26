@@ -17,9 +17,24 @@ done
 [ -e ~/.cache/islaptop ] && ISLAPTOP="true"
 INTERNET="X"
 
+REPETITIONS="xxxxxx"
+
 # status bar loop
 while :; do
+	# run every 60 seconds
+	if [ "$REPETITIONS" = "xxxxxx" ]; then
+		if ping -q -c 1 -W 1 8.8.8.8; then
+			INTERNET="🌍"
+		else
+			INTERNET="X"
+		fi
+		REPETITIONS="x"
+	else
+		REPETITIONS="$REPETITIONS"x
+	fi
+
 	date="$(date +'%d-%m-%Y|%T')"
+
 	# battery indicator on laptop
 	[ -n "$ISLAPTOP" ] && date="$date|$(acpi | egrep -o '[0-9]*%')"
 	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)|$INTERNET"
@@ -27,30 +42,10 @@ while :; do
 	sleep 10
 done &
 
-while :; do
-	if ping -q -c 1 -W 1 8.8.8.8; then
-		INTERNET="🌍"
-	else
-		INTERNET="X"
-	fi
-	sleep 1m
-done &
-
-if command -v picom; then
+if command -v picom &> /dev/null; then
 	picom &
 else
 	compton &
-fi
-
-if ! pgrep mate-settings; then
-	while :; do
-		if command -v mate-settings-daemon; then
-			mate-settings-daemon
-		else
-			/usr/lib/mate-settings-daemon/mate-settings-daemon
-		fi
-		sleep 20
-	done &
 fi
 
 sleep 1
