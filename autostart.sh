@@ -42,7 +42,7 @@ while :; do
 	sleep 10
 done &
 
-if command -v picom &> /dev/null; then
+if command -v picom &>/dev/null; then
 	picom &
 else
 	compton &
@@ -60,5 +60,11 @@ fi
 # chrome os wallpaper changer
 [ -e /home/benjamin/paperbenni/menus/dm/wg.sh ] &&
 	bash /home/benjamin/paperbenni/menus/dm/wg.sh
+
+[ -e /home/benjamin/paperbenni/monitor.sh ] &&
+	bash /home/benjamin/paperbenni/monitor.sh
+
+# apply german keybpard layout
+setxkbmap -layout de
 
 [ -n "$ISLAPTOP" ] && nm-applet &
