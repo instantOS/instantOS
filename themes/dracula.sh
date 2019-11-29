@@ -5,21 +5,19 @@ pb git
 pb gtk
 
 # gtk theme
-if ! themeexists Mojave-light; then
-    gclone vinceliuice/Mojave-gtk-theme
-    cd Mojave-gtk-theme
-    ./install.sh
+if themeexists materiacula && icons_exist materiacula!; then
+    echo "gtk theme dracula found"
+else
+    gclone materiacula
+    cd materiacula
+    bash install.sh
     cd ..
+    rm -rf materiacula
 fi
-gtktheme Mojave-light
 
-# gtk icons
-if ! icons_exist McMojave-circle; then
-    gclone vinceliuice/McMojave-circle
-    cd McMojave-circle
-    ./install.sh
-    cd ..
-fi
-gtkicons McMojave-circle
+gtktheme materiacula
+gtkicons materiacula
+gtkfont "Roboto 10"
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/monaco.sh" | bash
+curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/roboto.sh" | bash
