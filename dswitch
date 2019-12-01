@@ -18,4 +18,30 @@ fi
 
 num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' | dmenu -b -i -p "$date" -l $heightfit | cut -d '-' -f -1)
 [[ -z "$num" ]] && exit
-wmctrl -l | sed -n "$num p" | cut -c -10 | xargs wmctrl -i -a
+
+WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
+echo "focus target $WID"
+
+if ! [ -e ~/paperbenni/ismultimonitor ]; then
+	wmctrl -i -a "$WID"
+	exit
+else
+	echo "multi monitor setup detected"
+	OLDID=$(xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/')
+	wmctrl -i -a "$WID"
+fi
+
+NEWID=$(xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/')
+
+if ! [ "$NEWID" = "$WID" ]; then
+	xdotool key "super+Tab"
+	xdotool key "super+comma"
+	wmctrl -i -a "$WID"
+else
+	xdotool key "super+comma"
+	NEWERID=$(xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/')
+	if ! [ "$NEWERID" = "$OLDID" ]; then
+		xdotool key "super+Tab"
+	fi
+	xdotool key "super+comma"
+fi
