@@ -23,8 +23,9 @@ Suckless programs are really basic , small and optimized programs that you are s
 (or use someone elses configuration if you don't want to learn c or/and apply a bunch of patches)
 
 ## Requirements:
-- mate (for mate-settings-daemon)
-- nautilus
+This requires an server, it does NOT work with wayland as it relies on x utilities
+
 ## OS
-This is meant for use on Arch. 
-It works on Ubuntu too, but the installation might require some manual steps. 
+It works on Arch and Ubuntu. 
+Arch being my daily driver is more tested than Ubuntu, if you have any issues, just contact me,
+the userbase being that small allows me to answer every single request. 
