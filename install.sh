@@ -98,13 +98,19 @@ if cat /etc/os-release | grep -i 'arch'; then
 
     # utilities
     pacinstall picom
+
     pacinstall bash dash
     pacinstall wget slop
+
     pacinstall ffmpeg
+
     pacinstall dmidecode
-    pacinstall fzf
+
     pacinstall wmctrl
     pacinstall xdotool
+
+    pacinstall ranger
+    pacinstall fzf
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
@@ -126,10 +132,15 @@ if grep -iq 'ubuntu' </etc/os-release; then
 
     # utilities
     aptinstall compton
+
     aptinstall bash dash
+
     aptinstall wget slop
+
     aptinstall ffmpeg
+
     aptinstall fzf
+    aptinstall ranger
 
     aptinstall() {
         for i in "$@"; do
