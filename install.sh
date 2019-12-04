@@ -9,12 +9,7 @@ echo "installing paperbenni's suckless suite"
 
 source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import.sh)
 pb install
-
-# pinstall dash slop ffmpeg wmctrl
-
-gclone() {
-    git clone --depth=1 https://github.com/paperbenni/"$1".git
-}
+pb git
 
 gprogram() {
     wget "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
@@ -32,15 +27,18 @@ rm -rf suckless
 mkdir suckless
 cd suckless
 
-gclone dwm
-gclone dmenu
-gclone st
+gitclone dwm
+gitclone dmenu
+gitclone st
 
 # needed for slock
-if grep -q 'nobody' </etc/groups; then
+if grep -q 'nobody' </etc/groups || grep -q 'nobody' </etc/group; then
+    echo "nobody workaround not required"
+else
     sudo groupadd nobody
 fi
-gclone slock
+
+gitclone slock
 
 # session for lightdm
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
@@ -181,6 +179,7 @@ if ! [ -e ~/paperbenni/ismultimonitor ]; then
 else
     echo "monitor config: "
     cat ~/paperbenni/ismultimonitor
+    echo ""
 fi
 
 # notification program for deadd-center
@@ -200,29 +199,27 @@ curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
 
 ## notification center ##
-# remove faulty installation
-sudo rm /usr/bin/deadd &>/dev/null
-sudo rm /usr/bin/deadcenter &>/dev/null
-
-# main binary
-echo "installing deadd"
-wget -q $LINK/bin/deadd.xz
-xz -d deadd.xz
-sleep 0.1
-sudo mv deadd /usr/bin/deadd
-sudo chmod +x /usr/bin/deadd
+if ! command -v deadd; then
+    echo "installing deadd"
+    wget -q $LINK/bin/deadd.xz
+    xz -d deadd.xz
+    sleep 0.1
+    usrbin deadd
+fi
 
 mkdir ~/paperbenni &>/dev/null
 
 # automatic wallpaper changer
-gclone rwallpaper
-cd rwallpaper
-mv rwallpaper.py ~/paperbenni/
-chmod +x wallpaper.sh
-mv wallpaper.sh ~/paperbenni/
-sudo pip3 install -r requirements.txt
-cd ..
-rm -rf rwallpaper
+if [ "$2" = "rwall" ]; then
+    gitclone rwallpaper
+    cd rwallpaper
+    mv rwallpaper.py ~/paperbenni/
+    chmod +x wallpaper.sh
+    mv wallpaper.sh ~/paperbenni/
+    sudo pip3 install -r requirements.txt
+    cd ..
+    rm -rf rwallpaper
+fi
 
 # install things like fonts or gtk theme
 if ! [ -e ~/.config/paperthemes/$THEME.txt ]; then
