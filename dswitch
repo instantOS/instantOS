@@ -22,26 +22,70 @@ num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^
 WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
 echo "focus target $WID"
 
+currentwin(){
+	xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/'
+}
+
+wincomp(){
+	grep -Eo '.{7}$' <<< "$1"
+}
+
+focuswin(){
+	wmctrl -i -a "$WID"
+}
+
+winequal(){
+	if [ "$(wincomp $1)" = "$(wincomp $2)" ]
+	then
+		return 0
+	else
+		return 1
+	fi
+}
+
 if ! [ -e ~/paperbenni/ismultimonitor ]; then
-	wmctrl -i -a "$WID"
+	focuswin "$WID"
 	exit
-else
-	echo "multi monitor setup detected"
-	OLDID=$(xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/')
-	wmctrl -i -a "$WID"
 fi
 
-NEWID=$(xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/')
+OLDID=$(currentwin)
+focuswin "$WID"
+NEWID=$(currentwin)
 
-if ! [ "$NEWID" = "$WID" ]; then
-	xdotool key "super+Tab"
+if winequal $NEWID $WID
+then
+	echo "success"
 	xdotool key "super+comma"
-	wmctrl -i -a "$WID"
+	echo "current $(currentwin) old $OLDID"
+	if ! winequal $(currentwin) "$OLDID"
+	then
+		echo "tabbing back"
+		xdotool key "super+Tab"
+		if ! winequal $(currentwin) "$OLDID"
+		then
+			xdotool key "super+Tab"
+		fi
+	else
+		echo "not tabbing back"
+	fi
+	xdotool key "super+comma"
+	exit
 else
+	if ! grep -q ',' <<< "$OLDID"
+	then
+		focuswin "$OLDID"
+	fi
+
 	xdotool key "super+comma"
-	NEWERID=$(xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/')
-	if ! [ "$NEWERID" = "$OLDID" ]; then
+	focuswin "$WID"
+	xdotool key "super+comma"
+	if ! winequal $(currentwin) "$OLDID"
+	then
+		echo "tabbing back"
 		xdotool key "super+Tab"
 	fi
 	xdotool key "super+comma"
+
 fi
+
+
