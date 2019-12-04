@@ -6,16 +6,17 @@ pb gtk
 
 # gtk theme
 if ! themeexists Mojave-light; then
-    gclone vinceliuice/Mojave-gtk-theme
+    gitclone vinceliuice/Mojave-gtk-theme
     cd Mojave-gtk-theme
     ./install.sh
     cd ..
 fi
+
 gtktheme Mojave-light
 
 # gtk icons
 if ! icons_exist McMojave-circle; then
-    gclone vinceliuice/McMojave-circle
+    gitclone vinceliuice/McMojave-circle
     cd McMojave-circle
     ./install.sh
     cd ..

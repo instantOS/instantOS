@@ -8,7 +8,7 @@ pb gtk
 if themeexists materiacula && icons_exist materiacula!; then
     echo "gtk theme dracula found"
 else
-    gclone materiacula
+    gitclone materiacula
     cd materiacula
     bash install.sh
     cd ..

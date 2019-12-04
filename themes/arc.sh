@@ -13,12 +13,18 @@ gtktheme Arc
 
 # gtk icons
 if ! icons_exist Papirus; then
-    gclone PapirusDevelopmentTeam/papirus-icon-theme
+    pushd .
+    cd
+    gitclone PapirusDevelopmentTeam/papirus-icon-theme
     cd papirus-icon-theme
     ./install.sh
     cd ..
+    rm -rf papirus-icon-theme
+    popd
 fi
+
 gtkicons Papirus
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sourcecodepro.sh" | bash
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/roboto.sh" | bash
+echo "done installing arc theme"
