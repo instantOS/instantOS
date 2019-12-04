@@ -59,6 +59,9 @@ gprogram deadcenter
 # only supported terminal apps (less to search through)
 gprogram dmenu_run_st
 
+gprogram dswitch
+gprogram dwork
+
 curl "$LINK/termprograms.txt" >~/.cache/termprograms.txt
 
 for FOLDER in ./*; do
@@ -192,10 +195,6 @@ fi
 
 mkdir -p ~/.config/deadd
 curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
-
-# install window switcher
-curl "$LINK/dswitch" | sudo tee /usr/local/bin/dswitch
-sudo chmod +x /usr/local/bin/dswitch
 
 # install win + a menus for shortcuts like screenshots and shutdown
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
