@@ -108,6 +108,7 @@ if cat /etc/os-release | grep -i 'arch'; then
 
     pacinstall wmctrl
     pacinstall xdotool
+    pacinstall xrandr
 
     pacinstall ranger
     pacinstall fzf
@@ -139,6 +140,8 @@ if grep -iq 'ubuntu' </etc/os-release; then
 
     aptinstall ffmpeg
 
+    aptinstall xrandr
+
     aptinstall fzf
     aptinstall ranger
 
@@ -160,6 +163,22 @@ fi
 # auto start script with dwm
 ls ~/.dwm || mkdir ~/.dwm
 curl $LINK/autostart.sh >~/.dwm/autostart.sh
+
+# set up multi monitor config for dswitch
+if ! [ -e ~/paperbenni/ismultimonitor ]; then
+    if xrandr | grep ' connected' | grep -Eo '[0-9]{3,}x' |
+        grep -o '[0-9]*' | wc -l | grep '2'; then
+        mkdir ~/paperbenni &>/dev/null
+        xrandr | grep ' connected' | grep -Eo '[0-9]{3,}x' |
+            grep -o '[0-9]*' >~/paperbenni/ismultimonitor
+        echo "$(wc -l ~/paperbenni/ismultimonitor) monitors detected"
+    else
+        echo "not a multi monitor setup"
+    fi
+else
+    echo "monitor config: "
+    cat ~/paperbenni/ismultimonitor
+fi
 
 # notification program for deadd-center
 if ! command -v notify-send.py &>/dev/null; then

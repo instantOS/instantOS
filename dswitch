@@ -11,9 +11,9 @@ date=$(date +"%a %d. %b %R")
 # dmenu cannot display more than 30 lines, to avoid screen clutter. Only relevant if you have more than 30 windows open.
 height=$(wmctrl -l | wc -l)
 if [[ $height -gt 30 ]]; then
-	heightfit=30
+    heightfit=30
 else
-	heightfit=$height
+    heightfit=$height
 fi
 
 num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' | dmenu -b -i -p "$date" -l $heightfit | cut -d '-' -f -1)
@@ -22,70 +22,69 @@ num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^
 WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
 echo "focus target $WID"
 
-currentwin(){
-	xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/'
-}
-
-wincomp(){
-	grep -Eo '.{7}$' <<< "$1"
-}
-
-focuswin(){
-	wmctrl -i -a "$WID"
-}
-
-winequal(){
-	if [ "$(wincomp $1)" = "$(wincomp $2)" ]
-	then
-		return 0
-	else
-		return 1
-	fi
+focuswin() {
+    wmctrl -i -a "$1"
 }
 
 if ! [ -e ~/paperbenni/ismultimonitor ]; then
-	focuswin "$WID"
-	exit
+    focuswin "$WID"
+    exit
 fi
 
-OLDID=$(currentwin)
+winequal() {
+    if [ "$(wincomp $1)" = "$(wincomp $2)" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+currentwin() {
+    xprop -root | head -1 | grep -o '0x.*' | sed 's/0x/0x0/'
+}
+
+wincomp() {
+    grep -Eo '.{7}$' <<<"$1"
+}
+
+getmonitor() {
+    XPOS=$(xdotool getwindowfocus getwindowgeometry | grep -Eoi 'position.*,' | grep -o '[0-9]*')
+    if [ "$XPOS" -gt "1919" ]; then
+        echo "1"
+    else
+        echo "0"
+    fi
+}
+
+OLDWID=$(currentwin)
+echo "oldwid $OLDWID"
+OLDMONITOR=$(getmonitor)
 focuswin "$WID"
-NEWID=$(currentwin)
 
-if winequal $NEWID $WID
-then
-	echo "success"
-	xdotool key "super+comma"
-	echo "current $(currentwin) old $OLDID"
-	if ! winequal $(currentwin) "$OLDID"
-	then
-		echo "tabbing back"
-		xdotool key "super+Tab"
-		if ! winequal $(currentwin) "$OLDID"
-		then
-			xdotool key "super+Tab"
-		fi
-	else
-		echo "not tabbing back"
-	fi
-	xdotool key "super+comma"
-	exit
+if winequal "$(currentwin)" "$WID"; then
+    echo " current $(currentwin)"
+
+    if ! [[ $OLDWID =~ "," ]]; then
+        if ! [ "$(getmonitor)" = "$OLDMONITOR" ]; then
+            xdotool key "super+comma"
+            if ! winequal $(currentwin) "$OLDWID"; then
+                xdotool key "super+Tab"
+            fi
+            xdotool key "super+comma"
+
+        fi
+    else
+        echo "not on any active window"
+    fi
+    echo "success"
+    exit
 else
-	if ! grep -q ',' <<< "$OLDID"
-	then
-		focuswin "$OLDID"
-	fi
-
-	xdotool key "super+comma"
-	focuswin "$WID"
-	xdotool key "super+comma"
-	if ! winequal $(currentwin) "$OLDID"
-	then
-		echo "tabbing back"
-		xdotool key "super+Tab"
-	fi
-	xdotool key "super+comma"
-
+    focuswin "$OLDWID"
+    echo $(currentwin)
+    xdotool key "super+comma"
+    focuswin "$WID"
 fi
 
-
+# xdotool key "super+comma"
+# xdotool key "super+comma"
+# xdotool key "super+Tab"
