@@ -23,15 +23,18 @@ WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
 echo "focus target $WID"
 
 focuswin() {
+    [[ $1 =~ "," ]] && echo "error focussing" && return 1
     wmctrl -i -a "$1"
 }
 
 if ! [ -e ~/paperbenni/ismultimonitor ]; then
     focuswin "$WID"
+    echo "exiting"
     exit
 fi
 
 winequal() {
+    [[ $1 =~ "," ]] && return 1
     if [ "$(wincomp $1)" = "$(wincomp $2)" ]; then
         return 0
     else
@@ -62,29 +65,24 @@ OLDMONITOR=$(getmonitor)
 focuswin "$WID"
 
 if winequal "$(currentwin)" "$WID"; then
-    echo " current $(currentwin)"
+    echo "success current $(currentwin)"
 
-    if ! [[ $OLDWID =~ "," ]]; then
-        if ! [ "$(getmonitor)" = "$OLDMONITOR" ]; then
-            xdotool key "super+comma"
-            if ! winequal $(currentwin) "$OLDWID"; then
-                xdotool key "super+Tab"
-            fi
-            xdotool key "super+comma"
-
+    if ! [ "$(getmonitor)" = "$OLDMONITOR" ]; then
+        xdotool key "super+comma"
+        if ! winequal $(currentwin) "$OLDWID"; then
+            xdotool key "super+Tab"
         fi
+        xdotool key "super+comma"
+
     else
         echo "not on any active window"
     fi
     echo "success"
     exit
 else
-    focuswin "$OLDWID"
-    echo $(currentwin)
+    echo "not successful"
+    focuswin "$OLDWID" || xdotool key "super+Tab"
     xdotool key "super+comma"
+    echo $(currentwin)
     focuswin "$WID"
 fi
-
-# xdotool key "super+comma"
-# xdotool key "super+comma"
-# xdotool key "super+Tab"

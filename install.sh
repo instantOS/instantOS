@@ -22,6 +22,7 @@ if [ "$1" = "dotfiles" ]; then
 fi
 
 THEME="${1:-dracula}"
+echo "using theme $THEME"
 
 rm -rf suckless
 mkdir suckless
@@ -58,7 +59,8 @@ gprogram deadcenter
 gprogram dmenu_run_st
 
 gprogram dswitch
-gprogram dwork
+gprogram dworkl
+gprogram dworkr
 
 curl "$LINK/termprograms.txt" >~/.cache/termprograms.txt
 

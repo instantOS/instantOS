@@ -1,5 +1,5 @@
-KEY=${1:-Right}
-
+#!/bin/bash
+KEY="Right"
 xdotool key "super+$KEY"
 
 for i in {1..10}; do
