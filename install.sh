@@ -41,6 +41,11 @@ fi
 
 gitclone slock
 
+# install cursors for themes
+if ! [ -e ~/.icons/osx ]; then
+    curl -s https://raw.githubusercontent.com/paperbenni/cursors/master/install.sh | bash
+fi
+
 # session for lightdm
 wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
 sudo mv dwm.desktop /usr/share/xsessions/

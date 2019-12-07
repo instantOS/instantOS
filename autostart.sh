@@ -4,15 +4,11 @@
 ## script for paperbenni-dwm autostart            ##
 ####################################################
 
-for i in $(pidof -x autostart.sh); do
-	echo "pid $i"
-	if [ -z "$AUTOSTARTPID" ]; then
-		AUTOSTARTPID="$i"
-	else
-		echo "other instance of dwm autostart already running"
-		exit
-	fi
-done
+bashes=$(pgrep bash | wc -l)
+if [ "$bashes" -gt 2 ]; then
+	echo "already running"
+	exit
+fi
 
 [ -e ~/.cache/islaptop ] && ISLAPTOP="true"
 

@@ -24,6 +24,7 @@ if ! icons_exist Papirus; then
 fi
 
 gtkicons Papirus
+setcursor elementary
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sourcecodepro.sh" | bash
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/roboto.sh" | bash

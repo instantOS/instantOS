@@ -23,6 +23,8 @@ if ! icons_exist McMojave-circle; then
 fi
 gtkicons McMojave-circle
 
+setcursor osx
+
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sfpro.sh" | bash
 
 gtkfont 'SF Pro Display 10'
