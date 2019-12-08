@@ -214,6 +214,15 @@ if ! command -v deadd; then
     usrbin deadd
 fi
 
+if ! command -v dragon &>/dev/null; then
+    git clone --depth=1 https://github.com/mwh/dragon.git
+    cd dragon
+    make
+    make install
+    cd ..
+    rm -rf dragon
+fi
+
 mkdir ~/paperbenni &>/dev/null
 
 # automatic wallpaper changer

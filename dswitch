@@ -86,3 +86,7 @@ else
     echo $(currentwin)
     focuswin "$WID"
 fi
+
+# xdotool key "super+comma"
+# xdotool key "super+comma"
+# xdotool key "super+Tab"
