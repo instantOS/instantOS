@@ -223,6 +223,16 @@ if ! command -v dragon &>/dev/null; then
     rm -rf dragon
 fi
 
+if ! command -v lsw &>/dev/null; then
+    test -e core && (echo "core dir existing" && exit 1)
+    git clone --depth=1 https://github.com/wmutils/core.git
+    cd core
+    make
+    sudo make install
+    cd ..
+    rm -rf core
+fi
+
 mkdir ~/paperbenni &>/dev/null
 
 # automatic wallpaper changer
