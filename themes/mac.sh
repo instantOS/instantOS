@@ -3,6 +3,10 @@
 source <(curl -Ls https://git.io/JerLG)
 pb git
 pb gtk
+pb unpack
+
+mkdir -p ~/.cache/mactheme
+cd ~/.cache/mactheme
 
 # gtk theme
 if ! themeexists Mojave-light; then
