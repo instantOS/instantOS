@@ -13,7 +13,7 @@ pb git
 
 gprogram() {
     wget "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
-    usrbin "$1"
+    usrbin -f "$1"
 }
 
 if [ "$1" = "dotfiles" ]; then
@@ -120,6 +120,8 @@ if cat /etc/os-release | grep -i 'arch'; then
 
     pacinstall ranger
     pacinstall fzf
+    
+    pacinstall lxappearance
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
@@ -139,6 +141,13 @@ if grep -iq 'ubuntu' </etc/os-release; then
     sudo apt-get update
     sudo apt-get upgrade -y
 
+    aptinstall() {
+        for i in "$@"; do
+            { dpkg -l "$i" || command -v "$i"; } &>/dev/null && continue
+            sudo apt-get install -y "$i"
+        done
+    }
+
     # utilities
     aptinstall compton
 
@@ -152,13 +161,8 @@ if grep -iq 'ubuntu' </etc/os-release; then
 
     aptinstall fzf
     aptinstall ranger
-
-    aptinstall() {
-        for i in "$@"; do
-            { dpkg -l "$i" || command -v "$i"; } &>/dev/null && continue
-            sudo apt-get install -y "$i"
-        done
-    }
+    
+    aptinstall lxappearance
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
