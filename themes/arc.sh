@@ -3,6 +3,7 @@
 source <(curl -Ls https://git.io/JerLG)
 pb git
 pb config
+pb gtk
 
 # gtk theme
 if ! themeexists Arc; then
