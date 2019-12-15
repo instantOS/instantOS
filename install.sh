@@ -109,6 +109,7 @@ if cat /etc/os-release | grep -i 'arch'; then
 
     pacinstall bash dash
     pacinstall wget slop
+    pacinstall acpi
 
     pacinstall ffmpeg
 
@@ -120,7 +121,7 @@ if cat /etc/os-release | grep -i 'arch'; then
 
     pacinstall ranger
     pacinstall fzf
-    
+
     pacinstall lxappearance
 
     if ! command -v panther_launcher; then
@@ -154,14 +155,14 @@ if grep -iq 'ubuntu' </etc/os-release; then
     aptinstall bash dash
 
     aptinstall wget slop
-
+    aptinstall acpi
     aptinstall ffmpeg
 
     aptinstall xrandr
 
     aptinstall fzf
     aptinstall ranger
-    
+
     aptinstall lxappearance
 
     if ! command -v panther_launcher; then
