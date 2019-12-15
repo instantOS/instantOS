@@ -10,7 +10,7 @@ if [ "$bashes" -gt 2 ]; then
 	exit
 fi
 
-[ -e ~/.cache/islaptop ] && ISLAPTOP="true"
+acpi | grep -q '%' && ISLAPTOP="true"
 
 if command -v picom &>/dev/null; then
 	picom &
@@ -20,11 +20,13 @@ fi
 
 sleep 1
 
-if ! pgrep deadd; then
-	while :; do
-		deadd
-		sleep 30
-	done &
+if command -v deadd &>/dev/null; then
+	if ! pgrep deadd; then
+		while :; do
+			deadd
+			sleep 30
+		done &
+	fi
 fi
 
 # chrome os wallpaper changer
@@ -52,15 +54,16 @@ while :; do
 		else
 			INTERNET="X"
 		fi
+
+		# battery indicator on laptop
+		[ -n "$ISLAPTOP" ] && date="$date|⚡$(acpi | egrep -o '[0-9]*%')"
+
 		REPETITIONS="x"
 	else
 		REPETITIONS="$REPETITIONS"x
 	fi
 
 	date="$(date +'%d-%m-%Y|%T')"
-
-	# battery indicator on laptop
-	[ -n "$ISLAPTOP" ] && date="$date|$(acpi | egrep -o '[0-9]*%')"
 	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)|$INTERNET"
 	xsetroot -name "$date"
 	sleep 10
