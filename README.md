@@ -23,7 +23,7 @@ Suckless programs are really basic , small and optimized programs that you are s
 (or use someone elses configuration if you don't want to learn c or/and apply a bunch of patches)
 
 ## Requirements:
-This requires an server, it does NOT work with wayland as it relies on x utilities
+This requires an x server, it does NOT work with wayland as it relies on x utilities
 
 ## OS
 It works on Arch and Ubuntu. 
