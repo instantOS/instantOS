@@ -48,11 +48,17 @@ getmonitor() {
 }
 
 OLDWID=$(pfw)
+OLDMONITOR=$(getmonitor)
 focuswin "$WID"
 
 if [ "$(pfw)" = "$WID" ]; then
     exit
 else
+    
+    if ! [ "$(getmonitor)" = "$OLDMONITOR" ]; then
+        xdotool key "super+comma"
+    fi
+
     if ! [ "$(pfw)" = "$OLDWID" ]; then
         if ! [ "$OLDWID" = "0x000001e1" ]; then
             xdotool key "super+Tab"

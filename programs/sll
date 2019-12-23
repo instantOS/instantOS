@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if ! [ -e ~/paperbenni/thomas.mp3 ]; then
+    pushd .
+    cd ~/paperbenni/
+    wget thomasthetankengine.surge.sh/thomas.mp3
+    popd
+fi
+
+if pgrep mpv; then
+    sl "$@"
+    exit
+fi
+
+mpv ~/paperbenni/thomas.mp3 &>/dev/null &
+command sl "$@"
+pkill mpv

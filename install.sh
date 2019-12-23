@@ -67,6 +67,9 @@ gprogram dswitch
 gprogram dworkl
 gprogram dworkr
 
+# for that extra kick when doingg a typo
+gprogram sll
+
 curl "$LINK/termprograms.txt" >~/.cache/termprograms.txt
 
 for FOLDER in ./*; do
