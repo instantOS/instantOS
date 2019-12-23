@@ -45,6 +45,8 @@ INTERNET="X"
 
 REPETITIONS="xxxxxx"
 
+conky &
+
 # status bar loop
 while :; do
 	if [ -e ~/.dwmsilent ]; then

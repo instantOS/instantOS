@@ -115,6 +115,7 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall acpi
 
     pacinstall ffmpeg
+    pacinstall mpv
 
     pacinstall dmidecode
 
@@ -122,8 +123,10 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall xdotool
     pacinstall xrandr
 
+    pacinstall conky
     pacinstall ranger
     pacinstall fzf
+    pacinstall sl
 
     pacinstall lxappearance
 
@@ -160,11 +163,14 @@ if grep -iq 'ubuntu' </etc/os-release; then
     aptinstall wget slop
     aptinstall acpi
     aptinstall ffmpeg
+    aptinstall mpv
 
     aptinstall xrandr
 
     aptinstall fzf
     aptinstall ranger
+    aptinstall conky
+    aptinstall sl
 
     aptinstall lxappearance
 
