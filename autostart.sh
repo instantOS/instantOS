@@ -47,6 +47,11 @@ REPETITIONS="xxxxxx"
 
 # status bar loop
 while :; do
+	if [ -e ~/.dwmsilent ]; then
+		sleep 1m
+		continue
+	fi
+
 	# run every 60 seconds
 	if [ "$REPETITIONS" = "xxxxxx" ]; then
 		if ping -q -c 1 -W 1 8.8.8.8; then
