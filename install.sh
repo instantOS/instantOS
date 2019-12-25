@@ -110,11 +110,12 @@ if cat /etc/os-release | grep -i 'arch'; then
     # utilities
     pacinstall picom
 
-    pacinstall bash dash
+    pacinstall bash dash tmux
     pacinstall wget slop
     pacinstall acpi
 
     pacinstall ffmpeg
+    pacinstall feh
     pacinstall mpv
 
     pacinstall dmidecode
@@ -128,6 +129,7 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall fzf
     pacinstall sl
 
+    pacinstall xorg-fonts-misc
     pacinstall lxappearance
 
     if ! command -v panther_launcher; then
@@ -158,11 +160,12 @@ if grep -iq 'ubuntu' </etc/os-release; then
     # utilities
     aptinstall compton
 
-    aptinstall bash dash
+    aptinstall bash dash tmux
 
     aptinstall wget slop
     aptinstall acpi
     aptinstall ffmpeg
+    aptinstall feh
     aptinstall mpv
 
     aptinstall xrandr
