@@ -6,8 +6,7 @@
 ##############################################
 
 if ! [ -n "$1" ]; then
-  
-    num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' | dmenu -b -i | cut -d '-' -f -1)
+    num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' | dmenu -b -l 30 -i | cut -d '-' -f -1)
     [[ -z "$num" ]] && exit
 
     WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
@@ -16,6 +15,19 @@ else
 fi
 
 echo "focus target $WID"
+
+hex() {
+    echo "0x0$(printf '%x\n' $1)"
+}
+
+pfw() {
+    if command pfw | grep -q '0x000001e1'; then
+        echo "0x000001e1"
+        return
+    else
+        hex "$(xdotool getactivewindow)"
+    fi
+}
 
 focuswin() {
     [[ $1 =~ "," ]] && echo "error focussing" && return 1
@@ -37,24 +49,39 @@ getmonitor() {
     fi
 }
 
-[ "$(pfw)" = "$WID" ] && exit
+wincomp() {
+    NEW=$(echo "$1" | sed 's/^0x0*//g')
+    COMP=$(echo "$2" | sed 's/^0x0*//g')
+    echo "NEW $NEW COMP $COMP" 
+    if [ "$NEW" = "$COMP" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+wincomp "$WID" "$(pfw)" && exit
+
 OLD="$(pfw)"
 OLDM="$(getmonitor)"
 
 focuswin "$WID"
 
-if ! [ "$(pfw)" = "$WID" ]; then
-    if ! [ "$OLDM" = "$(getmonitor)" ]; then
-        xdotool key 'super+comma'
+if ! wincomp "$(pfw)" "$WID"; then
+    if ! wincomp "$OLD" "0x000001e1"; then
+        if ! [ "$OLDM" = "$(getmonitor)" ]; then
+            xdotool key 'super+comma'
+        fi
+        focuswin "$OLD"
     fi
-    [ "$OLD" = "0x000001e1" ] || focuswin "$OLD"
     xdotool key 'super+comma'
     focuswin "$WID"
 else
     if ! [ "$OLDM" = "$(getmonitor)" ]; then
         xdotool key 'super+comma'
-        [ "$OLD" = "0x000001e1" ] || focuswin "$OLD"
+        wincomp "$OLD" "0x000001e1" || focuswin "$OLD"
         xdotool key 'super+comma'
-
     fi
 fi
+
+xdotool key 'super+W'
