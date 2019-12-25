@@ -47,23 +47,23 @@ getmonitor() {
     fi
 }
 
-OLDWID=$(pfw)
-OLDMONITOR=$(getmonitor)
+OLD="$(pfw)"
+OLDM="$(getmonitor)"
+
 focuswin "$WID"
 
-if [ "$(pfw)" = "$WID" ]; then
-    exit
-else
-    
-    if ! [ "$(getmonitor)" = "$OLDMONITOR" ]; then
-        xdotool key "super+comma"
+if ! [ "$(pfw)" = "$WID" ]; then
+    if ! [ "$OLDM" = "$(getmonitor)" ]; then
+        xdotool key 'super+comma'
     fi
-
-    if ! [ "$(pfw)" = "$OLDWID" ]; then
-        if ! [ "$OLDWID" = "0x000001e1" ]; then
-            xdotool key "super+Tab"
-        fi
-    fi
-    xdotool key "super+comma"
+    [ "$OLD" = "0x000001e1" ] || focuswin "$OLD"
+    xdotool key 'super+comma'
     focuswin "$WID"
+else
+    if ! [ "$OLDM" = "$(getmonitor)" ]; then
+        xdotool key 'super+comma'
+        [ "$OLD" = "0x000001e1" ] || focuswin "$OLD"
+        xdotool key 'super+comma'
+
+    fi
 fi
