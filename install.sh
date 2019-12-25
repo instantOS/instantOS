@@ -123,6 +123,7 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall wmctrl
     pacinstall xdotool
     pacinstall xrandr
+    pacinstall xorg-xsetroot
 
     pacinstall conky
     pacinstall ranger
@@ -169,6 +170,7 @@ if grep -iq 'ubuntu' </etc/os-release; then
     aptinstall mpv
 
     aptinstall xrandr
+    aptinstall x11-xserver-utils
 
     aptinstall fzf
     aptinstall ranger
