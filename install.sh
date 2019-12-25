@@ -188,6 +188,7 @@ fi
 # auto start script with dwm
 ls ~/.dwm || mkdir ~/.dwm
 curl $LINK/autostart.sh >~/.dwm/autostart.sh
+chmod +x ~/.dwm/autostart.sh
 
 # set up multi monitor config for dswitch
 if ! [ -e ~/paperbenni/ismultimonitor ]; then
@@ -263,6 +264,19 @@ if [ "$2" = "rwall" ]; then
     cd ..
     rm -rf rwallpaper
 fi
+
+fixtaptoclick() {
+    # fix tap to click behaviour
+    sudo mkdir -p /etc/X11/xorg.conf.d && sudo tee /etc/X11/xorg.conf.d/90-touchpad.conf <<'EOF' 1>/dev/null
+Section "InputClass"
+        Identifier "touchpad"
+        MatchIsTouchpad "on"
+        Driver "libinput"
+        Option "Tapping" "on"
+EndSection
+
+EOF
+}
 
 # install things like fonts or gtk theme
 if ! [ -e ~/.config/paperthemes/$THEME.txt ]; then
