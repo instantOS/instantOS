@@ -23,6 +23,8 @@ fi
 
 THEME="${1:-dracula}"
 echo "using theme $THEME"
+[ -e ~/paperbenni ] || mkdir ~/paperbenni
+echo "$THEME" > ~/paperbenni/.theme
 
 rm -rf suckless
 mkdir suckless
