@@ -114,6 +114,7 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall rofi
 
     pacinstall bash dash tmux
+    pacinstall dialog
     pacinstall wget slop
     pacinstall acpi
 
@@ -144,7 +145,15 @@ if cat /etc/os-release | grep -i 'arch'; then
 
 fi
 
-if sudo dmidecode --string chassis-type | grep -iq 'laptop'; then
+if ! [ ~/.local/share/fonts/symbola.ttf ]; then
+    mkdir -p ~/.local/share/fonts
+    cd ~/.local/share/fonts
+    wget "http://symbola.surge.sh/symbola.ttf"
+fi
+
+cd
+
+if acpi | grep -q '%'; then
     touch .cache/islaptop
 fi
 
@@ -165,6 +174,7 @@ if grep -iq 'ubuntu' </etc/os-release; then
     aptinstall compton
 
     aptinstall bash dash tmux
+    aptinstall dialog
 
     aptinstall wget slop
     aptinstall rofi
@@ -227,7 +237,7 @@ mkdir -p ~/.config/deadd
 curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
 
 # install wmutils
-if ! command -v pfw &> /dev/null; then
+if ! command -v pfw &>/dev/null; then
     pushd /tmp
     git clone --depth=1 https://github.com/wmutils/core.git
     cd core
