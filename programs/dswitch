@@ -79,7 +79,7 @@ if ! wincomp "$(pfw)" "$WID"; then
         fi
         focuswin "$WID"
     else
-        focuswin "$OLD"
+        [ "$OLD" = "0x000001e1" ] || focuswin "$OLD"
         xdotool key 'super+comma'
         focuswin "$WID"
     fi
