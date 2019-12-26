@@ -32,9 +32,10 @@ setcursor osx
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sfpro.sh" | bash
 
 # rofi setup
-mkdir -p ~/.config/rofi &> /dev/null
-curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/mac.rasi" >~/.config/rofi/mac.rasi
-echo 'rofi.theme: ~/.config/rofi/mac.rasi' > ~/.config/rofi/config
+mkdir -p ~/.config/rofi &>/dev/null
+[ -e ~/.config/rofi/mac.rasi ] ||
+    curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/mac.rasi" >~/.config/rofi/mac.rasi
+echo 'rofi.theme: ~/.config/rofi/mac.rasi' >~/.config/rofi/config
 
 gtkfont 'SF Pro Display 10'
 gtkdocumentfont 'SF Pro Text 10'

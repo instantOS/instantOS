@@ -2,15 +2,19 @@
 
 ##############################################
 ## dwm popup to choose between open windows ##
-## does not change to respective monitor    ##
+## finally supports multi monitor           ##
 ##############################################
 
-if ! [ -n "$1" ]; then
+#############################################################
+## heavily commented, this was a nightmare to write        ##
+## look at the git history of this file before touching it ##
+#############################################################
 
+# alt tab like behaviour with rofi
+if ! [ -n "$1" ]; then
     num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' |
         rofi -dmenu -i -me-select-entry '' -me-accept-entry 'MousePrimary' -kb-row-down 'Alt+Tab,Down' -kb-row-up 'Alt+Ctrl+Tab,Up' -kb-accept-entry '!Alt_L,!Alt+Tab,Return' | cut -d '-' -f -1)
     [[ -z "$num" ]] && exit
-
     WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
 else
     WID="$1"
@@ -18,10 +22,26 @@ fi
 
 echo "focus target $WID"
 
+# focus $1, weird behaviour with multi monitor, see rest of the file
+focuswin() {
+    [[ $1 =~ "," ]] && echo "error focussing" && return 1
+    wmctrl -i -a "$1"
+}
+
+# single monitor like on a laptop is pretty straightforward
+if ! [ -e ~/paperbenni/ismultimonitor ]; then
+    focuswin "$WID"
+    echo "exiting"
+    exit
+fi
+
+# convert decimal to hexadecimal
 hex() {
     echo "0x0$(printf '%x\n' $1)"
 }
 
+# wmutils pfw sometimes returns one digit higher than xdotool
+# but xdotool behaves weird with the root window in focus
 pfw() {
     if command pfw | grep -q '0x000001e1'; then
         echo "0x000001e1"
@@ -31,17 +51,8 @@ pfw() {
     fi
 }
 
-focuswin() {
-    [[ $1 =~ "," ]] && echo "error focussing" && return 1
-    wmctrl -i -a "$1"
-}
-
-if ! [ -e ~/paperbenni/ismultimonitor ]; then
-    focuswin "$WID"
-    echo "exiting"
-    exit
-fi
-
+# warp mouse cursor to current window and get the monitor from the coordinates.
+# more reliable than using window positions because of the root window always returning 0
 getmonitor() {
     xdotool key 'super+W'
     XPOS=$(xdotool getmouselocation --shell | head -1 | grep -o '[0-9]*')
@@ -52,6 +63,7 @@ getmonitor() {
     fi
 }
 
+# sometimes there are trailing zeros, this only compares everything after these
 wincomp() {
     NEW=$(echo "$1" | sed 's/^0x0*//g')
     COMP=$(echo "$2" | sed 's/^0x0*//g')
@@ -63,6 +75,7 @@ wincomp() {
     fi
 }
 
+# already on focused window?
 wincomp "$WID" "$(pfw)" && exit
 
 OLD="$(pfw)"
@@ -70,8 +83,10 @@ OLDM="$(getmonitor)"
 
 focuswin "$WID"
 
+# solution for multi monitor glitches
 if ! wincomp "$(pfw)" "$WID"; then
     if ! [ "$OLDM" = "$(getmonitor)" ]; then
+        # do not attempt to focuswin the root window!!
         if ! [ "$OLD" = "0x000001e1" ]; then
             xdotool key 'super+comma'
             focuswin "$OLD"

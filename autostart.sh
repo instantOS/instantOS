@@ -45,7 +45,7 @@ INTERNET="X"
 
 REPETITIONS="xxxxxx"
 
-conky &
+command -v conky &>/dev/null && conky &
 
 # status bar loop
 while :; do
@@ -67,6 +67,7 @@ while :; do
 
 		REPETITIONS="x"
 	else
+		# increase counter
 		REPETITIONS="$REPETITIONS"x
 	fi
 
