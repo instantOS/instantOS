@@ -251,11 +251,9 @@ fi
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
 
 ## notification center ##
-if ! command -v deadd; then
+if ! command -v deadd &> /dev/null; then
     echo "installing deadd"
-    wget -q $LINK/bin/deadd.xz
-    xz -d deadd.xz
-    sleep 0.1
+    wget -q "http://deadd.surge.sh/deadd"
     usrbin deadd
 fi
 
@@ -266,16 +264,6 @@ if ! command -v dragon &>/dev/null; then
     make install
     cd ..
     rm -rf dragon
-fi
-
-if ! command -v lsw &>/dev/null; then
-    test -e core && (echo "core dir existing" && exit 1)
-    git clone --depth=1 https://github.com/wmutils/core.git
-    cd core
-    make
-    sudo make install
-    cd ..
-    rm -rf core
 fi
 
 mkdir ~/paperbenni &>/dev/null
