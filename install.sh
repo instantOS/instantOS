@@ -24,7 +24,7 @@ fi
 THEME="${1:-dracula}"
 echo "using theme $THEME"
 [ -e ~/paperbenni ] || mkdir ~/paperbenni
-echo "$THEME" > ~/paperbenni/.theme
+echo "$THEME" >~/paperbenni/.theme
 
 rm -rf suckless
 mkdir suckless
@@ -111,6 +111,7 @@ if cat /etc/os-release | grep -i 'arch'; then
 
     # utilities
     pacinstall picom
+    pacinstall rofi
 
     pacinstall bash dash tmux
     pacinstall wget slop
@@ -166,6 +167,7 @@ if grep -iq 'ubuntu' </etc/os-release; then
     aptinstall bash dash tmux
 
     aptinstall wget slop
+    aptinstall rofi
     aptinstall acpi
     aptinstall ffmpeg
     aptinstall feh
@@ -223,6 +225,17 @@ fi
 
 mkdir -p ~/.config/deadd
 curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
+
+# install wmutils
+if ! command -v pfw &> /dev/null; then
+    pushd /tmp
+    git clone --depth=1 https://github.com/wmutils/core.git
+    cd core
+    make
+    sudo make install
+    cd ..
+    popd
+fi
 
 # install win + a menus for shortcuts like screenshots and shutdown
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
