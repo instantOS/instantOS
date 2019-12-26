@@ -43,7 +43,8 @@ if ! [ -e ~/paperbenni/ismultimonitor ]; then
 fi
 
 getmonitor() {
-    XPOS=$(xdotool getwindowfocus getwindowgeometry | grep -Eoi 'position.*,' | grep -o '[0-9]*')
+    xdotool key 'super+W'
+    XPOS=$(xdotool getmouselocation --shell | head -1 | grep -o '[0-9]*')
     if [ "$XPOS" -gt "1919" ]; then
         echo "1"
     else
@@ -70,19 +71,25 @@ OLDM="$(getmonitor)"
 focuswin "$WID"
 
 if ! wincomp "$(pfw)" "$WID"; then
+    if ! [ "$OLDM" = "$(getmonitor)" ]; then
+        if ! [ "$OLD" = "0x000001e1" ]; then
+            xdotool key 'super+comma'
+            focuswin "$OLD"
+            xdotool key 'super+comma'
+        fi
+        focuswin "$WID"
+    else
+        focuswin "$OLD"
+        xdotool key 'super+comma'
+        focuswin "$WID"
+    fi
+else
     if ! [ "$OLD" = "0x000001e1" ]; then
         if ! [ "$OLDM" = "$(getmonitor)" ]; then
             xdotool key 'super+comma'
+            focuswin "$OLD"
+            xdotool key 'super+comma'
         fi
-        focuswin "$OLD"
-    fi
-    xdotool key 'super+comma'
-    focuswin "$WID"
-else
-    if ! [ "$OLDM" = "$(getmonitor)" ]; then
-        xdotool key 'super+comma'
-        [ "$OLD" = "0x000001e1" ] || focuswin "$OLD"
-        xdotool key 'super+comma'
     fi
 fi
 
