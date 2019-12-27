@@ -10,7 +10,7 @@ if [ "$bashes" -gt 2 ]; then
 	exit
 fi
 
-acpi | grep -q '%' && ISLAPTOP="true"
+acpi | grep -q '%' && (ISLAPTOP="true" && echo "laptop detected")
 
 if command -v picom &>/dev/null; then
 	picom &
@@ -47,6 +47,12 @@ REPETITIONS="xxxxxx"
 
 command -v conky &>/dev/null && conky &
 
+date=""
+
+addstatus() {
+	date="$date[$@] "
+}
+
 # status bar loop
 while :; do
 	if [ -e ~/.dwmsilent ]; then
@@ -57,22 +63,27 @@ while :; do
 	# run every 60 seconds
 	if [ "$REPETITIONS" = "xxxxxx" ]; then
 		if ping -q -c 1 -W 1 8.8.8.8; then
-			INTERNET="🌍"
+			INTERNET="i"
 		else
 			INTERNET="X"
 		fi
 
 		# battery indicator on laptop
-		[ -n "$ISLAPTOP" ] && date="$date|⚡$(acpi | egrep -o '[0-9]*%')"
-
+		[ -n "$ISLAPTOP" ] && BATTERY="⚡$(acpi | egrep -o '[0-9]*%')"
 		REPETITIONS="x"
 	else
 		# increase counter
 		REPETITIONS="$REPETITIONS"x
 	fi
 
-	date="$(date +'%d-%m-%Y|%T')"
-	date="$date|🔊$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)|$INTERNET"
+	addstatus "$INTERNET"
+	[ -n "$ISLAPTOP" ] && addstatus "$BATTERY"
+
+	addstatus "$(date +'%d-%m-%Y|%T')"
+	addstatus "A$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
+
 	xsetroot -name "$date"
+	date=""
+
 	sleep 10
 done
