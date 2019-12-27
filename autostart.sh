@@ -10,7 +10,12 @@ if [ "$bashes" -gt 2 ]; then
 	exit
 fi
 
-acpi | grep -q '%' && (ISLAPTOP="true" && echo "laptop detected")
+if acpi | grep -q '%'; then
+	export ISLAPTOP="true"
+	echo "laptop detected"
+else
+	echo "not a laptop"
+fi
 
 if command -v picom &>/dev/null; then
 	picom &
@@ -69,18 +74,17 @@ while :; do
 		fi
 
 		# battery indicator on laptop
-		[ -n "$ISLAPTOP" ] && BATTERY="⚡$(acpi | egrep -o '[0-9]*%')"
+		[ -n "$ISLAPTOP" ] && BATTERY="B$(acpi | egrep -o '[0-9]*%')"
 		REPETITIONS="x"
 	else
 		# increase counter
 		REPETITIONS="$REPETITIONS"x
 	fi
 
-	addstatus "$INTERNET"
-	[ -n "$ISLAPTOP" ] && addstatus "$BATTERY"
-
-	addstatus "$(date +'%d-%m-%Y|%T')"
+	addstatus "$(date +'%d-%m|%H:%M')"
 	addstatus "A$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
+	[ -n "$ISLAPTOP" ] && addstatus "$BATTERY"
+	addstatus "$INTERNET"
 
 	xsetroot -name "$date"
 	date=""
