@@ -117,6 +117,7 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall dialog
     pacinstall wget slop
     pacinstall acpi
+    pacinstall cpio
 
     pacinstall ffmpeg
     pacinstall feh
@@ -182,6 +183,8 @@ if grep -iq 'ubuntu' </etc/os-release; then
     aptinstall ffmpeg
     aptinstall feh
     aptinstall mpv
+    
+    aptinstall cpio
 
     aptinstall xrandr
     aptinstall x11-xserver-utils
