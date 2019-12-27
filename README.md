@@ -23,9 +23,9 @@ Suckless programs are really basic , small and optimized programs that you are s
 (or use someone elses configuration if you don't want to learn c or/and apply a bunch of patches)
 
 ## Requirements:
-This requires an x server, it does NOT work with wayland as it relies on x utilities
+This requires xorg, it does NOT work with wayland as it relies on x utilities
 
 ## OS
-It works on Arch and Ubuntu. 
-Arch being my daily driver is more tested than Ubuntu, if you have any issues, just contact me,
+It works on Arch, Manjaro and Ubuntu. 
+Arch/Manjaro being my daily driver is more tested than Ubuntu, if you have any issues, just contact me,
 the userbase being that small allows me to answer every single request. 
