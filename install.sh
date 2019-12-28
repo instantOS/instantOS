@@ -41,6 +41,20 @@ else
     sudo groupadd nobody
 fi
 
+# add group and add user to group
+ugroup() {
+    if groups | grep -q "$1"; then
+        echo "user is member of $1"
+        return
+    else
+        sudo groupadd "$1"
+        sudo gpasswd -a $USER $1
+    fi
+}
+
+ugroup video
+ugroup input
+
 gitclone slock
 
 # install cursors for themes
@@ -183,7 +197,7 @@ if grep -iq 'ubuntu' </etc/os-release; then
     aptinstall ffmpeg
     aptinstall feh
     aptinstall mpv
-    
+
     aptinstall cpio
 
     aptinstall xrandr
@@ -254,7 +268,7 @@ fi
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
 
 ## notification center ##
-if ! command -v deadd &> /dev/null; then
+if ! command -v deadd &>/dev/null; then
     echo "installing deadd"
     wget -q "http://deadd.surge.sh/deadd"
     usrbin deadd
