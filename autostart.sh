@@ -73,15 +73,23 @@ while :; do
 
 	# run every 60 seconds
 	if [ "$REPETITIONS" = "xxxxxx" ]; then
+		REPETITIONS="x"
 		if ping -q -c 1 -W 1 8.8.8.8; then
 			INTERNET="i"
 		else
-			INTERNET="X"
+			INTERNET="^c#ff0000^X^d^"
 		fi
 
 		# battery indicator on laptop
-		[ -n "$ISLAPTOP" ] && BATTERY="B$(acpi | egrep -o '[0-9]*%')"
-		REPETITIONS="x"
+		if [ -n "$ISLAPTOP" ]; then
+			TMPBAT=$(acpi)
+			if [[ $TMPBAT =~ "Charging" ]]; then
+				BATTERY="^c#00ff00^B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"^d^"
+			else
+				BATTERY="B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")
+			fi
+		fi
+
 	else
 		# increase counter
 		REPETITIONS="$REPETITIONS"x
