@@ -44,7 +44,13 @@ fi
 # apply german keybpard layout
 setxkbmap -layout de
 
-[ -n "$ISLAPTOP" ] && nm-applet &
+# laptop specific background jobs
+if [ -n "$ISLAPTOP" ]; then
+	command -v libinput-gestures \
+		&>/dev/null &&
+		libinput-gestures &
+	nm-applet &
+fi
 
 INTERNET="X"
 

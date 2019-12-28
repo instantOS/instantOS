@@ -218,30 +218,42 @@ if grep -iq 'ubuntu' </etc/os-release; then
     fi
 fi
 
+if ! command -v libinput-gestures &>/dev/null; then
+    cd /tmp
+    git clone --depth=1 https://github.com/bulletmark/libinput-gestures.git
+    cd libinput-gestures
+    sudo make install
+    cd ..
+    rm -rf libinput-gestures
+fi
+
+cd
+
 # auto start script with dwm
-ls ~/.dwm || mkdir ~/.dwm
-curl $LINK/autostart.sh >~/.dwm/autostart.sh
-chmod +x ~/.dwm/autostart.sh
+ls .dwm || mkdir .dwm
+curl $LINK/autostart.sh >.dwm/autostart.sh
+chmod +x .dwm/autostart.sh
 
 # set up multi monitor config for dswitch
-if ! [ -e ~/paperbenni/ismultimonitor ]; then
+if ! [ -e paperbenni/ismultimonitor ]; then
     if xrandr | grep ' connected' | grep -Eo '[0-9]{3,}x' |
         grep -o '[0-9]*' | wc -l | grep '2'; then
-        mkdir ~/paperbenni &>/dev/null
+        mkdir paperbenni &>/dev/null
         xrandr | grep ' connected' | grep -Eo '[0-9]{3,}x' |
-            grep -o '[0-9]*' >~/paperbenni/ismultimonitor
-        echo "$(wc -l ~/paperbenni/ismultimonitor) monitors detected"
+            grep -o '[0-9]*' >paperbenni/ismultimonitor
+        echo "$(wc -l paperbenni/ismultimonitor) monitors detected"
     else
         echo "not a multi monitor setup"
     fi
 else
     echo "monitor config: "
-    cat ~/paperbenni/ismultimonitor
+    cat paperbenni/ismultimonitor
     echo ""
 fi
 
 # notification program for deadd-center
 if ! command -v notify-send.py &>/dev/null; then
+    cd /tmp
     git clone --depth=2 https://github.com/phuhl/notify-send.py
     cd notify-send.py
     sudo pip2 install notify2
@@ -250,19 +262,21 @@ if ! command -v notify-send.py &>/dev/null; then
     sudo rm -rf notify-send.py
 fi
 
-mkdir -p ~/.config/deadd
-curl $LINK/deadd.conf >~/.config/deadd/deadd.conf
+cd
 
 # install wmutils
 if ! command -v pfw &>/dev/null; then
-    pushd /tmp
-    git clone --depth=1 https://github.com/wmutils/core.git
-    cd core
-    make
-    sudo make install
-    cd ..
-    popd
+    cd /tmp
+    if git clone --depth=1 https://github.com/wmutils/core.git; then
+        cd core
+        make
+        sudo make install
+        cd ..
+        rm -rf core
+    fi
 fi
+
+cd
 
 # install win + a menus for shortcuts like screenshots and shutdown
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
@@ -275,6 +289,7 @@ if ! command -v deadd &>/dev/null; then
 fi
 
 if ! command -v dragon &>/dev/null; then
+    cd /tmp
     git clone --depth=1 https://github.com/mwh/dragon.git
     cd dragon
     make
@@ -283,10 +298,12 @@ if ! command -v dragon &>/dev/null; then
     rm -rf dragon
 fi
 
-mkdir ~/paperbenni &>/dev/null
+cd
+mkdir paperbenni &>/dev/null
 
 # automatic wallpaper changer
 if [ "$2" = "rwall" ]; then
+    cd /tmp
     gitclone rwallpaper
     cd rwallpaper
     mv rwallpaper.py ~/paperbenni/
@@ -296,6 +313,8 @@ if [ "$2" = "rwall" ]; then
     cd ..
     rm -rf rwallpaper
 fi
+
+cd
 
 fixtaptoclick() {
     # fix tap to click behaviour
@@ -311,11 +330,11 @@ EOF
 }
 
 # install things like fonts or gtk theme
-if ! [ -e ~/.config/paperthemes/$THEME.txt ]; then
+if ! [ -e .config/paperthemes/$THEME.txt ]; then
     echo "installing theme"
     curl -s "https://raw.githubusercontent.com/paperbenni/suckless/master/themes/$THEME.sh" | bash
-    mkdir ~/.config/paperthemes
-    touch ~/.config/paperthemes/$THEME.txt
+    mkdir .config/paperthemes
+    touch .config/paperthemes/$THEME.txt
 else
     echo "theme installation already found"
 fi
