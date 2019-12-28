@@ -42,7 +42,9 @@ fi
 	bash /home/benjamin/paperbenni/monitor.sh
 
 # apply german keybpard layout
-setxkbmap -layout de
+if locale | grep -q 'de_DE'; then
+	setxkbmap -layout de
+fi
 
 # laptop specific background jobs
 if [ -n "$ISLAPTOP" ]; then

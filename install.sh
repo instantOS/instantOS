@@ -112,7 +112,8 @@ fi
 
 LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
-if cat /etc/os-release | grep -i 'arch'; then
+if cat /etc/os-release | grep -iq 'name.*arch' ||
+    cat /etc/os-release | grep -iq 'name.*manjaro'; then
     pacinstall() {
         for i in "$@"; do
             { pacman -iQ "$i" || command -v "$i"; } &>/dev/null && continue
@@ -136,8 +137,6 @@ if cat /etc/os-release | grep -i 'arch'; then
     pacinstall ffmpeg
     pacinstall feh
     pacinstall mpv
-
-    pacinstall dmidecode
 
     pacinstall wmctrl
     pacinstall xdotool
@@ -168,12 +167,8 @@ fi
 
 cd
 
-if acpi | grep -q '%'; then
-    touch .cache/islaptop
-fi
-
 # ubuntu specific stuff
-if grep -iq 'ubuntu' </etc/os-release; then
+if grep -iq 'name.*ubuntu' </etc/os-release; then
 
     sudo apt-get update
     sudo apt-get upgrade -y
@@ -185,23 +180,23 @@ if grep -iq 'ubuntu' </etc/os-release; then
         done
     }
 
-    # utilities
     aptinstall compton
 
     aptinstall bash dash tmux
     aptinstall dialog
+    aptinstall wget
 
-    aptinstall wget slop
+    aptinstall slop
     aptinstall rofi
     aptinstall acpi
+    aptinstall xrandr
+    aptinstall x11-xserver-utils
+
     aptinstall ffmpeg
     aptinstall feh
     aptinstall mpv
 
     aptinstall cpio
-
-    aptinstall xrandr
-    aptinstall x11-xserver-utils
 
     aptinstall fzf
     aptinstall ranger
@@ -218,6 +213,29 @@ if grep -iq 'ubuntu' </etc/os-release; then
     fi
 fi
 
+# laptop specific stuff
+if acpi | grep -q '[0-9]%'; then
+    # config file to indicate being a laptop
+    touch .cache/islaptop
+
+    # fix tap to click not working with tiling wms
+    if ! [ -e /etc/X11/xorg.conf.d/90-touchpad.conf ] ||
+        ! cat /etc/X11/xorg.conf.d/90-touchpad.conf | grep -iq 'tapping.*"on"'; then
+
+        sudo mkdir -p /etc/X11/xorg.conf.d && sudo tee /etc/X11/xorg.conf.d/90-touchpad.conf <<'EOF' 1>/dev/null
+Section "InputClass"
+        Identifier "touchpad"
+        MatchIsTouchpad "on"
+        Driver "libinput"
+        Option "Tapping" "on"
+EndSection
+
+EOF
+    fi
+
+fi
+
+# three and four finger swipes on laptop
 if ! command -v libinput-gestures &>/dev/null; then
     cd /tmp
     git clone --depth=1 https://github.com/bulletmark/libinput-gestures.git
@@ -230,7 +248,7 @@ fi
 cd
 
 # auto start script with dwm
-ls .dwm || mkdir .dwm
+ls .dwm &>/dev/null || mkdir .dwm
 curl $LINK/autostart.sh >.dwm/autostart.sh
 chmod +x .dwm/autostart.sh
 
@@ -281,13 +299,14 @@ cd
 # install win + a menus for shortcuts like screenshots and shutdown
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
 
-## notification center ##
+# notification center #
 if ! command -v deadd &>/dev/null; then
     echo "installing deadd"
     wget -q "http://deadd.surge.sh/deadd"
     usrbin deadd
 fi
 
+# drag and drop x utility for ranger
 if ! command -v dragon &>/dev/null; then
     cd /tmp
     git clone --depth=1 https://github.com/mwh/dragon.git
@@ -302,6 +321,7 @@ cd
 mkdir paperbenni &>/dev/null
 
 # automatic wallpaper changer
+# uses reddit r/wallpaper scraper
 if [ "$2" = "rwall" ]; then
     cd /tmp
     gitclone rwallpaper
@@ -316,19 +336,6 @@ fi
 
 cd
 
-fixtaptoclick() {
-    # fix tap to click behaviour
-    sudo mkdir -p /etc/X11/xorg.conf.d && sudo tee /etc/X11/xorg.conf.d/90-touchpad.conf <<'EOF' 1>/dev/null
-Section "InputClass"
-        Identifier "touchpad"
-        MatchIsTouchpad "on"
-        Driver "libinput"
-        Option "Tapping" "on"
-EndSection
-
-EOF
-}
-
 # install things like fonts or gtk theme
 if ! [ -e .config/paperthemes/$THEME.txt ]; then
     echo "installing theme"
@@ -339,7 +346,7 @@ else
     echo "theme installation already found"
 fi
 
-# fix java on dwm
+# fix java gui appearing empty on dwm
 if ! grep 'dwm' </etc/profile; then
     echo "fixing java windows for dwm in /etc/profile"
     echo '# fix dwm java windows' | sudo tee -a /etc/profile
