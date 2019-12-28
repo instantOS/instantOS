@@ -336,6 +336,13 @@ fi
 
 cd
 
+# set dwm as default for lightdm
+echo '[Desktop]' >.dmrc
+echo 'Session=dwm' >>.dmrc
+if [ -e /etc/lightdm/lightdm.conf ]; then
+    sudo sed -i 's/^user-session=.*/user-session=dwm/g' /etc/lightdm/lightdm.conf
+fi
+
 # install things like fonts or gtk theme
 if ! [ -e .config/paperthemes/$THEME.txt ]; then
     echo "installing theme"
