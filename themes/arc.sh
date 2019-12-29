@@ -29,8 +29,7 @@ setcursor elementary
 
 # rofi setup
 mkdir -p ~/.config/rofi &>/dev/null
-[ -e ~/.config/rofi/arc.rasi ] ||
-    curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/arc.rasi" >~/.config/rofi/arc.rasi
+curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/arc.rasi" >~/.config/rofi/arc.rasi
 echo 'rofi.theme: ~/.config/rofi/arc.rasi' >~/.config/rofi/config
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sourcecodepro.sh" | bash

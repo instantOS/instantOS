@@ -33,8 +33,7 @@ curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sfpr
 
 # rofi setup
 mkdir -p ~/.config/rofi &>/dev/null
-[ -e ~/.config/rofi/mac.rasi ] ||
-    curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/mac.rasi" >~/.config/rofi/mac.rasi
+curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/mac.rasi" >~/.config/rofi/mac.rasi
 echo 'rofi.theme: ~/.config/rofi/mac.rasi' >~/.config/rofi/config
 
 gtkfont 'SF Pro Display 10'

@@ -29,7 +29,7 @@ focuswin() {
 }
 
 # single monitor like on a laptop is pretty straightforward
-if ! [ -e ~/paperbenni/ismultimonitor ]; then
+if ! [ -e ~/paperbenni/monitor/right.txt ]; then
     focuswin "$WID"
     echo "exiting"
     exit
@@ -56,7 +56,7 @@ pfw() {
 getmonitor() {
     xdotool key 'super+W'
     XPOS=$(xdotool getmouselocation --shell | head -1 | grep -o '[0-9]*')
-    if [ "$XPOS" -gt "1919" ]; then
+    if [ "$XPOS" -gt "$(cat ~/paperbenni/monitor/right.txt)" ]; then
         echo "1"
     else
         echo "0"
