@@ -235,6 +235,9 @@ EOF
 
 fi
 
+curl -s "https://raw.githubusercontent.com/paperbenni/suckless/master/monitor.sh" | bash
+cd
+
 # three and four finger swipes on laptop
 if ! command -v libinput-gestures &>/dev/null; then
     cd /tmp
