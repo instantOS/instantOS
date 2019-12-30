@@ -72,16 +72,13 @@ gprogram startdwm
 gprogram sucklessshutdown
 
 gprogram autoclicker
-# deadcenter toggle script
-gprogram deadcenter
 
 # dmenu run but in terminal emulator st
 # only supported terminal apps (less to search through)
 gprogram dmenu_run_st
 
 gprogram dswitch
-gprogram dworkl
-gprogram dworkr
+gprogram pbnotify
 
 # for that extra kick when doingg a typo
 gprogram sll
@@ -127,6 +124,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     # utilities
     pacinstall picom
     pacinstall rofi
+    pacinstall dunst
 
     pacinstall bash dash tmux
     pacinstall dialog
@@ -188,6 +186,8 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
 
     aptinstall slop
     aptinstall rofi
+    aptinstall dunst
+
     aptinstall acpi
     aptinstall xrandr
     aptinstall x11-xserver-utils
@@ -272,17 +272,6 @@ else
     echo ""
 fi
 
-# notification program for deadd-center
-if ! command -v notify-send.py &>/dev/null; then
-    cd /tmp
-    git clone --depth=2 https://github.com/phuhl/notify-send.py
-    cd notify-send.py
-    sudo pip2 install notify2
-    sudo python3 setup.py install
-    cd ..
-    sudo rm -rf notify-send.py
-fi
-
 cd
 
 # install wmutils
@@ -301,13 +290,6 @@ cd
 
 # install win + a menus for shortcuts like screenshots and shutdown
 curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
-
-# notification center #
-if ! command -v deadd &>/dev/null; then
-    echo "installing deadd"
-    wget -q "http://deadd.surge.sh/deadd"
-    usrbin deadd
-fi
 
 # drag and drop x utility for ranger
 if ! command -v dragon &>/dev/null; then

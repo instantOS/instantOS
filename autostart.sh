@@ -25,21 +25,23 @@ fi
 
 sleep 1
 
-if command -v deadd &>/dev/null; then
-	if ! pgrep deadd; then
+if command -v dunst &>/dev/null; then
+	mkdir -p /tmp/notifications &>/dev/null
+	if ! pgrep dunst; then
 		while :; do
-			deadd
+			dunst -print |
+				cat -v >/tmp/notifications/notif.txt
 			sleep 30
 		done &
 	fi
 fi
 
+[ -e /home/benjamin/paperbenni/monitor.sh ] &&
+	bash /home/benjamin/paperbenni/monitor.sh &
+
 # chrome os wallpaper changer
 [ -e /home/benjamin/paperbenni/menus/dm/wg.sh ] &&
-	bash /home/benjamin/paperbenni/menus/dm/wg.sh
-
-[ -e /home/benjamin/paperbenni/monitor.sh ] &&
-	bash /home/benjamin/paperbenni/monitor.sh
+	bash /home/benjamin/paperbenni/menus/dm/wg.sh &
 
 # apply german keybpard layout
 if locale | grep -q 'de_DE'; then
