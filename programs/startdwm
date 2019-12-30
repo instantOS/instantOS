@@ -4,8 +4,10 @@
 ## x session for paperbenni-dwm, use with lightdm ##
 ####################################################
 
+# used for shutdown
 touch ~/.dwmrunning
 
+# loop so crashing dwm doesn't end the x session
 while test -e ~/.dwmrunning; do
     # Log stderror to a file
     dwm 2>~/.dwm.log

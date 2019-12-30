@@ -1,19 +1,26 @@
 #!/bin/bash
+# show notification history in rofi
+# x to mark as read
+# esc to exit
+
 [ -e /tmp/notifications ] || mkdir /tmp/notifications
 cd /tmp/notifications
 
+# notif.txt contains raw data from dunst
+# format json to rofi entries
 if [ -e notif.txt ] && grep -q '....' <notif.txt; then
     echo "notification update"
     cat -v notif.txt |
         egrep -o '(body|summary|appname).*' |
         sed 'N;N;s/\n/ /g' |
-        sed -E "s/appname: '([^']*)' summary: '([^']*)' body: '([^']*)'/"'[\1] | \2 | \3/g' >>notifications.txt
+        sed -E "s/appname: '(.*)' summary: '(.*)' body: '(.*)'/"'[\1] | \2 | \3/g' >>notifications.txt
     sort -u -o notifications.txt notifications.txt
     echo '' >notif.txt
 else
     echo "no new notifs"
 fi
 
+# contains all read notifications, gets subtracted from notifications.txt
 [ -e "read.txt" ] || echo "" >read.txt
 
 [ -e notifications.txt ] && grep -q '....' <notifications.txt || exit

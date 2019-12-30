@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# very subtle easter egg, turn up the volume and wear headphones to experience it
 if ! [ -e ~/paperbenni/thomas.mp3 ]; then
     pushd .
     cd ~/paperbenni/
