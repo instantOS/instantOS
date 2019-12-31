@@ -32,6 +32,7 @@ setcursor osx
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sfpro.sh" | bash
 
 rofitheme mac
+dunsttheme mac
 
 gtkfont 'SF Pro Display 10'
 gtkdocumentfont 'SF Pro Text 10'

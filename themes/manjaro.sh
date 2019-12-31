@@ -44,6 +44,8 @@ if ! [ -e ~/.icons/Breeze ]; then
 fi
 
 rofitheme arc
+dunsttheme manjaro
+
 setcursor Breeze
 
 echo "done installing manjaro theme"

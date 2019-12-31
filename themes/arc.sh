@@ -28,6 +28,7 @@ gtkicons Papirus
 setcursor elementary
 
 rofitheme arc
+dunsttheme arc
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sourcecodepro.sh" | bash
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/roboto.sh" | bash
