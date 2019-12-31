@@ -27,10 +27,7 @@ fi
 gtkicons Papirus
 setcursor elementary
 
-# rofi setup
-mkdir -p ~/.config/rofi &>/dev/null
-curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/arc.rasi" >~/.config/rofi/arc.rasi
-echo 'rofi.theme: ~/.config/rofi/arc.rasi' >~/.config/rofi/config
+rofitheme arc
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sourcecodepro.sh" | bash
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/roboto.sh" | bash

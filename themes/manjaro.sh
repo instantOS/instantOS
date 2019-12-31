@@ -43,6 +43,7 @@ if ! [ -e ~/.icons/Breeze ]; then
     svn export "https://github.com/KDE/breeze.git/trunk/cursors/Breeze/Breeze"
 fi
 
+rofitheme arc
 setcursor Breeze
 
 echo "done installing manjaro theme"

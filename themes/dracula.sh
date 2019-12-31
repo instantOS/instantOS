@@ -21,10 +21,7 @@ gtkfont "Roboto 10"
 
 setcursor paper
 
-# rofi setup
-mkdir -p ~/.config/rofi &>/dev/null
-curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/rofi/dracula.rasi" >~/.config/rofi/dracula.rasi
-echo 'rofi.theme: ~/.config/rofi/dracula.rasi' >~/.config/rofi/config
+rofitheme dracula
 
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/monaco.sh" | bash
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/roboto.sh" | bash
