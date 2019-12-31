@@ -13,7 +13,7 @@ if [ -e notif.txt ] && grep -q '....' <notif.txt; then
     cat -v notif.txt |
         egrep -o '(body|summary|appname).*' |
         sed 'N;N;s/\n/ /g' |
-        sed -E "s/appname: '(.*)' summary: '(.*)' body: '(.*)'/"'[\1] | \2 | \3/g' >>notifications.txt
+        sed -E "s/appname: '(.*)' summary: '(.*)' body: '(.*)'/"'[\1] | <i>\2<\/i> | <b>\3<\/b>/g' >>notifications.txt
     sort -u -o notifications.txt notifications.txt
     echo '' >notif.txt
 else
@@ -25,9 +25,9 @@ fi
 
 [ -e notifications.txt ] && grep -q '....' <notifications.txt || exit
 
-NREAD=$(grep -F -x -v -f read.txt notifications.txt | rofi -dmenu -p notifications -kb-accept-entry 'x')
+NREAD=$(grep -F -x -v -f read.txt notifications.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
 
 while [ -n "$NREAD" ]; do
     echo "$NREAD" >>read.txt
-    NREAD=$(grep -F -x -v -f read.txt notifications.txt | rofi -dmenu -p notifications -kb-accept-entry 'x')
+    NREAD=$(grep -F -x -v -f read.txt notifications.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
 done
