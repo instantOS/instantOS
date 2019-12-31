@@ -1,5 +1,6 @@
 #!/bin/bash
-# todo
+# manjaro like style
+
 source <(curl -Ls https://git.io/JerLG)
 pb git
 pb gtk
@@ -36,9 +37,12 @@ echo 'rofi.theme: ~/.config/rofi/manjaro.rasi' >~/.config/rofi/config
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/sourcecodepro.sh" | bash
 curl -s "https://raw.githubusercontent.com/paperbenni/dotfiles/master/fonts/roboto.sh" | bash
 
-if ! icons_exist "Breeze"; then
-    mkdir ~/.icons &>/dev/null && cd ~/.icons
+if ! [ -e ~/.icons/Breeze ]; then
+    mkdir ~/.icons &>/dev/null
+    cd ~/.icons
     svn export "https://github.com/KDE/breeze.git/trunk/cursors/Breeze/Breeze"
 fi
+
+setcursor Breeze
 
 echo "done installing manjaro theme"
