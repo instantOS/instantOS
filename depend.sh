@@ -20,6 +20,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     pacinstall picom
     pacinstall rofi
     pacinstall dunst
+    pacinstall tar
 
     pacinstall bash dash tmux
     pacinstall neovim
@@ -48,6 +49,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
 
     pacinstall xorg-fonts-misc
     pacinstall lxappearance
+    pacinstall qt5ct
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
@@ -74,6 +76,7 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
 
     aptinstall git
     aptinstall subversion
+    aptinstall tar
 
     aptinstall bash dash tmux
     aptinstall dialog
@@ -90,14 +93,15 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
     aptinstall ffmpeg
     aptinstall feh
     aptinstall mpv
+    aptinstall conky
 
     aptinstall cpio
 
     aptinstall fzf
     aptinstall ranger
-    aptinstall conky
     aptinstall sl
 
+    aptinstall qt5ct
     aptinstall lxappearance
 
     if ! command -v panther_launcher; then
