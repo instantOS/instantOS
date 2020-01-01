@@ -13,15 +13,30 @@ pb git
 
 LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
+# fetches and installs program from this repo
 gprogram() {
     wget "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
     usrbin -f "$1"
 }
 
-if [ "$1" = "dotfiles" ]; then
-    shift 1
-    DOTFILES="True"
-fi
+# adds permanent global environment variable
+addenv() {
+    [ -e /etc/environment ] || sudo touch /etc/environment
+    if [ "$1" = "-f" ]; then
+        local FORCE="true"
+        shift 1
+    fi
+    if grep -q "$1=" /etc/environment; then
+        if [ -z "$FORCE" ]; then
+            echo "key already there"
+            return 1
+        else
+            sudo sed -i "s/$1=.*/$1=$2/g" /etc/environment
+        fi
+    else
+        echo "$1=$2" | sudo tee -a /etc/environment
+    fi
+}
 
 THEME="${1:-dracula}"
 echo "using theme $THEME"
@@ -103,11 +118,6 @@ for FOLDER in ./*; do
     fi
     popd
 done
-
-# install dotfiles like bash,git and tmux config
-if [ -n "$DOTFILES" ]; then
-    curl https://raw.githubusercontent.com/paperbenni/dotfiles/master/install.sh | bash
-fi
 
 if ! [ ~/.local/share/fonts/symbola.ttf ]; then
     mkdir -p ~/.local/share/fonts
