@@ -5,7 +5,7 @@ pb git
 pb gtk
 
 # gtk theme
-if themeexists materiacula && icons_exist materiacula!; then
+if themeexists materiacula &>/dev/null && icons_exist materiacula &>/dev/null; then
     echo "gtk theme dracula found"
 else
     gitclone materiacula

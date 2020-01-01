@@ -9,7 +9,7 @@ pb unpack
 mkdir /tmp/manjarotheme
 cd /tmp/manjarotheme
 
-if ! themeexists matcha; then
+if ! themeexists matcha &> /dev/null; then
     git clone --depth=1 https://github.com/vinceliuice/matcha.git
     cd matcha
     ./Install
@@ -18,7 +18,7 @@ if ! themeexists matcha; then
 fi
 gtktheme "Matcha-sea"
 
-if ! icons_exist "Papirus-Maia"; then
+if ! icons_exist "Papirus-Maia" &> /dev/null; then
     git clone --depth=1 https://github.com/Ste74/papirus-maia-icon-theme.git
     cd papirus-maia-icon-theme
     mkdir ~/.icons &>/dev/null

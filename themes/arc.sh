@@ -6,14 +6,14 @@ pb config
 pb gtk
 
 # gtk theme
-if ! themeexists Arc; then
+if ! themeexists Arc &>/dev/null; then
     command -v pacman && sudo pacman -S --noconfirm arc-gtk-theme
     command -v apt-get && sudo apt-get install -y arc-theme
 fi
 gtktheme Arc
 
 # gtk icons
-if ! icons_exist Papirus; then
+if ! icons_exist Papirus &>/dev/null; then
     pushd .
     cd
     gitclone PapirusDevelopmentTeam/papirus-icon-theme

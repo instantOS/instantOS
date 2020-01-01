@@ -15,8 +15,14 @@ LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
 # fetches and installs program from this repo
 gprogram() {
-    wget "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
+    echo "installing $1"
+    wget -q "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
     usrbin -f "$1"
+}
+
+gclone() {
+    echo "cloning $1"
+    gitclone $@ &>/dev/null
 }
 
 # adds permanent global environment variable
@@ -51,9 +57,9 @@ rm -rf suckless
 mkdir suckless
 cd suckless
 
-gitclone dwm
-gitclone dmenu
-gitclone st
+gclone dwm
+gclone dmenu
+gclone st
 
 # needed for slock
 if grep -q 'nobody' </etc/groups || grep -q 'nobody' </etc/group; then
@@ -76,7 +82,7 @@ ugroup() {
 ugroup video
 ugroup input
 
-gitclone slock
+gclone slock
 
 # install cursors for themes
 if ! [ -e ~/.icons/osx ]; then
@@ -84,7 +90,7 @@ if ! [ -e ~/.icons/osx ]; then
 fi
 
 # session for lightdm
-wget https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
+wget -q https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
 sudo mv dwm.desktop /usr/share/xsessions/
 
 # x session wrapper
@@ -114,11 +120,11 @@ for FOLDER in ./*; do
     pushd "$FOLDER"
     if ! [ -e build.sh ]; then
         rm config.h
-        make
-        sudo make install
+        make &>/dev/null
+        sudo make install &>/dev/null
     else
         chmod +x ./build.sh
-        ./build.sh "$THEME"
+        ./build.sh "$THEME" &>/dev/null
     fi
     popd
 done
@@ -126,7 +132,8 @@ done
 if ! [ ~/.local/share/fonts/symbola.ttf ]; then
     mkdir -p ~/.local/share/fonts
     cd ~/.local/share/fonts
-    wget "http://symbola.surge.sh/symbola.ttf"
+    echo "installing symbola font"
+    wget -q "http://symbola.surge.sh/symbola.ttf"
 fi
 
 cd
@@ -176,7 +183,7 @@ chmod +x .dwm/autostart.sh
 # set up multi monitor config for dswitch
 if ! [ -e paperbenni/ismultimonitor ]; then
     if xrandr | grep ' connected' | grep -Eo '[0-9]{3,}x' |
-        grep -o '[0-9]*' | wc -l | grep '2'; then
+        grep -o '[0-9]*' | wc -l | grep -q '2'; then
         mkdir paperbenni &>/dev/null
         xrandr | grep ' connected' | grep -Eo '[0-9]{3,}x' |
             grep -o '[0-9]*' >paperbenni/ismultimonitor
@@ -207,12 +214,12 @@ fi
 cd
 
 # install win + a menus for shortcuts like screenshots and shutdown
-curl https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
+curl -s https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
 
 # drag and drop x utility for ranger
 if ! command -v dragon &>/dev/null; then
     cd /tmp
-    git clone --depth=1 https://github.com/mwh/dragon.git
+    git clone --depth=1 https://github.com/mwh/dragon.git &>/dev/null
     cd dragon
     make
     make install
@@ -227,7 +234,7 @@ mkdir paperbenni &>/dev/null
 # uses reddit r/wallpaper scraper
 if [ "$2" = "rwall" ]; then
     cd /tmp
-    gitclone rwallpaper
+    gclone rwallpaper
     cd rwallpaper
     mv rwallpaper.py ~/paperbenni/
     chmod +x wallpaper.sh
@@ -257,7 +264,7 @@ else
 fi
 
 # fix java gui appearing empty on dwm
-if ! grep 'dwm' </etc/profile; then
+if ! grep -q 'dwm' </etc/profile; then
     echo "fixing java windows for dwm in /etc/profile"
     echo '# fix dwm java windows' | sudo tee -a /etc/profile
     echo 'export _JAVA_AWT_WM_NONREPARENTING=1' | sudo tee -a /etc/profile
