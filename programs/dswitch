@@ -12,10 +12,15 @@
 
 # alt tab like behaviour with rofi
 if ! [ -n "$1" ]; then
-    num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' |
-        rofi -dmenu -i -me-select-entry '' -me-accept-entry 'MousePrimary' -kb-row-down 'Alt+Tab,Down' -kb-row-up 'Alt+Ctrl+Tab,Up' -kb-accept-entry '!Alt_L,!Alt+Tab,Return' | cut -d '-' -f -1)
-    [[ -z "$num" ]] && exit
-    WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
+    if ! [ -e ~/paperbenni/monitor/right.txt ]; then
+        rofi -show window -me-accept-entry 'MousePrimary' -kb-row-down 'Alt+Tab,Down' -kb-row-up 'Alt+Ctrl+Tab,Up' -kb-accept-entry '!Alt_L,!Alt+Tab,Return'
+        exit
+    else
+        num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' |
+            rofi -dmenu -p applications -i -me-select-entry '' -me-accept-entry 'MousePrimary' -kb-row-down 'Alt+Tab,Down' -kb-row-up 'Alt+Ctrl+Tab,Up' -kb-accept-entry '!Alt_L,!Alt+Tab,Return' | cut -d '-' -f -1)
+        [[ -z "$num" ]] && exit
+        WID=$(wmctrl -l | sed -n "$num p" | cut -c -10)
+    fi
 else
     WID="$1"
 fi
@@ -28,10 +33,9 @@ focuswin() {
     wmctrl -i -a "$1"
 }
 
-# single monitor like on a laptop is pretty straightforward
+# single monitor doesnt need fixes
 if ! [ -e ~/paperbenni/monitor/right.txt ]; then
-    focuswin "$WID"
-    echo "exiting"
+    focuswin "$1"
     exit
 fi
 

@@ -43,7 +43,7 @@ if ! [ -e ~/.icons/Breeze ]; then
     svn export "https://github.com/KDE/breeze.git/trunk/cursors/Breeze/Breeze"
 fi
 
-rofitheme arc
+rofitheme manjaro
 dunsttheme manjaro
 
 setcursor Breeze
