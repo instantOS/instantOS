@@ -1,26 +1,19 @@
 # suckless
 my suckless "distro"
 
-## Installation
-
-```sh
-curl https://raw.githubusercontent.com/paperbenni/suckless/master/install.sh | bash
-```
-### Installation including config files like .bashrc
-
-#### WARNING THIS WILL OVERWRITE ANY EXISTING CONFIGURATION
+### Installation including dotfiles
+#### WARNING THIS WILL OVERRIDE ANY EXISTING CONFIGURATION
 ```sh
 curl https://raw.githubusercontent.com/paperbenni/suckless/master/dotinstall.sh | bash
 ```
+
 ## This suckless collection is made up of
 - Start menu: https://github.com/paperbenni/dmenu
+- Custom shortcut menu: https://github.com/paperbenni/menus
+- Notification center: Found in this repo under programs/pbnotify
 - Window-Manager: https://github.com/paperbenni/dwm
 - Terminal emulator: https://github.com/paperbenni/st
 - Lock screen: https://github.com/paperbenni/slock
-
-All of these are forks of their original [suckless](https://suckless.org) projects. 
-Suckless programs are really basic , small and optimized programs that you are supposed to extend to suit your needs
-(or use someone elses configuration if you don't want to learn c or/and apply a bunch of patches)
 
 ## Requirements:
 This requires xorg, it does NOT work with wayland as it relies on x utilities
