@@ -22,6 +22,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     pacinstall dunst
 
     pacinstall bash dash tmux
+    pacinstall neovim
     pacinstall dialog
     pacinstall wget slop
     pacinstall acpi
@@ -29,6 +30,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
 
     aptinstall git
     aptinstall subversion
+    aptinstall neovim
 
     pacinstall ffmpeg
     pacinstall feh

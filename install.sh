@@ -26,6 +26,7 @@ addenv() {
         local FORCE="true"
         shift 1
     fi
+
     if grep -q "$1=" /etc/environment; then
         if [ -z "$FORCE" ]; then
             echo "key already there"
@@ -37,6 +38,9 @@ addenv() {
         echo "$1=$2" | sudo tee -a /etc/environment
     fi
 }
+
+addenv -f "QT_QPA_PLATFORMTHEME" "qt5ct"
+command -v nvim &>/dev/null && addenv -f "EDITOR" "$(which nvim)"
 
 THEME="${1:-dracula}"
 echo "using theme $THEME"
