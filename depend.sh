@@ -4,52 +4,69 @@
 
 LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
 
+# install on arch based system
+pacinstall() {
+    for i in "$@"; do
+        { pacman -iQ "$i" || command -v "$i"; } &>/dev/null && continue
+        echo "Installing $i"
+        sudo pacman -S --noconfirm "$i" &>/dev/null
+    done
+}
+
+# install on ubuntu based system
+aptinstall() {
+    for i in "$@"; do
+        { dpkg -l "$i" || command -v "$i"; } &>/dev/null && continue
+        echo "Installing $i"
+        sudo apt-get install -y "$i" &>/dev/null
+    done
+}
+
+if command -v pacman &>/dev/null; then
+    ISARCH=TRUE
+elif command -v apt &>/dev/null; then
+    ISUBUNTU=TRUE
+else
+    echo "distro not supported"
+    exit
+fi
+
+# cross distro install command
+ipkg() {
+    if [ -n "$ISARCH" ]; then
+        pacinstall "$@"
+    elif [ -n "$ISUBUNTU" ]; then
+        aptinstall "$@"
+    fi
+}
+
+ipkg wget
+
 if cat /etc/os-release | grep -iq 'name.*arch' ||
     cat /etc/os-release | grep -iq 'name.*manjaro'; then
-    pacinstall() {
-        for i in "$@"; do
-            { pacman -iQ "$i" || command -v "$i" &>/dev/null; } &>/dev/null && continue
-            sudo pacman -S --noconfirm "$i"
-        done
-    }
     echo "setting up arch specific stuff"
 
     sudo pacman -Syu --noconfirm
 
-    # utilities
     pacinstall picom
     pacinstall rofi
     pacinstall dunst
-    pacinstall tar
+    pacinstall conky
 
-    pacinstall bash dash tmux
     pacinstall neovim
     pacinstall dialog
-    pacinstall wget slop
+
     pacinstall acpi
-    pacinstall cpio
+    pacinstall xrandr
 
-    aptinstall git
-    aptinstall subversion
-    aptinstall neovim
-
-    pacinstall ffmpeg
-    pacinstall feh
-    pacinstall mpv
-
+    pacinstall slop
     pacinstall wmctrl
     pacinstall xdotool
-    pacinstall xrandr
     pacinstall xorg-xsetroot
+    pacinstall xorg-fonts-misc # slock font
 
-    pacinstall conky
-    pacinstall ranger
-    pacinstall fzf
-    pacinstall sl
-
-    pacinstall xorg-fonts-misc
-    pacinstall lxappearance
-    pacinstall qt5ct
+    pacinstall tar
+    pacinstall cpio
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
@@ -65,44 +82,24 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
     sudo apt-get update
     sudo apt-get upgrade -y
 
-    aptinstall() {
-        for i in "$@"; do
-            { dpkg -l "$i" || command -v "$i" &>/dev/null; } &>/dev/null && continue
-            sudo apt-get install -y "$i"
-        done
-    }
-
     aptinstall compton
-
-    aptinstall git
-    aptinstall subversion
-    aptinstall tar
-
-    aptinstall bash dash tmux
-    aptinstall dialog
-    aptinstall wget
-
-    aptinstall slop
+    aptinstall conky
     aptinstall rofi
     aptinstall dunst
 
+    aptinstall neovim
+    aptinstall dialog
+
     aptinstall acpi
     aptinstall xrandr
-    aptinstall x11-xserver-utils
 
-    aptinstall ffmpeg
-    aptinstall feh
-    aptinstall mpv
-    aptinstall conky
+    aptinstall x11-xserver-utils # xsetroot
+    aptinstall xdotool
+    aptinstall slop
+    aptinstall wmctrl
 
     aptinstall cpio
-
-    aptinstall fzf
-    aptinstall ranger
-    aptinstall sl
-
-    aptinstall qt5ct
-    aptinstall lxappearance
+    aptinstall tar
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
@@ -111,3 +108,23 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
         rm panther-launcher*.deb
     fi
 fi
+
+# dont repeat packages present in both distro families
+ipkg bash
+ipkg dash
+ipkg tmux
+
+ipkg git
+ipkg subversion
+
+ipkg fzf
+ipkg ranger
+ipkg sl
+
+ipkg ffmpeg
+ipkg feh
+ipkg mpv
+
+ipkg arandr
+ipkg qt5ct
+ipkg lxappearance
