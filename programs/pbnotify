@@ -1,16 +1,16 @@
 #!/bin/bash
 # show notification history in rofi
-# x to mark as read
+# x to mark as readentry headerentry headerentry headerentry headerentry headerentry header
 # esc to exit
 
 [ -e /tmp/notifications ] || mkdir /tmp/notifications
 cd /tmp/notifications
 
-[ -e notifications.txt ] && grep -q '....' <notifications.txt || exit
+[ -e notif.txt ] && grep -q '....' <notif.txt || exit
 
-NREAD=$(grep -F -x -v -f read.txt notifications.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
+NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
 
 while [ -n "$NREAD" ]; do
-    sed -i "/$NREAD/d" ./notifications.txt
-    NREAD=$(grep -F -x -v -f read.txt notifications.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
+    grep -vF "$NREAD" notif.txt >tmp.notif && mv tmp.notif notif.txt
+    NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
 done

@@ -229,8 +229,10 @@ fi
 
 cd
 mkdir -p paperbenni/notifications &>/dev/null
+
 # gets executed by dunst on notification
-curl "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/pbnotify.py" >~/paperbenni/notifications/pbnotify.py
+curl "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/dunsttrigger" >~/paperbenni/notifications/dunsttrigger
+chmod +x ~/paperbenni/notifications/dunsttrigger
 
 # automatic wallpaper changer
 # uses reddit r/wallpaper scraper

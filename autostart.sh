@@ -26,13 +26,6 @@ fi
 sleep 1
 
 mkdir -p /tmp/notifications &>/dev/null
-if ! pgrep dbus-monitor; then
-	while :; do
-		dbus-monitor "interface='org.freedesktop.Notifications'" >/tmp/notifications/notif.txt
-		sleep 10
-	done &
-fi
-
 if ! pgrep dunst; then
 	while :; do
 		dunst
