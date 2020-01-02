@@ -25,15 +25,19 @@ fi
 
 sleep 1
 
-if command -v dunst &>/dev/null; then
-	mkdir -p /tmp/notifications &>/dev/null
-	if ! pgrep dunst; then
-		while :; do
-			dunst -print |
-				cat -v >/tmp/notifications/notif.txt
-			sleep 30
-		done &
-	fi
+mkdir -p /tmp/notifications &>/dev/null
+if ! pgrep dbus-monitor; then
+	while :; do
+		dbus-monitor "interface='org.freedesktop.Notifications'" >/tmp/notifications/notif.txt
+		sleep 10
+	done &
+fi
+
+if ! pgrep dunst; then
+	while :; do
+		dunst
+		sleep 10
+	done &
 fi
 
 [ -e /home/benjamin/paperbenni/monitor.sh ] &&

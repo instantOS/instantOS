@@ -228,7 +228,9 @@ if ! command -v dragon &>/dev/null; then
 fi
 
 cd
-mkdir paperbenni &>/dev/null
+mkdir -p paperbenni/notifications &>/dev/null
+# gets executed by dunst on notification
+curl "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/pbnotify.py" >~/paperbenni/notifications/pbnotify.py
 
 # automatic wallpaper changer
 # uses reddit r/wallpaper scraper
