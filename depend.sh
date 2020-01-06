@@ -49,19 +49,11 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     sudo pacman -Syu --noconfirm
 
     pacinstall picom
-    pacinstall rofi
-    pacinstall dunst
-    pacinstall conky
-
-    pacinstall neovim
-    pacinstall dialog
 
     pacinstall acpi
     pacinstall xrandr
 
     pacinstall slop
-    pacinstall wmctrl
-    pacinstall xdotool
     pacinstall xorg-xsetroot
     pacinstall xorg-fonts-misc # slock font
 
@@ -83,20 +75,12 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
     sudo apt-get upgrade -y
 
     aptinstall compton
-    aptinstall conky
-    aptinstall rofi
-    aptinstall dunst
-
-    aptinstall neovim
-    aptinstall dialog
 
     aptinstall acpi
     aptinstall xrandr
 
     aptinstall x11-xserver-utils # xsetroot
-    aptinstall xdotool
     aptinstall slop
-    aptinstall wmctrl
 
     aptinstall cpio
     aptinstall tar
@@ -117,6 +101,8 @@ ipkg tmux
 ipkg git
 ipkg subversion
 
+ipkg dialog
+ipkg neovim
 ipkg fzf
 ipkg ranger
 ipkg sl
@@ -128,3 +114,10 @@ ipkg mpv
 ipkg arandr
 ipkg qt5ct
 ipkg lxappearance
+
+ipkg rofi
+ipkg conky
+ipkg dunst
+
+ipkg xdotool
+ipkg wmctrl
