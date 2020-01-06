@@ -1,3 +1,10 @@
 #!/bin/dash
-mpv ~/paperbenni/notification.ogg
+# gets executed each time dunst receives a notification
+
+# spotify doesnt need a sound
+# discord already has one
+if ! grep -Eq '(discord|spotify)' <<<"$1"; then
+    mpv ~/paperbenni/notification.ogg
+fi
+
 echo "($(date +%H:%M)) [$1] <b>$2</b> | <i>$3</i>" >>/tmp/notifications/notif.txt

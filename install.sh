@@ -233,6 +233,7 @@ mkdir -p paperbenni/notifications &>/dev/null
 # gets executed by dunst on notification
 curl "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/dunsttrigger" >~/paperbenni/notifications/dunsttrigger
 chmod +x ~/paperbenni/notifications/dunsttrigger
+wget -O notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
 
 # automatic wallpaper changer
 # uses reddit r/wallpaper scraper
