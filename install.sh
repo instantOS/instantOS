@@ -233,7 +233,7 @@ mkdir -p paperbenni/notifications &>/dev/null
 # gets executed by dunst on notification
 curl "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/dunsttrigger" >~/paperbenni/notifications/dunsttrigger
 chmod +x ~/paperbenni/notifications/dunsttrigger
-wget -O notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
+wget -O ~/paperbenni/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
 
 # automatic wallpaper changer
 # uses reddit r/wallpaper scraper
@@ -259,14 +259,8 @@ if [ -e /etc/lightdm/lightdm.conf ]; then
 fi
 
 # install things like fonts or gtk theme
-if ! [ -e .config/paperthemes/$THEME.txt ]; then
-    echo "installing theme"
-    curl -s "https://raw.githubusercontent.com/paperbenni/suckless/master/themes/$THEME.sh" | bash
-    mkdir .config/paperthemes
-    touch .config/paperthemes/$THEME.txt
-else
-    echo "theme installation already found"
-fi
+echo "installing theme"
+curl -s "https://raw.githubusercontent.com/instant-os/instant-THEMES/master/$THEME.sh" | bash
 
 # fix java gui appearing empty on dwm
 if ! grep -q 'dwm' </etc/profile; then
