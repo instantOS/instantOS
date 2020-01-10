@@ -260,7 +260,7 @@ fi
 
 # install things like fonts or gtk theme
 echo "installing theme"
-curl -s "https://raw.githubusercontent.com/instant-os/instant-THEMES/master/$THEME.sh" | bash
+curl -s "https://raw.githubusercontent.com/instantos/instantTHEMES/master/$THEME.sh" | bash
 
 # fix java gui appearing empty on dwm
 if ! grep -q 'dwm' </etc/profile; then
