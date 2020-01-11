@@ -238,6 +238,7 @@ wget -O ~/paperbenni/notifications/notification.ogg "https://notificationsounds.
 cd
 mkdir instantos/wallpapers
 curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" > intantos/wallpapers/wall.sh
+chmod +x intantos/wallpapers/wall.sh
 
 # set dwm as default for lightdm
 echo '[Desktop]' >.dmrc
@@ -245,10 +246,6 @@ echo 'Session=dwm' >>.dmrc
 if [ -e /etc/lightdm/lightdm.conf ]; then
     sudo sed -i 's/^user-session=.*/user-session=dwm/g' /etc/lightdm/lightdm.conf
 fi
-
-# install things like fonts or gtk theme
-echo "installing theme"
-curl -s "$RAW/instantos/instantTHEMES/master/$THEME.sh" | bash
 
 # fix java gui appearing empty on dwm
 if ! grep -q 'dwm' </etc/profile; then
