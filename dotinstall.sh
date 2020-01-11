@@ -13,7 +13,7 @@ fi
 
 echo "installing dependencies"
 curl -s https://raw.githubusercontent.com/paperbenni/suckless/master/depend.sh | bash
-echo "installing suckless tools"
+echo "installing tools"
 curl -s https://raw.githubusercontent.com/paperbenni/suckless/master/install.sh | bash
 echo "installing theme"
 export THEME=${1:-dracula}

@@ -1,24 +1,24 @@
 #!/bin/bash
 
-#############################################
-## shut down pc and break dwm restart loop ##
-#############################################
+###################################################
+## shut down pc and break instantwm restart loop ##
+###################################################
 
 answer=$(echo " " | dmenu -p "do you want to shut down?")
 if [ "$answer" = "y" ]; then
-    rm ~/.dwmrunning
+    rm ~/.instantosrunning
     sleep 0.4
     shutdown now
 fi
 
 if [ "$answer" = "r" ]; then
-    rm ~/.dwmrunning
+    rm ~/.instantosrunning
     sleep 0.4
     reboot
 fi
 
 if [ "$answer" = "s" ]; then
-    rm ~/.dwmrunning
+    rm ~/.instantosrunning
     sleep 0.4
     kill -9 -1
 fi

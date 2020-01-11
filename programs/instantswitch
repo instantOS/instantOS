@@ -1,9 +1,9 @@
 #!/bin/bash
 
-##############################################
-## dwm popup to choose between open windows ##
-## finally supports multi monitor           ##
-##############################################
+###############################################
+## rofi popup to choose between open windows ##
+## finally supports multi monitor            ##
+###############################################
 
 #############################################################
 ## heavily commented, this was a nightmare to write        ##

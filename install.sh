@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
 #############################################
-## installs all paperbenni suckless forks  ##
-## made for personal use, so be warned ;)  ##
+## installs all instantOS tools            ##
 #############################################
 
-echo "installing paperbenni's suckless suite"
+echo "installing instantOS tools"
+
 RAW="https://raw.githubusercontent.com"
 source <(curl -s $RAW/paperbenni/bash/master/import.sh)
 pb install
@@ -23,6 +23,11 @@ gprogram() {
 gclone() {
     echo "cloning $1"
     gitclone $@ &>/dev/null
+}
+
+iclone() {
+    echo "cloning $1"
+    gitclone instantOS/$@ &>/dev/null
 }
 
 # adds permanent global environment variable
@@ -57,9 +62,9 @@ rm -rf suckless
 mkdir suckless
 cd suckless
 
-gclone dwm
-gclone dmenu
-gclone st
+iclone instantWM
+
+#iclone instantMENU // weiter
 
 # needed for slock
 if grep -q 'nobody' </etc/groups || grep -q 'nobody' </etc/group; then
@@ -84,33 +89,6 @@ ugroup input
 
 gclone slock
 
-# install cursors for themes
-if ! [ -e ~/.icons/osx ]; then
-    curl -s $RAW/paperbenni/cursors/master/install.sh | bash
-fi
-
-# session for lightdm
-wget -q $RAW/paperbenni/suckless/master/dwm.desktop
-sudo mv dwm.desktop /usr/share/xsessions/
-
-# x session wrapper
-gprogram startdwm
-# shutdown popup that breaks restart loop
-gprogram sucklessshutdown
-
-gprogram autoclicker
-
-# dmenu run but in terminal emulator st
-# only supported terminal apps (less to search through)
-gprogram dmenu_run_st
-
-gprogram dswitch
-gprogram pbnotify
-
-# for that extra kick when doingg a typo
-gprogram sll
-
-curl "$LINK/termprograms.txt" >~/.cache/termprograms.txt
 
 for FOLDER in ./*; do
     if ! [ -d "$FOLDER" ]; then
@@ -128,6 +106,29 @@ for FOLDER in ./*; do
     fi
     popd
 done
+
+# session for lightdm
+wget -q $RAW/paperbenni/suckless/master/instantwm.desktop
+sudo mv instantwm.desktop /usr/share/xsessions/
+
+# x session wrapper
+gprogram startinstantwm
+# shutdown popup that breaks restart loop
+gprogram instantshutdown
+
+gprogram autoclicker
+
+# dmenu run but in terminal emulator st
+# only supported terminal apps (less to search through)
+gprogram instantterm
+
+gprogram instantswitch
+gprogram instantnotify
+
+# for that extra kick when doingg a typo
+gprogram sll
+
+curl "$LINK/termprograms.txt" >~/.cache/termprograms.txt
 
 if ! [ ~/.local/share/fonts/symbola.ttf ]; then
     mkdir -p ~/.local/share/fonts
@@ -175,10 +176,10 @@ fi
 
 cd
 
-# auto start script with dwm
-ls .dwm &>/dev/null || mkdir .dwm
-curl $LINK/autostart.sh >.dwm/autostart.sh
-chmod +x .dwm/autostart.sh
+# auto start script with instantWM
+ls .instantos &>/dev/null || mkdir .instantos
+curl $LINK/autostart.sh >.instantos/autostart.sh
+chmod +x .instantos/autostart.sh
 
 # set up multi monitor config for dswitch
 if ! [ -e paperbenni/ismultimonitor ]; then
@@ -240,17 +241,17 @@ mkdir instantos/wallpapers
 curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" > intantos/wallpapers/wall.sh
 chmod +x intantos/wallpapers/wall.sh
 
-# set dwm as default for lightdm
+# set instantwm as default for lightdm
 echo '[Desktop]' >.dmrc
-echo 'Session=dwm' >>.dmrc
+echo 'Session=instantwm' >>.dmrc
 if [ -e /etc/lightdm/lightdm.conf ]; then
-    sudo sed -i 's/^user-session=.*/user-session=dwm/g' /etc/lightdm/lightdm.conf
+    sudo sed -i 's/^user-session=.*/user-session=instantwm/g' /etc/lightdm/lightdm.conf
 fi
 
-# fix java gui appearing empty on dwm
-if ! grep -q 'dwm' </etc/profile; then
-    echo "fixing java windows for dwm in /etc/profile"
-    echo '# fix dwm java windows' | sudo tee -a /etc/profile
+# fix java gui appearing empty on instantWM
+if ! grep -q 'instantwm' </etc/profile; then
+    echo "fixing java windows for instantwm in /etc/profile"
+    echo '# fix instantwm java windows' | sudo tee -a /etc/profile
     echo 'export _JAVA_AWT_WM_NONREPARENTING=1' | sudo tee -a /etc/profile
 else
     echo "java workaround already applied"

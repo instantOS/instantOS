@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 ####################################################
-## script for paperbenni-dwm autostart            ##
+## script for instantOS autostart            ##
 ####################################################
 
 bashes=$(pgrep bash | wc -l)
@@ -67,7 +67,7 @@ addstatus() {
 
 # status bar loop
 while :; do
-	if [ -e ~/.dwmsilent ]; then
+	if [ -e ~/.instantsilent ]; then
 		sleep 1m
 		continue
 	fi
