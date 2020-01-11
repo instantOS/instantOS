@@ -37,8 +37,8 @@ fi
 	bash /home/benjamin/paperbenni/monitor.sh &
 
 # chrome os wallpaper changer
-[ -e /home/benjamin/paperbenni/menus/dm/wg.sh ] &&
-	bash /home/benjamin/paperbenni/menus/dm/wg.sh &
+[ -e "$HOME/instantos/wallpapers/wall.sh" ] &&
+	bash "$HOME/instantos/wallpapers/wall.sh" &
 
 # apply german keybpard layout
 if locale | grep -q 'de_DE'; then

@@ -6,17 +6,17 @@
 #############################################
 
 echo "installing paperbenni's suckless suite"
-
-source <(curl -s https://raw.githubusercontent.com/paperbenni/bash/master/import.sh)
+RAW="https://raw.githubusercontent.com"
+source <(curl -s $RAW/paperbenni/bash/master/import.sh)
 pb install
 pb git
 
-LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
+LINK="$RAW/paperbenni/suckless/master"
 
 # fetches and installs program from this repo
 gprogram() {
     echo "installing $1"
-    wget -q "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/$1"
+    wget -q "$RAW/paperbenni/suckless/master/programs/$1"
     usrbin -f "$1"
 }
 
@@ -86,11 +86,11 @@ gclone slock
 
 # install cursors for themes
 if ! [ -e ~/.icons/osx ]; then
-    curl -s https://raw.githubusercontent.com/paperbenni/cursors/master/install.sh | bash
+    curl -s $RAW/paperbenni/cursors/master/install.sh | bash
 fi
 
 # session for lightdm
-wget -q https://raw.githubusercontent.com/paperbenni/suckless/master/dwm.desktop
+wget -q $RAW/paperbenni/suckless/master/dwm.desktop
 sudo mv dwm.desktop /usr/share/xsessions/
 
 # x session wrapper
@@ -160,7 +160,7 @@ EOF
 
 fi
 
-curl -s "https://raw.githubusercontent.com/paperbenni/suckless/master/monitor.sh" | bash
+curl -s "$RAW/paperbenni/suckless/master/monitor.sh" | bash
 cd
 
 # three and four finger swipes on laptop
@@ -214,7 +214,7 @@ fi
 cd
 
 # install win + a menus for shortcuts like screenshots and shutdown
-curl -s https://raw.githubusercontent.com/paperbenni/menus/master/install.sh | bash
+curl -s $RAW/paperbenni/menus/master/install.sh | bash
 
 # drag and drop x utility for ranger
 if ! command -v dragon &>/dev/null; then
@@ -231,25 +231,13 @@ cd
 mkdir -p paperbenni/notifications &>/dev/null
 
 # gets executed by dunst on notification
-curl "https://raw.githubusercontent.com/paperbenni/suckless/master/programs/dunsttrigger" >~/paperbenni/notifications/dunsttrigger
+curl "$RAW/paperbenni/suckless/master/programs/dunsttrigger" >~/paperbenni/notifications/dunsttrigger
 chmod +x ~/paperbenni/notifications/dunsttrigger
 wget -O ~/paperbenni/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
 
-# automatic wallpaper changer
-# uses reddit r/wallpaper scraper
-if [ "$2" = "rwall" ]; then
-    cd /tmp
-    gclone rwallpaper
-    cd rwallpaper
-    mv rwallpaper.py ~/paperbenni/
-    chmod +x wallpaper.sh
-    mv wallpaper.sh ~/paperbenni/
-    sudo pip3 install -r requirements.txt
-    cd ..
-    rm -rf rwallpaper
-fi
-
 cd
+mkdir instantos/wallpapers
+curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" > intantos/wallpapers/wall.sh
 
 # set dwm as default for lightdm
 echo '[Desktop]' >.dmrc
@@ -260,7 +248,7 @@ fi
 
 # install things like fonts or gtk theme
 echo "installing theme"
-curl -s "https://raw.githubusercontent.com/instantos/instantTHEMES/master/$THEME.sh" | bash
+curl -s "$RAW/instantos/instantTHEMES/master/$THEME.sh" | bash
 
 # fix java gui appearing empty on dwm
 if ! grep -q 'dwm' </etc/profile; then
