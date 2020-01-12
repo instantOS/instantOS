@@ -119,6 +119,7 @@ ipkg lxappearance
 ipkg rofi
 ipkg conky
 ipkg dunst
+ipkg rxvt-unicode
 
 ipkg xdotool
 ipkg wmctrl
