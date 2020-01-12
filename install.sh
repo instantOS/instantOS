@@ -8,8 +8,10 @@ else
     exit 1
 fi
 
+RAW="https://raw.githubusercontent.com"
+
 if cat /etc/os-release | grep -Eiq 'name.*(arch|manjaro|ubuntu)'; then
-    curl -s "https://raw.githubusercontent.com/instantOS/instantLOGO/master/ascii.txt"
+    curl -s "$RAW/instantOS/instantLOGO/master/ascii.txt"
 else
     echo "distro not supported"
     echo "supported are: Arch, Manjaro, Ubuntu"
@@ -17,20 +19,23 @@ else
 fi
 
 REALUSERS="$(ls /home/ | grep -v '+')"
-RAW="https://raw.githubusercontent.com"
 export THEME=${1:-dracula}
 
-# run a tool as every existing user
+# run a tool as every existing
+# "real"(there's a human behind it) user
+
 userrun() {
-    curl -s "$1" >/tmp/instantinstall.sh
+    rm /tmp/instantinstall.sh &> /dev/null
+    curl -Ls "$1" >/tmp/instantinstall.sh
     chmod 777 /tmp/instantinstall.sh
 
     if [ -n "$2" ] && getent passwd $2 && [ -e /home/$2 ]; then
         echo "single user installation for $1"
-        sudo su "$2" -c bash /tmp/instantinstall.sh
+        sudo su "$2" -c /tmp/instantinstall.sh
     else
         for i in $REALUSERS; do
-            sudo su "$i" -c bash /tmp/instantinstall.sh
+            echo "processing user $i"
+            sudo su "$i" -c /tmp/instantinstall.sh
         done
     fi
     rm /tmp/instantinstall.sh
@@ -47,4 +52,5 @@ echo "installing theme"
 userrun "$RAW/instantOS/instantTHEMES/master/$THEME.sh"
 
 echo "installing dotfiles"
-curl -s $RAW/paperbenni/dotfiles/master/install.sh | bash
+curl -s $RAW/paperbenni/dotfiles/master/rootinstall.sh | bash
+userrun $RAW/paperbenni/dotfiles/master/install.sh
