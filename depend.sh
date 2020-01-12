@@ -49,7 +49,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     sudo pacman -Syu --noconfirm
 
     pacinstall picom
-
+    pacinstall arc-gtk-theme
     pacinstall acpi
     pacinstall xrandr
 
@@ -84,6 +84,7 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
 
     aptinstall cpio
     aptinstall tar
+    aptinstall arc-theme
 
     if ! command -v panther_launcher; then
         wget "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
