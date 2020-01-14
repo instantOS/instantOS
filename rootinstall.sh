@@ -32,7 +32,7 @@ gprogram() {
 }
 
 # x session wrapper
-gprogram startinstantwm
+gprogram startinstantos
 # shutdown popup that breaks restart loop
 gprogram instantshutdown
 
