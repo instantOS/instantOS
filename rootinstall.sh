@@ -33,6 +33,8 @@ gprogram() {
     chmod +x /usr/bin/"$1"
 }
 
+curl -s "https://raw.githubusercontent.com/instantOS/instantASSIST/master/install.sh" | bash
+
 # x session wrapper
 gprogram startinstantos
 # shutdown popup that breaks restart loop
@@ -135,7 +137,7 @@ echo "the theme is $THEME"
 
 iclone() {
     echo "cloning $1"
-    gitclone instantOS/$@ &>/dev/null
+    gitclone instantOS/$1 &>/dev/null
     if [ -e "$1"/build.sh ]; then
         cd "$1"
         ./build.sh "$THEME"
