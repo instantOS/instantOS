@@ -131,35 +131,27 @@ else
     echo "system is on a desktop"
 fi
 
+echo "the theme is $THEME"
+
 iclone() {
     echo "cloning $1"
     gitclone instantOS/$@ &>/dev/null
+    if [ -e "$1"/build.sh ]; then
+        cd "$1"
+        ./build.sh "$THEME"
+        cd ..
+        rm -rf "$1"
+        cd /tmp/instantosbin
+    fi
 }
 
-rm -rf /tmp/instantos &>/dev/null
-mkdir /tmp/instantos
-cd /tmp/instantos
+rm -rf /tmp/instantosbin &>/dev/null
+mkdir /tmp/instantosbin
+cd /tmp/instantosbin
 
 iclone instantWM
 iclone instantMENU
 iclone instantLOCK
-
-for FOLDER in ./*; do
-    if ! [ -d "$FOLDER" ]; then
-        echo "skipping $FOLDER"
-        continue
-    fi
-    pushd "$FOLDER"
-    if ! [ -e build.sh ]; then
-        rm config.h
-        make &>/dev/null
-        sudo make install &>/dev/null
-    else
-        chmod +x ./build.sh
-        ./build.sh "$THEME" &>/dev/null
-    fi
-    popd
-done
 
 cd /tmp
 rm -rf instantos

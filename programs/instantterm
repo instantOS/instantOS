@@ -1,6 +1,6 @@
 #!/bin/sh
 test -e ~/.cache/termprograms.txt ||
-    curl https://raw.githubusercontent.com/paperbenni/suckless/master/termprograms.txt >~/.cache/termprograms.txt
+    curl -s https://raw.githubusercontent.com/paperbenni/suckless/master/termprograms.txt >~/.cache/termprograms.txt
 
 STCOMMAND="$(dmenu_path | fgrep -xf ~/.cache/termprograms.txt | dmenu)"
 if [ -n "$STCOMMAND" ]; then

@@ -36,7 +36,7 @@ cd
 
 # auto start script with instantWM
 ls .instantos &>/dev/null || mkdir .instantos
-curl $LINK/autostart.sh >.instantos/autostart.sh
+curl -s $LINK/autostart.sh >.instantos/autostart.sh
 chmod +x .instantos/autostart.sh
 
 cd /tmp
