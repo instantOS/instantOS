@@ -13,7 +13,7 @@ pb git
 
 LINK="$RAW/paperbenni/suckless/master"
 
-curl "$LINK/termprograms.txt" >~/.cache/termprograms.txt
+curl -s "$LINK/termprograms.txt" >~/.cache/termprograms.txt
 
 if ! [ ~/.local/share/fonts/symbola.ttf ]; then
     mkdir -p ~/.local/share/fonts
@@ -25,7 +25,7 @@ fi
 cd
 
 # laptop specific stuff
-if acpi | grep -q '[0-9]%'; then
+if acpi | grep -q '[0-9]%' &>/dev/null; then
     # config file to indicate being a laptop
     touch .cache/islaptop
 else

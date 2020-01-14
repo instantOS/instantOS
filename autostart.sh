@@ -10,7 +10,7 @@ if [ "$bashes" -gt 2 ]; then
 	exit
 fi
 
-if acpi | grep -q '%'; then
+if acpi | grep -q '%' &> /dev/null; then
 	export ISLAPTOP="true"
 	echo "laptop detected"
 else

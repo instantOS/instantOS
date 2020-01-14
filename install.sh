@@ -25,7 +25,7 @@ export THEME=${1:-dracula}
 # "real"(there's a human behind it) user
 
 userrun() {
-    rm /tmp/instantinstall.sh &> /dev/null
+    rm -rf /tmp/instantinstall.sh &> /dev/null
     curl -Ls "$1" >/tmp/instantinstall.sh
     chmod 777 /tmp/instantinstall.sh
 

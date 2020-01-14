@@ -61,7 +61,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     pacinstall cpio
 
     if ! command -v panther_launcher; then
-        wget "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
+        wget -q "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
         sudo pacman -U --noconfirm panther_launcher*.pkg.tar.xz
         rm panther_launcher*.pkg.tar.xz
     fi
@@ -87,7 +87,7 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
     aptinstall arc-theme
 
     if ! command -v panther_launcher; then
-        wget "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
+        wget -q "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
         sudo dpkg -i panther-launcher*.deb
         sudo apt-get install -fy
         rm panther-launcher*.deb

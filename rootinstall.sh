@@ -13,9 +13,11 @@ mkdir -p /opt/instantos
 
 # add group and add users to group
 ugroup() {
-    groupadd "$1"
+    groupadd "$1" &>/dev/null
     for USER in $(ls /home/ | grep -v '+'); do
-        sudo gpasswd -a $USER $1
+        if ! sudo su "$USER" -c groups | grep -Eq " $1|$1 "; then
+            sudo gpasswd -a $USER $1
+        fi
     done
 }
 
@@ -61,7 +63,7 @@ addenv() {
             echo "key already existing"
             return 1
         else
-            sed -i "s/$1=.*/$1=$2/g" /etc/environment
+            sed -i "s~$1=.*~$1=$2~g" /etc/environment
         fi
     else
         echo "$1=$2" >>/etc/environment
@@ -100,7 +102,7 @@ sudo mv instantwm.desktop /usr/share/xsessions/
 sudo chmod 644 /usr/share/xsessions/instantwm.desktop
 
 # laptop specific stuff
-if acpi | grep -q '[0-9]%'; then
+if acpi | grep -q '[0-9]%' &>/dev/null; then
 
     # fix tap to click not working with tiling wms
     if ! [ -e /etc/X11/xorg.conf.d/90-touchpad.conf ] ||

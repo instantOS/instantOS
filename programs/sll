@@ -4,7 +4,7 @@
 if ! [ -e ~/paperbenni/thomas.mp3 ]; then
     pushd .
     cd ~/paperbenni/
-    wget thomasthetankengine.surge.sh/thomas.mp3
+    wget -q thomasthetankengine.surge.sh/thomas.mp3
     popd
 fi
 
