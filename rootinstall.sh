@@ -97,6 +97,7 @@ cd /tmp/instantinstall
 # session for lightdm
 wget -q $RAW/paperbenni/suckless/master/instantwm.desktop
 sudo mv instantwm.desktop /usr/share/xsessions/
+sudo chmod 644 /usr/share/xsessions/instantwm.desktop
 
 # laptop specific stuff
 if acpi | grep -q '[0-9]%'; then
@@ -128,11 +129,6 @@ else
     echo "system is on a desktop"
 fi
 
-gclone() {
-    echo "cloning $1"
-    gitclone $@ &>/dev/null
-}
-
 iclone() {
     echo "cloning $1"
     gitclone instantOS/$@ &>/dev/null
@@ -144,7 +140,7 @@ cd /tmp/instantos
 
 iclone instantWM
 iclone instantMENU
-gclone slock
+iclone instantLOCK
 
 for FOLDER in ./*; do
     if ! [ -d "$FOLDER" ]; then
