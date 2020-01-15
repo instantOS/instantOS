@@ -4,6 +4,8 @@
 ## installs all instantOS tools            ##
 #############################################
 
+cd "$HOME"
+
 echo "installing instantOS tools"
 
 RAW="https://raw.githubusercontent.com"
@@ -13,16 +15,16 @@ pb git
 
 LINK="$RAW/paperbenni/suckless/master"
 
-curl -s "$LINK/termprograms.txt" >~/.cache/termprograms.txt
+curl -s "$LINK/termprograms.txt" >.cache/termprograms.txt
 
 if ! [ ~/.local/share/fonts/symbola.ttf ]; then
-    mkdir -p ~/.local/share/fonts
-    cd ~/.local/share/fonts
+    mkdir -p .local/share/fonts
+    cd .local/share/fonts
     echo "installing symbola font"
     wget -q "http://symbola.surge.sh/symbola.ttf"
 fi
 
-cd
+cd "$HOME"
 
 # laptop specific stuff
 if acpi | grep -q '[0-9]%' &>/dev/null; then
@@ -60,9 +62,11 @@ chmod +x ~/paperbenni/notifications/dunsttrigger
 wget -O ~/paperbenni/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
 
 cd
-mkdir instantos/wallpapers
-curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" >intantos/wallpapers/wall.sh
-chmod +x intantos/wallpapers/wall.sh
+
+rm -rf instantos/wallpapers
+mkdir -p instantos/wallpapers
+curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" >instantos/wallpapers/wall.sh
+instantos/wallpapers/wall.sh
 
 # set instantwm as default for lightdm
 echo '[Desktop]' >.dmrc

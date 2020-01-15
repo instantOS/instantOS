@@ -26,7 +26,7 @@ export THEME=${1:-dracula}
 
 userrun() {
     rm -rf /tmp/instantinstall.sh &> /dev/null
-    curl -Ls "$1" >/tmp/instantinstall.sh
+    curl -s "$1" >/tmp/instantinstall.sh
     chmod 777 /tmp/instantinstall.sh
 
     if [ -n "$2" ] && getent passwd $2 && [ -e /home/$2 ]; then
