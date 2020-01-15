@@ -12,7 +12,8 @@
 
 # alt tab like behaviour with rofi
 if ! [ -n "$1" ]; then
-    if ! [ -e ~/paperbenni/monitor/right.txt ]; then
+    # is multi monitor?
+    if ! [ -e /opt/instantos/monitor/right.txt ]; then
         rofi -show window -kb-row-down 'Alt+Tab,Down' -kb-row-up 'Alt+Ctrl+Tab,Up' -kb-accept-entry '!Alt_L,!Alt+Tab,Return'
         exit
     else
@@ -34,7 +35,7 @@ focuswin() {
 }
 
 # single monitor doesnt need fixes
-if ! [ -e ~/paperbenni/monitor/right.txt ]; then
+if ! [ -e /opt/instantos/monitor/right.txt ]; then
     focuswin "$1"
     exit
 fi
@@ -60,7 +61,7 @@ pfw() {
 getmonitor() {
     xdotool key 'super+W'
     XPOS=$(xdotool getmouselocation --shell | head -1 | grep -o '[0-9]*')
-    if [ "$XPOS" -gt "$(cat ~/paperbenni/monitor/right.txt)" ]; then
+    if [ "$XPOS" -gt "$(cat /opt/instantos/monitor/right.txt)" ]; then
         echo "1"
     else
         echo "0"

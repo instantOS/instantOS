@@ -58,6 +58,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     pacinstall xorg-fonts-misc # slock font
 
     pacinstall tar
+    pacinstall base-devel
     pacinstall cpio
 
     if ! command -v panther_launcher; then
@@ -123,3 +124,5 @@ ipkg rxvt-unicode
 
 ipkg xdotool
 ipkg wmctrl
+
+ipkg nautilus

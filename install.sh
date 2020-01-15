@@ -1,6 +1,8 @@
 #!/bin/bash
 # central installer script for pb suckless
 
+export PAPERSILENT="True"
+
 if [ $(whoami) = "root" ] || [ $(whoami) = "manjaro" ]; then
     echo "user check successful"
 else
@@ -12,6 +14,7 @@ RAW="https://raw.githubusercontent.com"
 
 if cat /etc/os-release | grep -Eiq 'name.*(arch|manjaro|ubuntu)'; then
     curl -s "$RAW/instantOS/instantLOGO/master/ascii.txt"
+    echo ""
 else
     echo "distro not supported"
     echo "supported are: Arch, Manjaro, Ubuntu"
@@ -53,4 +56,4 @@ userrun "$RAW/instantOS/instantTHEMES/master/$THEME.sh"
 
 echo "installing dotfiles"
 curl -s $RAW/paperbenni/dotfiles/master/rootinstall.sh | bash
-userrun $RAW/paperbenni/dotfiles/master/install.sh
+userrun $RAW/paperbenni/dotfiles/master/userinstall.sh

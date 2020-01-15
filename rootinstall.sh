@@ -108,7 +108,7 @@ sudo chmod 644 /usr/share/xsessions/instantwm.desktop
 
 # laptop specific stuff
 if acpi | grep -q '[0-9]%' &>/dev/null; then
-
+    curl -s "$RAW/paperbenni/suckless/master/monitor.sh" | bash
     # fix tap to click not working with tiling wms
     if ! [ -e /etc/X11/xorg.conf.d/90-touchpad.conf ] ||
         ! cat /etc/X11/xorg.conf.d/90-touchpad.conf | grep -iq 'tapping.*"on"'; then

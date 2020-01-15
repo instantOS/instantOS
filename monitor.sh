@@ -4,11 +4,29 @@ command -v xrandr &>/dev/null ||
     (echo "please install xrandr" && exit 1)
 
 cd
-mkdir -p paperbenni/monitor &>/dev/null
-cd paperbenni/monitor
+
+mkdir -p /opt/instantos/monitor &>/dev/null
+cd /opt/instantos/monitor
 
 xrandr | grep '[^s]connected' | grep -o '[0-9]*x[0-9]*+[0-9]*' | grep -o '[0-9]*$' >positions.txt
 AMOUNT=$(cat positions.txt | wc -l)
+
+# get monitor with highest resolution
+xrandr | grep '[^s]connected' | grep -o 'ted [0-9]*x[0-9]*' | grep -o '[0-9]*x[0-9]*' >resolutions.txt
+if [ $(cat resolutions.txt | sort -u | wc -l) = "1" ]; then
+    echo "resolutions identical"
+    cp resolutions.txt max.txt
+    exit
+fi
+
+let PIXELS1="$(head -1 resolutions.txt | grep -o '^[0-9]*') * $(cat resolutions.txt | head -1 | grep -o '[0-9]*$')"
+let PIXELS2="$(tail -1 resolutions.txt | grep -o '^[0-9]*') * $(cat resolutions.txt | head -1 | grep -o '[0-9]*$')"
+
+if [ "$PIXELS1" -gt "$PIXELS2" ]; then
+    head -1 resolutions.txt >max.txt
+else
+    tail -1 resolutions.txt >max.txt
+fi
 
 if [ "$AMOUNT" = "1" ]; then
     echo "only one monitor found, further setup not needed"

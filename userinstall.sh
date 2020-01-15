@@ -30,9 +30,8 @@ cd "$HOME"
 if acpi | grep -q '[0-9]%' &>/dev/null; then
     # config file to indicate being a laptop
     touch .cache/islaptop
-else
-    curl -s "$RAW/paperbenni/suckless/master/monitor.sh" | bash
 fi
+
 
 cd
 
@@ -59,14 +58,17 @@ mkdir -p paperbenni/notifications &>/dev/null
 # gets executed by dunst on notification
 curl "$RAW/paperbenni/suckless/master/programs/dunsttrigger" >~/paperbenni/notifications/dunsttrigger
 chmod +x ~/paperbenni/notifications/dunsttrigger
-wget -O ~/paperbenni/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
+
+if ! [ -e ~/paperbenni/notifications/notification.ogg ]; then
+    wget -qO ~/paperbenni/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
+fi
 
 cd
 
 rm -rf instantos/wallpapers
 mkdir -p instantos/wallpapers
 curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" >instantos/wallpapers/wall.sh
-instantos/wallpapers/wall.sh
+chmod +x instantos/wallpapers/wall.sh
 
 # set instantwm as default for lightdm
 echo '[Desktop]' >.dmrc
