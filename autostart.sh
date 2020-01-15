@@ -10,7 +10,7 @@ if [ "$bashes" -gt 2 ]; then
 	exit
 fi
 
-if acpi | grep -q '%' &> /dev/null; then
+if acpi | grep -q '%' &>/dev/null; then
 	export ISLAPTOP="true"
 	echo "laptop detected"
 else
@@ -64,6 +64,11 @@ date=""
 addstatus() {
 	date="$date[$@] "
 }
+
+# fix small graphical glitch on status bar startup
+xdotool key 'super+2'
+sleep 0.1
+xdotool key 'super+1'
 
 # status bar loop
 while :; do

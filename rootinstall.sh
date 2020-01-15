@@ -32,7 +32,7 @@ RAW="https://raw.githubusercontent.com"
 # fetches and installs program from this repo
 gprogram() {
     echo "installing $1"
-    curl -s "$RAW/paperbenni/suckless/master/programs/$1" | sudo tee /usr/bin/$1 &>/dev/null
+    curl -s "$RAW/paperbenni/suckless/master/programs/$1" | sudo tee /usr/local/bin/$1 &>/dev/null
     chmod +x /usr/bin/"$1"
 }
 
