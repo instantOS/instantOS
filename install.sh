@@ -25,7 +25,7 @@ export THEME=${1:-dracula}
 # "real"(there's a human behind it) user
 
 userrun() {
-    rm -rf /tmp/instantinstall.sh &> /dev/null
+    rm -rf /tmp/instantinstall.sh &>/dev/null
     curl -s "$1" >/tmp/instantinstall.sh
     chmod 777 /tmp/instantinstall.sh
 
@@ -45,7 +45,7 @@ echo "installing dependencies"
 curl -s $RAW/paperbenni/suckless/master/depend.sh | bash
 
 echo "installing tools"
-curl -s $RAW/paperbenni/suckless/master/rootinstall.sh | bash
+curl -s $RAW/paperbenni/suckless/master/rootinstall.sh | bash -s "$1"
 userrun "$RAW/paperbenni/suckless/master/userinstall.sh"
 
 echo "installing theme"

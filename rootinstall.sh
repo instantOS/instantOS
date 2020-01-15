@@ -3,6 +3,9 @@
 ######################################################
 ## installs all system wide programs for instantOS  ##
 ######################################################
+source <(curl -Ls https://git.io/JerLG)
+pb install
+pb git
 
 if ! [ $(whoami) = "root" ]; then
     echo "please run this as root"
