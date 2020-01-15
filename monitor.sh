@@ -21,10 +21,10 @@ AMOUNT=$(cat positions.txt | wc -l)
 # get monitor with highest resolution
 xrandr | grep '[^s]connected' | grep -Eo '[0-9]{1,}x[0-9]{1,}\+[0-9]{1,}\+[0-9]{1,}' |
     grep -o '[0-9]*x[0-9]*' >resolutions.txt
-    
+
 if [ $(cat resolutions.txt | sort -u | wc -l) = "1" ]; then
     echo "resolutions identical"
-    cp resolutions.txt max.txt
+    head -1 resolutions.txt >max.txt
     exit
 fi
 
