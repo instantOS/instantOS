@@ -45,7 +45,7 @@ gprogram instantshutdown
 
 gprogram autoclicker
 
-# dmenu run but in terminal emulator st
+# instantmenu run but in terminal emulator st
 # only supported terminal apps (less to search through)
 gprogram instantterm
 

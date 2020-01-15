@@ -4,7 +4,7 @@
 ## shut down pc and break instantwm restart loop ##
 ###################################################
 
-answer=$(echo " " | dmenu -p "do you want to shut down?")
+answer=$(echo " " | instantmenu -p "do you want to shut down?")
 if [ "$answer" = "y" ]; then
     rm ~/.instantosrunning
     sleep 0.4

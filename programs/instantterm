@@ -2,7 +2,7 @@
 test -e ~/.cache/termprograms.txt ||
     curl -s https://raw.githubusercontent.com/paperbenni/suckless/master/termprograms.txt >~/.cache/termprograms.txt
 
-STCOMMAND="$(dmenu_path | fgrep -xf ~/.cache/termprograms.txt | dmenu)"
+STCOMMAND="$(instantmenu_path | fgrep -xf ~/.cache/termprograms.txt | instantmenu)"
 if [ -n "$STCOMMAND" ]; then
     st -e "$STCOMMAND" &
 fi
