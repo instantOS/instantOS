@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ $(whoami) = "root" ] || [ $(whoami) = "manjaro" ]; then
+    echo "user check successful"
+else
+    echo "please run this as root"
+    exit 1
+fi
+
 command -v xrandr &>/dev/null ||
     (echo "please install xrandr" && exit 1)
 
@@ -12,7 +19,9 @@ xrandr | grep '[^s]connected' | grep -o '[0-9]*x[0-9]*+[0-9]*' | grep -o '[0-9]*
 AMOUNT=$(cat positions.txt | wc -l)
 
 # get monitor with highest resolution
-xrandr | grep '[^s]connected' | grep -o 'ted [0-9]*x[0-9]*' | grep -o '[0-9]*x[0-9]*' >resolutions.txt
+xrandr | grep '[^s]connected' | grep -Eo '[0-9]{1,}x[0-9]{1,}\+[0-9]{1,}\+[0-9]{1,}' |
+    grep -o '[0-9]*x[0-9]*' >resolutions.txt
+    
 if [ $(cat resolutions.txt | sort -u | wc -l) = "1" ]; then
     echo "resolutions identical"
     cp resolutions.txt max.txt
