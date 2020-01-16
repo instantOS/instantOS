@@ -33,7 +33,7 @@ RAW="https://raw.githubusercontent.com"
 gprogram() {
     echo "installing $1"
     curl -s "$RAW/paperbenni/suckless/master/programs/$1" | sudo tee /usr/local/bin/$1 &>/dev/null
-    chmod +x /usr/bin/"$1"
+    chmod +x /usr/local/bin/"$1"
 }
 
 curl -s "https://raw.githubusercontent.com/instantOS/instantASSIST/master/install.sh" | bash
@@ -76,6 +76,7 @@ addenv() {
 }
 
 addenv -f "QT_QPA_PLATFORMTHEME" "qt5ct"
+addenv -f "PAGER" "less"
 command -v nvim &>/dev/null && addenv -f "EDITOR" "$(which nvim)"
 
 # needed for instantLOCK
