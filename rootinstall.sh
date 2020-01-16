@@ -33,7 +33,7 @@ RAW="https://raw.githubusercontent.com"
 gprogram() {
     echo "installing $1"
     curl -s "$RAW/paperbenni/suckless/master/programs/$1" | sudo tee /usr/local/bin/$1 &>/dev/null
-    chmod +x /usr/local/bin/"$1"
+    sudo chmod +x /usr/local/bin/"$1"
 }
 
 curl -s "https://raw.githubusercontent.com/instantOS/instantASSIST/master/install.sh" | bash

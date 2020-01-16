@@ -11,8 +11,7 @@ curl https://raw.githubusercontent.com/paperbenni/suckless/master/install.sh | s
 - Start menu: https://github.com/paperbenni/dmenu
 - Custom shortcut menu: https://github.com/paperbenni/menus
 - Notification center: Found in this repo under programs/pbnotify
-- Window-Manager: https://github.com/paperbenni/dwm
-- Terminal emulator: https://github.com/paperbenni/st
+- instantWM: https://github.com/instantOS/instantWM
 - Lock screen: https://github.com/paperbenni/slock
 
 ## Requirements:
