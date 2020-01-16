@@ -58,7 +58,32 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     pacinstall xorg-fonts-misc # slock font
 
     pacinstall tar
-    pacinstall base-devel
+    
+    pacinstall autoconf
+    pacinstall automake
+    pacinstall binutils
+    pacinstall bison
+    pacinstall fakeroot
+    pacinstall file
+    pacinstall findutils
+    pacinstall flex
+    pacinstall gawk
+    pacinstall gcc
+    pacinstall gettext
+    pacinstall grep
+    pacinstall groff
+    pacinstall gzip
+    pacinstall libtool
+    pacinstall m4
+    pacinstall make
+    pacinstall pacman
+    pacinstall patch
+    pacinstall pkgconf
+    pacinstall sed
+    pacinstall sudo
+    pacinstall texinfo
+    pacinstall which
+
     pacinstall p7zip
 
     if ! command -v panther_launcher; then
