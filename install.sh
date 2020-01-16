@@ -57,3 +57,5 @@ userrun "$RAW/instantOS/instantTHEMES/master/$THEME.sh"
 echo "installing dotfiles"
 curl -s $RAW/paperbenni/dotfiles/master/rootinstall.sh | bash
 userrun $RAW/paperbenni/dotfiles/master/userinstall.sh
+
+userrun "$RAW/paperbenni/suckless/master/userdepend.sh"
