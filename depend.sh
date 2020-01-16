@@ -59,7 +59,7 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
 
     pacinstall tar
     pacinstall base-devel
-    pacinstall cpio
+    pacinstall p7zip
 
     if ! command -v panther_launcher; then
         wget -q "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
@@ -83,9 +83,10 @@ if grep -iq 'name.*ubuntu' </etc/os-release; then
     aptinstall x11-xserver-utils # xsetroot
     aptinstall slop
 
-    aptinstall cpio
     aptinstall tar
     aptinstall arc-theme
+    aptinstall p7zip-full
+    aptinstall p7zip-rar
 
     if ! command -v panther_launcher; then
         wget -q "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
@@ -126,3 +127,4 @@ ipkg xdotool
 ipkg wmctrl
 
 ipkg nautilus
+ipkg cpio
