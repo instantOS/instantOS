@@ -49,6 +49,8 @@ curl -s $RAW/paperbenni/suckless/master/depend.sh | bash
 
 echo "installing tools"
 curl -s $RAW/paperbenni/suckless/master/rootinstall.sh | bash -s "$1"
+curl -s $RAW/paperbenni/suckless/master/monitor.sh | bash
+
 userrun "$RAW/paperbenni/suckless/master/userinstall.sh"
 
 echo "installing theme"
