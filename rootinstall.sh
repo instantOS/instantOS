@@ -97,6 +97,7 @@ fi
 
 if [ -e /etc/lightdm/lightdm.conf ]; then
     sudo sed -i 's/^user-session=.*/user-session=instantwm/g' /etc/lightdm/lightdm.conf
+    sudo sed -i '# user-session = Session to load for users/user-session=instantwm/g'
 fi
 
 mkdir /tmp/instantinstall
