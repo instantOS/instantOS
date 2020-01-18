@@ -4,7 +4,7 @@
 # spotify doesnt need a sound
 # discord already has one
 if ! echo "$1" | grep -Eiq '(discord|spotify)'; then
-    mpv ~/paperbenni/notifications/notification.ogg
+    mpv ~/instantos/notifications/notification.ogg
 fi
 
 echo "($(date +%H:%M)) [$1] <b>$2</b> | <i>$3</i>" >>/tmp/notifications/notif.txt

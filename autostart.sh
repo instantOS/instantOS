@@ -33,8 +33,8 @@ if ! pgrep dunst; then
 	done &
 fi
 
-[ -e /home/benjamin/paperbenni/monitor.sh ] &&
-	bash /home/benjamin/paperbenni/monitor.sh &
+[ -e ~/instantos/monitor.sh ] &&
+	bash ~/instantos/monitor.sh &
 
 onlinetrigger() {
 	[ -e "$HOME/instantos/wallpapers/wall.sh" ] && bash "$HOME/instantos/wallpapers/wall.sh"

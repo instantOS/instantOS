@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # very subtle easter egg, turn up the volume and wear headphones to experience it
-if ! [ -e ~/paperbenni/thomas.mp3 ]; then
+if ! [ -e ~/instantos/thomas.mp3 ]; then
     pushd .
-    cd ~/paperbenni/
+    cd ~/instantos/
     wget -q thomasthetankengine.surge.sh/thomas.mp3
     popd
 fi
@@ -13,6 +13,6 @@ if pgrep mpv; then
     exit
 fi
 
-mpv ~/paperbenni/thomas.mp3 &>/dev/null &
+mpv ~/instantos/thomas.mp3 &>/dev/null &
 command sl "$@"
 pkill mpv
