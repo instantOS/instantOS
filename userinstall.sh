@@ -32,7 +32,6 @@ if acpi | grep -q '[0-9]%' &>/dev/null; then
     touch .cache/islaptop
 fi
 
-
 cd
 
 # auto start script with instantWM
@@ -68,7 +67,8 @@ cd
 rm -rf instantos/wallpapers
 mkdir -p instantos/wallpapers
 curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" >instantos/wallpapers/wall.sh
-chmod +x instantos/wallpapers/wall.sh
+curl -s "$RAW/instantOS/instantWALLPAPER/master/offlinewall.sh" >instantos/wallpapers/offlinewall.sh
+chmod +x instantos/wallpapers/*.sh
 
 # set instantwm as default for lightdm
 echo '[Desktop]' >.dmrc

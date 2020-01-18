@@ -36,9 +36,23 @@ fi
 [ -e /home/benjamin/paperbenni/monitor.sh ] &&
 	bash /home/benjamin/paperbenni/monitor.sh &
 
-# chrome os wallpaper changer
-[ -e "$HOME/instantos/wallpapers/wall.sh" ] &&
-	bash "$HOME/instantos/wallpapers/wall.sh" &
+onlinetrigger() {
+	[ -e "$HOME/instantos/wallpapers/wall.sh" ] && bash "$HOME/instantos/wallpapers/wall.sh"
+}
+
+if ping google.com -c 2; then
+	onlinetrigger
+else
+	[ -e "$HOME/instantos/wallpapers/offlinewall.sh" ] && bash "$HOME/instantos/wallpapers/offlinewall.sh"
+	for i in $(seq 10); do
+		if ping google.com -c 2; then
+			onlinetrigger
+			break
+		else
+			sleep 10
+		fi
+	done
+fi
 
 # apply german keybpard layout
 if locale | grep -q 'de_DE'; then
@@ -110,7 +124,7 @@ while :; do
 	[ -n "$ISLAPTOP" ] && addstatus "$BATTERY"
 	addstatus "$INTERNET"
 
-	xsetroot -name "$date"
+	xsetroot -name "^f11^$date"
 	date=""
 
 	sleep 10
