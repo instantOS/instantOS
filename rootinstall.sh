@@ -55,6 +55,13 @@ gprogram instantnotify
 # for that extra kick when doingg a typpo
 gprogram sll
 
+# fallback wallpaper if others fail to load
+if ! [ -e /opt/instantos/wallpapers/default.png ]; then
+    mkdir /opt/instantos/wallpapers
+    wget -qO /opt/instantos/wallpapers/default.png \
+        "https://raw.githubusercontent.com/instantOS/instantLOGO/master/wallpaper/defaultwall.png"
+fi
+
 # adds permanent global environment variable
 addenv() {
     [ -e /etc/environment ] || touch /etc/environment
