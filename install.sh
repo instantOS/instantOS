@@ -1,5 +1,5 @@
 #!/bin/bash
-# central installer script for pb suckless
+# central installer script for instantOS
 
 export PAPERSILENT="True"
 

@@ -1,23 +1,20 @@
-# suckless
-my suckless "distro"
+<div align="center">
+    <h1>instantOS</h1>
+    <p>an out of the box distro that appeals to powerusers</p>
+    <img width="300" height="300" src="https://raw.githubusercontent.com/instantOS/instantLOGO/master/png/logo.png">
+</div>
 
-### Installation including dotfiles
+--------
+### instantOS is still in early beta, contributions always welcome
+
+instantOS will be a distro based on manjaro, 
+but as of now, the components that are already functional can be installed on top of 
+an existing install of either arch, manjaro or ubuntu 
+
+### Installation on top of an existing distro-install
 #### WARNING THIS WILL OVERRIDE ANY EXISTING CONFIGURATION
 ```sh
 curl https://raw.githubusercontent.com/instantos/instantos/master/install.sh | sudo bash
 ```
-
-## This suckless collection is made up of
-- Start menu: https://github.com/paperbenni/dmenu
-- Custom shortcut menu: https://github.com/paperbenni/menus
-- Notification center: Found in this repo under programs/pbnotify
-- instantWM: https://github.com/instantOS/instantWM
-- Lock screen: https://github.com/paperbenni/slock
-
 ## Requirements:
 This requires xorg, it does NOT work with wayland as it relies on x utilities
-
-## OS
-It works on Arch, Manjaro and Ubuntu. 
-Arch/Manjaro being my daily driver is more tested than Ubuntu, if you have any issues, just contact me,
-the userbase being that small allows me to answer every single request. 
