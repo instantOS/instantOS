@@ -32,7 +32,7 @@ RAW="https://raw.githubusercontent.com"
 # fetches and installs program from this repo
 gprogram() {
     echo "installing $1"
-    curl -s "$RAW/paperbenni/suckless/master/programs/$1" | sudo tee /usr/local/bin/$1 &>/dev/null
+    curl -s "$RAW/instantos/instantos/master/programs/$1" | sudo tee /usr/local/bin/$1 &>/dev/null
     sudo chmod +x /usr/local/bin/"$1"
 }
 
@@ -111,7 +111,7 @@ mkdir /tmp/instantinstall
 cd /tmp/instantinstall
 
 # session for lightdm
-wget -q $RAW/paperbenni/suckless/master/instantwm.desktop
+wget -q $RAW/instantos/instantos/master/instantwm.desktop
 sudo mv instantwm.desktop /usr/share/xsessions/
 sudo chmod 644 /usr/share/xsessions/instantwm.desktop
 

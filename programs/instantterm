@@ -1,6 +1,6 @@
 #!/bin/sh
 test -e ~/.cache/termprograms.txt ||
-    curl -s https://raw.githubusercontent.com/paperbenni/suckless/master/termprograms.txt >~/.cache/termprograms.txt
+    curl -s https://raw.githubusercontent.com/instantos/instantos/master/termprograms.txt >~/.cache/termprograms.txt
 
 STCOMMAND="$(instantmenu_path | fgrep -xf ~/.cache/termprograms.txt | instantmenu)"
 if [ -n "$STCOMMAND" ]; then

@@ -4,7 +4,7 @@ my suckless "distro"
 ### Installation including dotfiles
 #### WARNING THIS WILL OVERRIDE ANY EXISTING CONFIGURATION
 ```sh
-curl https://raw.githubusercontent.com/paperbenni/suckless/master/install.sh | sudo bash
+curl https://raw.githubusercontent.com/instantos/instantos/master/install.sh | sudo bash
 ```
 
 ## This suckless collection is made up of

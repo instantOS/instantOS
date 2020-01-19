@@ -45,13 +45,13 @@ userrun() {
 }
 
 echo "installing dependencies"
-curl -s $RAW/paperbenni/suckless/master/depend.sh | bash
+curl -s $RAW/instantos/instantos/master/depend.sh | bash
 
 echo "installing tools"
-curl -s $RAW/paperbenni/suckless/master/rootinstall.sh | bash -s "$1"
-curl -s $RAW/paperbenni/suckless/master/monitor.sh | bash
+curl -s $RAW/instantos/instantos/master/rootinstall.sh | bash -s "$1"
+curl -s $RAW/instantos/instantos/master/monitor.sh | bash
 
-userrun "$RAW/paperbenni/suckless/master/userinstall.sh"
+userrun "$RAW/instantos/instantos/master/userinstall.sh"
 
 echo "installing theme"
 userrun "$RAW/instantOS/instantTHEMES/master/$THEME.sh"
@@ -60,4 +60,4 @@ echo "installing dotfiles"
 curl -s $RAW/paperbenni/dotfiles/master/rootinstall.sh | bash
 userrun $RAW/paperbenni/dotfiles/master/userinstall.sh
 
-userrun "$RAW/paperbenni/suckless/master/userdepend.sh"
+userrun "$RAW/instantos/instantos/master/userdepend.sh"

@@ -13,7 +13,7 @@ source <(curl -s $RAW/paperbenni/bash/master/import.sh)
 pb install
 pb git
 
-LINK="$RAW/paperbenni/suckless/master"
+LINK="$RAW/instantos/instantos/master"
 
 curl -s "$LINK/termprograms.txt" >.cache/termprograms.txt
 
@@ -56,7 +56,7 @@ mkdir -p instantos/notifications &>/dev/null
 cd instantos/notifications
 
 # gets executed by dunst on notification
-curl -s "$RAW/paperbenni/suckless/master/programs/dunsttrigger" >dunsttrigger
+curl -s "$RAW/instantos/instantos/master/programs/dunsttrigger" >dunsttrigger
 chmod +x dunsttrigger
 
 if ! [ -e notification.ogg ]; then

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# installs dependencies for paperbenni suckless
+# installs dependencies for instantOS
 
-LINK="https://raw.githubusercontent.com/paperbenni/suckless/master"
+LINK="https://raw.githubusercontent.com/instantos/instantos/master"
 
 # install on arch based system
 pacinstall() {
