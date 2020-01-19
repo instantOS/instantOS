@@ -14,7 +14,7 @@ an existing install of either arch, manjaro or ubuntu
 ### Installation on top of an existing distro-install
 #### WARNING THIS WILL OVERRIDE ANY EXISTING CONFIGURATION
 ```sh
-curl https://raw.githubusercontent.com/instantos/instantos/master/install.sh | sudo bash
+curl -Ls https://git.io/JvIfw | sudo bash
 ```
 ## Requirements:
 This requires xorg, it does NOT work with wayland as it relies on x utilities
