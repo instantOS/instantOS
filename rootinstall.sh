@@ -29,31 +29,7 @@ ugroup input
 
 RAW="https://raw.githubusercontent.com"
 
-# fetches and installs program from this repo
-gprogram() {
-    echo "installing $1"
-    curl -s "$RAW/instantos/instantos/master/programs/$1" | sudo tee /usr/local/bin/$1 &>/dev/null
-    sudo chmod +x /usr/local/bin/"$1"
-}
-
 curl -s "https://raw.githubusercontent.com/instantOS/instantASSIST/master/install.sh" | bash
-
-# x session wrapper
-gprogram startinstantos
-# shutdown popup that breaks restart loop
-gprogram instantshutdown
-
-gprogram autoclicker
-
-# instantmenu run but in terminal emulator st
-# only supported terminal apps (less to search through)
-gprogram instantterm
-
-gprogram instantswitch
-gprogram instantnotify
-
-# for that extra kick when doingg a typpo
-gprogram sll
 
 # fallback wallpaper if others fail to load
 if ! [ -e /opt/instantos/wallpapers/default.png ]; then
@@ -110,10 +86,26 @@ fi
 mkdir /tmp/instantinstall
 cd /tmp/instantinstall
 
+git clone --depth=1 https://github.com/instantOS/instantOS.git
+cd instantOS
+rm -rf .git
+
+cd programs
+
+for i in ./*; do
+    FILENAME=${1##*/}
+    echo "installing $FILENAME"
+    cat $i | sudo tee /usr/local/bin/$FILENAME &>/dev/null
+    sudo chmod +x /usr/local/bin/"$FILENAME"
+done
+
 # session for lightdm
-wget -q $RAW/instantos/instantos/master/instantwm.desktop
 sudo mv instantwm.desktop /usr/share/xsessions/
 sudo chmod 644 /usr/share/xsessions/instantwm.desktop
+
+cd ..
+
+rm -rf instantOS
 
 # laptop specific stuff
 if acpi | grep -q '[0-9]%' &>/dev/null; then
