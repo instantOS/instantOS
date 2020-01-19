@@ -25,16 +25,14 @@ xrandr | grep '[^s]connected' | grep -Eo '[0-9]{1,}x[0-9]{1,}\+[0-9]{1,}\+[0-9]{
 if [ $(cat resolutions.txt | sort -u | wc -l) = "1" ]; then
     echo "resolutions identical"
     head -1 resolutions.txt >max.txt
-    exit
-fi
-
-let PIXELS1="$(head -1 resolutions.txt | grep -o '^[0-9]*') * $(cat resolutions.txt | head -1 | grep -o '[0-9]*$')"
-let PIXELS2="$(tail -1 resolutions.txt | grep -o '^[0-9]*') * $(cat resolutions.txt | head -1 | grep -o '[0-9]*$')"
-
-if [ "$PIXELS1" -gt "$PIXELS2" ]; then
-    head -1 resolutions.txt >max.txt
 else
-    tail -1 resolutions.txt >max.txt
+    let PIXELS1="$(head -1 resolutions.txt | grep -o '^[0-9]*') * $(cat resolutions.txt | head -1 | grep -o '[0-9]*$')"
+    let PIXELS2="$(tail -1 resolutions.txt | grep -o '^[0-9]*') * $(cat resolutions.txt | head -1 | grep -o '[0-9]*$')"
+    if [ "$PIXELS1" -gt "$PIXELS2" ]; then
+        head -1 resolutions.txt >max.txt
+    else
+        tail -1 resolutions.txt >max.txt
+    fi
 fi
 
 if [ "$AMOUNT" = "1" ]; then

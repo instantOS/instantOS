@@ -44,20 +44,30 @@ userrun() {
     rm /tmp/instantinstall.sh
 }
 
+rootrun() {
+    if [[ "$1" =~ "/" ]]; then
+        RUNSCRIPT="$1"
+    else
+        RUNSCRIPT="$RAW/instantos/instantos/master/$1"
+    fi
+    shift
+    curl -s "$RUNSCRIPT" | bash -s $@
+}
+
 echo "installing dependencies"
-curl -s $RAW/instantos/instantos/master/depend.sh | bash
+rootrun depend.sh
 
 echo "installing tools"
-curl -s $RAW/instantos/instantos/master/rootinstall.sh | bash -s "$1"
-curl -s $RAW/instantos/instantos/master/monitor.sh | bash
+rootrun rootinstall.sh "$1"
 
+# //weiter curl -s $RAW/instantos/instantos/master/monitor.sh | bash
 userrun "$RAW/instantos/instantos/master/userinstall.sh"
 
 echo "installing theme"
 userrun "$RAW/instantOS/instantTHEMES/master/$THEME.sh"
 
 echo "installing dotfiles"
-curl -s $RAW/paperbenni/dotfiles/master/rootinstall.sh | bash
+rootrun $RAW/paperbenni/dotfiles/master/rootinstall.sh
 userrun $RAW/paperbenni/dotfiles/master/userinstall.sh
 
 userrun "$RAW/instantos/instantos/master/userdepend.sh"
