@@ -33,17 +33,23 @@ if ! pgrep dunst; then
 	done &
 fi
 
+cd ~/instantos
+
+if ! grep -q '....' ~/instantos/monitor/max.txt; then
+	bash /opt/instantos/scripts/monitor.sh
+fi
+
 [ -e ~/instantos/monitor.sh ] &&
 	bash ~/instantos/monitor.sh &
 
 onlinetrigger() {
-	[ -e "$HOME/instantos/wallpapers/wall.sh" ] && bash "$HOME/instantos/wallpapers/wall.sh"
+	[ -e "/opt/instantos/scripts/wall.sh" ] && bash "/opt/instantos/scripts/wall.sh"
 }
 
 if ping google.com -c 2; then
 	onlinetrigger
 else
-	[ -e "$HOME/instantos/wallpapers/offlinewall.sh" ] && bash "$HOME/instantos/wallpapers/offlinewall.sh"
+	[ -e "/opt/instantos/scripts/offlinewall.sh" ] && bash "/opt/instantos/scripts/offlinewall.sh"
 	for i in $(seq 10); do
 		if ping google.com -c 2; then
 			onlinetrigger

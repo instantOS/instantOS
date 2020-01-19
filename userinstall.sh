@@ -36,8 +36,6 @@ cd
 
 # auto start script with instantWM
 ls .instantos &>/dev/null || mkdir .instantos
-curl -s $LINK/autostart.sh >.instantos/autostart.sh
-chmod +x .instantos/autostart.sh
 
 cd /tmp
 # drag and drop x utility for ranger
@@ -64,14 +62,8 @@ if ! [ -e notification.ogg ]; then
 fi
 
 cd ~/instantos
-
 rm -rf wallpapers
 mkdir wallpapers
-cd wallpapers
-curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" >wall.sh
-curl -s "$RAW/instantOS/instantWALLPAPER/master/offlinewall.sh" >offlinewall.sh
-chmod +x *.sh
-cd
 
 # set instantwm as default for lightdm
 echo '[Desktop]' >.dmrc

@@ -12,8 +12,8 @@ command -v xrandr &>/dev/null ||
 
 cd
 
-mkdir -p /opt/instantos/monitor &>/dev/null
-cd /opt/instantos/monitor
+mkdir -p ~/instantos/monitor &>/dev/null
+cd ~/instantos/monitor
 
 xrandr | grep '[^s]connected' | grep -o '[0-9]*x[0-9]*+[0-9]*' | grep -o '[0-9]*$' >positions.txt
 AMOUNT=$(cat positions.txt | wc -l)

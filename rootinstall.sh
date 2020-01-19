@@ -96,7 +96,7 @@ for i in ./*; do
     FILENAME=${1##*/}
     echo "installing $FILENAME"
     cat $i | sudo tee /usr/local/bin/$FILENAME &>/dev/null
-    sudo chmod +x /usr/local/bin/"$FILENAME"
+    sudo chmod 755 /usr/local/bin/"$FILENAME"
 done
 
 # session for lightdm
@@ -160,3 +160,11 @@ iclone instantLOCK
 
 cd /tmp
 rm -rf instantos
+
+mkdir -p /opt/instantos/scripts
+cd /opt/instantos/scripts
+curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" >wall.sh
+curl -s "$RAW/instantOS/instantWALLPAPER/master/offlinewall.sh" >offlinewall.sh
+curl -s "$RAW/instantOS/instantOS/master/monitor.sh" >monitor.sh
+curl -s "$RAW/instantOS/instantOS/master/autostart.sh" >autostart.sh
+chmod 755 *.sh

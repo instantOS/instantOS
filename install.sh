@@ -60,7 +60,6 @@ rootrun depend.sh
 echo "installing tools"
 rootrun rootinstall.sh "$1"
 
-# //weiter curl -s $RAW/instantos/instantos/master/monitor.sh | bash
 userrun "$RAW/instantos/instantos/master/userinstall.sh"
 
 echo "installing theme"
