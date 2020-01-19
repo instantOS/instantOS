@@ -78,11 +78,12 @@ else
     echo "java workaround already applied"
 fi
 
-if [ -e /etc/lightdm/lightdm.conf ]; then
+if [ -e /etc/lightdm/lightdm.conf ] && ! grep -q 'instantwm' /etc/lightdm/lightdm.conf; then
     sudo sed -i 's/^user-session=.*/user-session=instantwm/g' /etc/lightdm/lightdm.conf
-    sudo sed -i '# user-session = Session to load for users/user-session=instantwm/g'
+    sudo sed -i '# user-session = Session to load for users/user-session=instantwm/g' /etc/lightdm/lightdm.conf
 fi
 
+rm -rf /tmp/instantinstall
 mkdir /tmp/instantinstall
 cd /tmp/instantinstall
 
