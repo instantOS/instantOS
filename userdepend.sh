@@ -4,7 +4,7 @@
 
 echo "installing user dependencies for $(whoami)"
 
-if ! grep -q 'autojump' ~/.bashrc && ! [ -e ~/.autojump ]; then
+if ! [ -e ~/.autojump ]; then
     echo "installing autojump"
     rm -rf /tmp/autojump
     mkdir /tmp/autojump
@@ -15,4 +15,9 @@ if ! grep -q 'autojump' ~/.bashrc && ! [ -e ~/.autojump ]; then
     ./install.py | grep '\[\[ -s ' >>~/.bashrc
     cd ..
     rm -rf /tmp/autojump
+fi
+
+if ! grep 'autojump' ~/.bashrc; then
+    echo "installing autojump configuration"
+    echo "[[ -s $HOME/.autojump/etc/profile.d/autojump.sh ]] && source $HOME/.autojump/etc/profile.d/autojump.sh" >>~/.bashrc
 fi
