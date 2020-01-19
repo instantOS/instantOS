@@ -29,13 +29,13 @@ ugroup input
 
 RAW="https://raw.githubusercontent.com"
 
-curl -s "https://raw.githubusercontent.com/instantOS/instantASSIST/master/install.sh" | bash
+curl -s "$RAW/instantOS/instantASSIST/master/install.sh" | bash
 
 # fallback wallpaper if others fail to load
 if ! [ -e /opt/instantos/wallpapers/default.png ]; then
     mkdir /opt/instantos/wallpapers
     wget -qO /opt/instantos/wallpapers/default.png \
-        "https://raw.githubusercontent.com/instantOS/instantLOGO/master/wallpaper/defaultwall.png"
+        "$RAW/instantOS/instantLOGO/master/wallpaper/defaultwall.png"
 fi
 
 # adds permanent global environment variable
@@ -94,8 +94,12 @@ rm -rf .git
 cd programs
 
 for i in ./*; do
-    FILENAME=${1##*/}
+    FILENAME=${i##*/}
     echo "installing $FILENAME"
+    if ! [ -e "$i" ]; then
+        echo "error processing $i"
+        continue
+    fi
     cat $i | sudo tee /usr/local/bin/$FILENAME &>/dev/null
     sudo chmod 755 /usr/local/bin/"$FILENAME"
 done
