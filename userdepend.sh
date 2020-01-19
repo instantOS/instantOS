@@ -4,7 +4,7 @@
 
 echo "installing user dependencies for $(whoami)"
 
-if ! grep -q 'autojump' ~/.bashrc; then
+if ! grep -q 'autojump' ~/.bashrc && ! [ -e ~/.autojump ]; then
     echo "installing autojump"
     rm -rf /tmp/autojump
     mkdir /tmp/autojump
