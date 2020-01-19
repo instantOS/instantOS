@@ -1,15 +1,7 @@
 #!/bin/bash
 
-if [ $(whoami) = "root" ] || [ $(whoami) = "manjaro" ]; then
-    echo "user check successful"
-else
-    echo "please run this as root"
-    exit 1
-fi
-
 command -v xrandr &>/dev/null ||
     (echo "please install xrandr" && exit 1)
-
 cd
 
 mkdir -p ~/instantos/monitor &>/dev/null

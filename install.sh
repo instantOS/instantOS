@@ -57,7 +57,7 @@ rootrun() {
 echo "installing dependencies"
 rootrun depend.sh
 
-echo "installing tools"
+echo "root: installing tools"
 rootrun rootinstall.sh "$1"
 
 userrun "$RAW/instantos/instantos/master/userinstall.sh"
