@@ -104,11 +104,10 @@ for i in ./*; do
     sudo chmod 755 /usr/local/bin/"$FILENAME"
 done
 
+cd ..
 # session for lightdm
 sudo mv instantwm.desktop /usr/share/xsessions/
 sudo chmod 644 /usr/share/xsessions/instantwm.desktop
-
-cd ..
 
 rm -rf instantOS
 

@@ -41,6 +41,7 @@ ipkg() {
 }
 
 ipkg wget
+ipkg hwinfo
 
 if cat /etc/os-release | grep -iq 'name.*arch' ||
     cat /etc/os-release | grep -iq 'name.*manjaro'; then
@@ -55,10 +56,10 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
 
     pacinstall slop
     pacinstall xorg-xsetroot
-    pacinstall xorg-fonts-misc # slock font
+    pacinstall xorg-fonts-misc
 
     pacinstall tar
-    
+
     pacinstall autoconf
     pacinstall automake
     pacinstall binutils
@@ -92,6 +93,10 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
         rm panther_launcher*.pkg.tar.xz
     fi
 
+    if hwinfo --gfxcard --short | grep -iE 'nvidia.*(gtx|rtx|titan)'; then
+        echo "installing nvidia graphics drivers"
+        sudo mhwd -a pci nonfree 0300
+    fi
 fi
 
 # ubuntu specific stuff
