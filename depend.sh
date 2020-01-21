@@ -96,6 +96,20 @@ if cat /etc/os-release | grep -iq 'name.*arch' ||
     if hwinfo --gfxcard --short | grep -iE 'nvidia.*(gtx|rtx|titan)'; then
         echo "installing nvidia graphics drivers"
         sudo mhwd -a pci nonfree 0300
+        if grep -Eiq 'instantos|manjaro' /etc/os-release; then
+            if pacman -iQ linux54; then
+                pacinstall linux54-nvidia-440x
+            fi
+
+            if pacman -iQ linux419; then
+                pacinstall linux419-nvidia-440xx
+            fi
+        else
+            if pacman -iQ linux-lts; then
+                pacinstall nvidia-lts
+            fi
+            pacinstall nvidia
+        fi
     fi
 fi
 

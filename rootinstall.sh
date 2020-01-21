@@ -140,6 +140,18 @@ else
     echo "system is on a desktop"
 fi
 
+if ! command -v pfw &>/dev/null; then
+    echo "installing wmutils"
+    rm -rf /tmp/wmutils
+    mkdir -p /tmp/wmutils
+    cd /tmp/wmutils
+    git clone --depth=1 https://github.com/wmutils/core.git
+    cd core
+    make
+    make install
+    rm -rf /tmp/wmutils
+fi
+
 echo "the theme is $THEME"
 
 iclone() {
