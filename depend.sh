@@ -169,6 +169,9 @@ ipkg rxvt-unicode
 
 ipkg xdotool
 ipkg wmctrl
+ipkg xclip
+
+ipkg youtube-dl
 
 ipkg nautilus
 ipkg cpio
