@@ -10,6 +10,11 @@ if [ "$bashes" -gt 2 ]; then
 	exit
 fi
 
+# fix small graphical glitch on status bar startup
+xdotool key 'super+2'
+sleep 0.1
+xdotool key 'super+1'
+
 if acpi | grep -q '%' &>/dev/null; then
 	export ISLAPTOP="true"
 	echo "laptop detected"
@@ -42,14 +47,10 @@ fi
 [ -e ~/instantos/monitor.sh ] &&
 	bash ~/instantos/monitor.sh &
 
-onlinetrigger() {
-	[ -e "/opt/instantos/scripts/wall.sh" ] && bash "/opt/instantos/scripts/wall.sh"
-}
-
 if ping google.com -c 2; then
 	onlinetrigger
 else
-	[ -e "/opt/instantos/scripts/offlinewall.sh" ] && bash "/opt/instantos/scripts/offlinewall.sh"
+	instantwallpaper offline
 	for i in $(seq 10); do
 		if ping google.com -c 2; then
 			onlinetrigger
@@ -84,11 +85,6 @@ date=""
 addstatus() {
 	date="$date[$@] "
 }
-
-# fix small graphical glitch on status bar startup
-xdotool key 'super+2'
-sleep 0.1
-xdotool key 'super+1'
 
 # status bar loop
 while :; do
