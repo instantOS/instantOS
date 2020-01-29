@@ -83,17 +83,7 @@ if acpi | grep -q '[0-9]%' &>/dev/null; then
     # fix tap to click not working with tiling wms
     if ! [ -e /etc/X11/xorg.conf.d/90-touchpad.conf ] ||
         ! cat /etc/X11/xorg.conf.d/90-touchpad.conf | grep -iq 'tapping.*"on"'; then
-
-        sudo mkdir -p /etc/X11/xorg.conf.d && sudo tee /etc/X11/xorg.conf.d/90-touchpad.conf <<'EOF' 1>/dev/null
-Section "InputClass"
-        Identifier "touchpad"
-        MatchIsTouchpad "on"
-        Driver "libinput"
-        Option "Tapping" "on"
-EndSection
-
-EOF
-
+        curl -s "$RAW/instantOS/instantOS/master/xorg/90-touchpad.conf" >/etc/X11/xorg.conf.d/90-touchpad.conf
         # three and four finger swipes on laptop
         if ! command -v libinput-gestures &>/dev/null; then
             git clone --depth=1 https://github.com/bulletmark/libinput-gestures.git
@@ -105,6 +95,9 @@ EOF
     fi
 else
     echo "system is on a desktop"
+    # slow down mouse sensitivity a little
+    [ -e /etc/X11/xorg.conf.d/95-mouse-accel.conf ] ||
+        curl -s "$RAW/instantOS/instantOS/master/xorg/95-mouse-accel.conf" >/etc/X11/xorg.conf.d/95-mouse-accel.conf
 fi
 
 echo "the theme is $THEME"
