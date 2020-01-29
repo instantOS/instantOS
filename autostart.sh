@@ -41,7 +41,7 @@ fi
 cd ~/instantos
 
 if ! grep -q '....' ~/instantos/monitor/max.txt; then
-	bash /opt/instantos/scripts/monitor.sh
+	instantmonitor
 fi
 
 [ -e ~/instantos/monitor.sh ] &&

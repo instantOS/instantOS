@@ -9,7 +9,7 @@
 
 instantOS will be a distro based on manjaro, 
 but as of now, the components that are already functional can be installed on top of 
-an existing install of either arch, manjaro or ubuntu 
+an existing install of either arch or manjaro. 
 
 ### Installation on top of an existing distro-install
 #### WARNING THIS WILL OVERRIDE ANY EXISTING CONFIGURATION

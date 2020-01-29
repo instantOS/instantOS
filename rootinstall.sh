@@ -29,8 +29,6 @@ ugroup input
 
 RAW="https://raw.githubusercontent.com"
 
-curl -s "$RAW/instantOS/instantASSIST/master/install.sh" | bash
-
 # adds permanent global environment variable
 addenv() {
     [ -e /etc/environment ] || touch /etc/environment
@@ -79,30 +77,6 @@ fi
 rm -rf /tmp/instantinstall
 mkdir /tmp/instantinstall
 cd /tmp/instantinstall
-
-git clone --depth=1 https://github.com/instantOS/instantOS.git
-cd instantOS
-rm -rf .git
-
-cd programs
-
-for i in ./*; do
-    FILENAME=${i##*/}
-    echo "installing $FILENAME"
-    if ! [ -e "$i" ]; then
-        echo "error processing $i"
-        continue
-    fi
-    cat $i | sudo tee /usr/local/bin/$FILENAME &>/dev/null
-    sudo chmod 755 /usr/local/bin/"$FILENAME"
-done
-
-cd ..
-# session for lightdm
-sudo mv instantwm.desktop /usr/share/xsessions/
-sudo chmod 644 /usr/share/xsessions/instantwm.desktop
-
-rm -rf instantOS
 
 # laptop specific stuff
 if acpi | grep -q '[0-9]%' &>/dev/null; then

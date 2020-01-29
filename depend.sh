@@ -13,140 +13,73 @@ pacinstall() {
     done
 }
 
-# install on ubuntu based system
-aptinstall() {
-    for i in "$@"; do
-        { dpkg -l "$i" || command -v "$i"; } &>/dev/null && continue
-        echo "Installing $i"
-        sudo apt-get install -y "$i" &>/dev/null
-    done
-}
-
-if command -v pacman &>/dev/null; then
-    ISARCH=TRUE
-elif command -v apt &>/dev/null; then
-    ISUBUNTU=TRUE
-else
+if ! command -v pacman &>/dev/null; then
     echo "distro not supported"
     exit
 fi
 
 # cross distro install command
 ipkg() {
-    if [ -n "$ISARCH" ]; then
-        pacinstall "$@"
-    elif [ -n "$ISUBUNTU" ]; then
-        aptinstall "$@"
-    fi
+    pacinstall "$@"
 }
 
 ipkg wget
 ipkg hwinfo
 
-if cat /etc/os-release | grep -iq 'name.*arch' ||
-    cat /etc/os-release | grep -iq 'name.*manjaro'; then
-    echo "setting up arch specific stuff"
-    
-    if ! grep -q 'instantos\.surge\.sh' /etc/pacman.conf; then
-        echo "[instant]" >>/etc/pacman.conf
-        echo "SigLevel = Optional TrustAll" >>/etc/pacman.conf
-        echo "Server = http://instantos.surge.sh" >>/etc/pacman.conf
-    fi
-
-    sudo pacman -Syu --noconfirm
-
-    pacinstall picom
-    pacinstall arc-gtk-theme
-    pacinstall acpi
-    pacinstall xrandr
-
-    pacinstall slop
-    pacinstall xorg-xsetroot
-    pacinstall xorg-fonts-misc
-
-    pacinstall tar
-
-    pacinstall autoconf
-    pacinstall automake
-    pacinstall binutils
-    pacinstall bison
-    pacinstall fakeroot
-    pacinstall file
-    pacinstall findutils
-    pacinstall flex
-    pacinstall gawk
-    pacinstall gcc
-    pacinstall gettext
-    pacinstall grep
-    pacinstall groff
-    pacinstall gzip
-    pacinstall libtool
-    pacinstall m4
-    pacinstall make
-    pacinstall pacman
-    pacinstall patch
-    pacinstall pkgconf
-    pacinstall sed
-    pacinstall sudo
-    pacinstall texinfo
-    pacinstall which
-
-    pacinstall p7zip
-
-    if ! command -v panther_launcher; then
-        wget -q "https://www.rastersoft.com/descargas/panther_launcher/panther_launcher-1.12.0-1-x86_64.pkg.tar.xz"
-        sudo pacman -U --noconfirm panther_launcher*.pkg.tar.xz
-        rm panther_launcher*.pkg.tar.xz
-    fi
-
-    if hwinfo --gfxcard --short | grep -iE 'nvidia.*(gtx|rtx|titan)'; then
-        echo "installing nvidia graphics drivers"
-        sudo mhwd -a pci nonfree 0300
-        if grep -Eiq 'instantos|manjaro' /etc/os-release; then
-            if pacman -iQ linux54; then
-                pacinstall linux54-nvidia-440x
-            fi
-
-            if pacman -iQ linux419; then
-                pacinstall linux419-nvidia-440xx
-            fi
-        else
-            if pacman -iQ linux-lts; then
-                pacinstall nvidia-lts
-            fi
-            pacinstall nvidia
-        fi
-    fi
+if ! grep -q 'instantos\.surge\.sh' /etc/pacman.conf; then
+    echo "[instant]" >>/etc/pacman.conf
+    echo "SigLevel = Optional TrustAll" >>/etc/pacman.conf
+    echo "Server = http://instantos.surge.sh" >>/etc/pacman.conf
 fi
 
-# ubuntu specific stuff
-if grep -iq 'name.*ubuntu' </etc/os-release; then
+sudo pacman -Syu --noconfirm
 
-    sudo apt-get update
-    sudo apt-get upgrade -y
+pacinstall picom
+pacinstall arc-gtk-theme
+pacinstall acpi
+pacinstall xrandr
 
-    aptinstall compton
+pacinstall slop
+pacinstall xorg-xsetroot
+pacinstall xorg-fonts-misc
 
-    aptinstall acpi
-    aptinstall xrandr
+pacinstall tar
 
-    aptinstall x11-xserver-utils # xsetroot
-    aptinstall slop
+pacinstall autoconf
+pacinstall automake
+pacinstall binutils
+pacinstall bison
+pacinstall fakeroot
+pacinstall file
+pacinstall findutils
+pacinstall flex
+pacinstall gawk
+pacinstall gcc
+pacinstall gettext
+pacinstall grep
+pacinstall groff
+pacinstall gzip
+pacinstall libtool
+pacinstall m4
+pacinstall make
+pacinstall pacman
+pacinstall patch
+pacinstall pkgconf
+pacinstall sed
+pacinstall sudo
+pacinstall texinfo
+pacinstall which
 
-    aptinstall tar
-    aptinstall arc-theme
-    aptinstall p7zip-full
-    aptinstall p7zip-rar
+pacinstall p7zip
 
-    if ! command -v panther_launcher; then
-        wget -q "https://www.rastersoft.com/descargas/panther_launcher/panther-launcher-xenial_1.12.0-ubuntu1_amd64.deb"
-        sudo dpkg -i panther-launcher*.deb
-        sudo apt-get install -fy
-        rm panther-launcher*.deb
-    fi
-fi
+pacinstall panther_launcher
+pacinstall instantutils
+pacinstall instantwallpaper
+pacinstall instantmenu-"$THEME"
+pacinstall instantwm-"$THEME"
+pacinstall instantlock-"$THEME"
+pacinstall autojump
 
-# dont repeat packages present in both distro families
 ipkg bash
 ipkg dash
 ipkg tmux
@@ -181,3 +114,22 @@ ipkg youtube-dl
 
 ipkg nautilus
 ipkg cpio
+
+if hwinfo --gfxcard --short | grep -iE 'nvidia.*(gtx|rtx|titan)'; then
+    echo "installing nvidia graphics drivers"
+    sudo mhwd -a pci nonfree 0300
+    if grep -Eiq 'instantos|manjaro' /etc/os-release; then
+        if pacman -iQ linux54; then
+            pacinstall linux54-nvidia-440x
+        fi
+
+        if pacman -iQ linux419; then
+            pacinstall linux419-nvidia-440xx
+        fi
+    else
+        if pacman -iQ linux-lts; then
+            pacinstall nvidia-lts
+        fi
+        pacinstall nvidia
+    fi
+fi

@@ -12,12 +12,12 @@ fi
 
 RAW="https://raw.githubusercontent.com"
 
-if cat /etc/os-release | grep -Eiq 'name.*(arch|manjaro|ubuntu)'; then
+if cat /etc/os-release | grep -Eiq 'name.*(arch|manjaro)'; then
     curl -s "$RAW/instantOS/instantLOGO/master/ascii.txt"
     echo ""
 else
     echo "distro not supported"
-    echo "supported are: Arch, Manjaro, Ubuntu"
+    echo "supported are: Arch, Manjaro"
     exit
 fi
 
