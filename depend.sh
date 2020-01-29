@@ -46,6 +46,12 @@ ipkg hwinfo
 if cat /etc/os-release | grep -iq 'name.*arch' ||
     cat /etc/os-release | grep -iq 'name.*manjaro'; then
     echo "setting up arch specific stuff"
+    
+    if ! grep -q 'instantos\.surge\.sh' /etc/pacman.conf; then
+        echo "[instant]" >>/etc/pacman.conf
+        echo "SigLevel = Optional TrustAll" >>/etc/pacman.conf
+        echo "Server = http://instantos.surge.sh" >>/etc/pacman.conf
+    fi
 
     sudo pacman -Syu --noconfirm
 
