@@ -107,39 +107,7 @@ else
     echo "system is on a desktop"
 fi
 
-if ! command -v pfw &>/dev/null; then
-    echo "installing wmutils"
-    rm -rf /tmp/wmutils
-    mkdir -p /tmp/wmutils
-    cd /tmp/wmutils
-    git clone --depth=1 https://github.com/wmutils/core.git
-    cd core
-    make
-    make install
-    rm -rf /tmp/wmutils
-fi
-
 echo "the theme is $THEME"
-
-iclone() {
-    echo "cloning $1"
-    gitclone instantOS/$1 &>/dev/null
-    if [ -e "$1"/build.sh ]; then
-        cd "$1"
-        ./build.sh "$THEME"
-        cd ..
-        rm -rf "$1"
-        cd /tmp/instantosbin
-    fi
-}
-
-rm -rf /tmp/instantosbin &>/dev/null
-mkdir /tmp/instantosbin
-cd /tmp/instantosbin
-
-iclone instantWM
-iclone instantMENU
-iclone instantLOCK
 
 cd /tmp
 rm -rf instantos

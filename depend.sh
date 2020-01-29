@@ -79,6 +79,8 @@ pacinstall instantmenu-"$THEME"
 pacinstall instantwm-"$THEME"
 pacinstall instantlock-"$THEME"
 pacinstall autojump
+pacinstall wmutils
+pacinstall grub-theme-instantos
 
 ipkg bash
 ipkg dash
