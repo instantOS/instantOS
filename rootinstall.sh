@@ -31,13 +31,6 @@ RAW="https://raw.githubusercontent.com"
 
 curl -s "$RAW/instantOS/instantASSIST/master/install.sh" | bash
 
-# fallback wallpaper if others fail to load
-if ! [ -e /opt/instantos/wallpapers/default.png ]; then
-    mkdir /opt/instantos/wallpapers
-    wget -qO /opt/instantos/wallpapers/default.png \
-        "$RAW/instantOS/instantLOGO/master/wallpaper/defaultwall.png"
-fi
-
 # adds permanent global environment variable
 addenv() {
     [ -e /etc/environment ] || touch /etc/environment
@@ -176,11 +169,3 @@ iclone instantLOCK
 
 cd /tmp
 rm -rf instantos
-
-mkdir -p /opt/instantos/scripts
-cd /opt/instantos/scripts
-curl -s "$RAW/instantOS/instantWALLPAPER/master/wall.sh" >instantwallpaper
-curl -s "$RAW/instantOS/instantWALLPAPER/master/offlinewall.sh" >offlinewall.sh
-curl -s "$RAW/instantOS/instantOS/master/monitor.sh" >monitor.sh
-curl -s "$RAW/instantOS/instantOS/master/autostart.sh" >autostart.sh
-chmod 755 ./*
