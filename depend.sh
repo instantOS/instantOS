@@ -75,9 +75,14 @@ pacinstall p7zip
 pacinstall panther_launcher
 pacinstall instantutils
 pacinstall instantwallpaper
+pacinstall instantdotfiles
+pacinstall instantassist
+
 pacinstall instantmenu-"$THEME"
 pacinstall instantwm-"$THEME"
 pacinstall instantlock-"$THEME"
+
+pacinstall xdragon
 pacinstall autojump
 pacinstall wmutils
 pacinstall grub-theme-instantos

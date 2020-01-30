@@ -15,8 +15,6 @@ pb git
 
 LINK="$RAW/instantos/instantos/master"
 
-curl -s "$LINK/termprograms.txt" >.cache/termprograms.txt
-
 if ! [ ~/.local/share/fonts/symbola.ttf ]; then
     mkdir -p .local/share/fonts
     cd .local/share/fonts
@@ -33,18 +31,8 @@ if acpi | grep -q '[0-9]%' &>/dev/null; then
 fi
 
 cd
-
-# auto start script with instantWM
-ls .instantos &>/dev/null || mkdir .instantos
-
-cd /tmp
-cd
 mkdir -p instantos/notifications &>/dev/null
 cd instantos/notifications
-
-# gets executed by dunst on notification
-curl -s "$RAW/instantos/instantos/master/programs/dunsttrigger" >dunsttrigger
-chmod +x dunsttrigger
 
 if ! [ -e notification.ogg ]; then
     wget -qO notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"

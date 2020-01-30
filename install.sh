@@ -66,7 +66,7 @@ echo "installing theme"
 userrun "$RAW/instantOS/instantTHEMES/master/$THEME.sh"
 
 echo "installing dotfiles"
-rootrun $RAW/paperbenni/dotfiles/master/rootinstall.sh
-userrun $RAW/paperbenni/dotfiles/master/userinstall.sh
+instantdotfiles root
 
-userrun "$RAW/instantos/instantos/master/userdepend.sh"
+# currently not needed
+# userrun "$RAW/instantos/instantos/master/userdepend.sh"
