@@ -1,0 +1,6 @@
+#!/bin/bash
+if [ -z "$@" ]; then
+    curl -s https://raw.githubusercontent.com/instantos/instantos/master/install.sh | sudo bash &>~/instantosinstall.log
+else
+    curl -s https://raw.githubusercontent.com/instantos/instantos/master/install.sh | sudo bash -s $@ 2>&1 | tee ~/instantosinstall.log
+fi
