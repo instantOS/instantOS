@@ -38,17 +38,6 @@ cd
 ls .instantos &>/dev/null || mkdir .instantos
 
 cd /tmp
-# drag and drop x utility for ranger
-if ! command -v dragon &>/dev/null; then
-    cd /tmp
-    git clone --depth=1 https://github.com/mwh/dragon.git &>/dev/null
-    cd dragon
-    make
-    make install
-    cd ..
-    rm -rf dragon
-fi
-
 cd
 mkdir -p instantos/notifications &>/dev/null
 cd instantos/notifications
