@@ -10,6 +10,18 @@ if [ "$bashes" -gt 2 ]; then
 	exit
 fi
 
+cd
+if ! [ -e instantos ]; then
+	instantdotfiles &
+	mkdir instantos
+fi
+
+# find out if we're on an installation medium
+if command -v calamares_polkit &>/dev/null; then
+	ISLIVE="True"
+	echo "live session detected"
+fi
+
 # fix small graphical glitch on status bar startup
 xdotool key 'super+2'
 sleep 0.1
@@ -38,32 +50,36 @@ if ! pgrep dunst; then
 	done &
 fi
 
-cd ~/instantos
+if [ -z "$ISLIVE" ]; then
+	cd ~/instantos
+	if ! grep -q '....' ~/instantos/monitor/max.txt; then
+		instantmonitor
+	fi
 
-if ! grep -q '....' ~/instantos/monitor/max.txt; then
-	instantmonitor
-fi
+	[ -e ~/instantos/monitor.sh ] &&
+		bash ~/instantos/monitor.sh &
 
-[ -e ~/instantos/monitor.sh ] &&
-	bash ~/instantos/monitor.sh &
+	if ping google.com -c 2; then
+		onlinetrigger
+	else
+		instantwallpaper offline
+		for i in $(seq 10); do
+			if ping google.com -c 2; then
+				onlinetrigger
+				break
+			else
+				sleep 10
+			fi
+		done
+	fi
 
-if ping google.com -c 2; then
-	onlinetrigger
+	# apply german keybpard layout
+	if locale | grep -q 'de_DE'; then
+		setxkbmap -layout de
+	fi
 else
-	instantwallpaper offline
-	for i in $(seq 10); do
-		if ping google.com -c 2; then
-			onlinetrigger
-			break
-		else
-			sleep 10
-		fi
-	done
-fi
-
-# apply german keybpard layout
-if locale | grep -q 'de_DE'; then
-	setxkbmap -layout de
+	installapplet &
+	feh --bg-scale /usr/share/liveutils/wallpaper.png
 fi
 
 # laptop specific background jobs
