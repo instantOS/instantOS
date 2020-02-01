@@ -85,6 +85,8 @@ if [ -z "$ISLIVE" ]; then
 
 else
 	installapplet &
+	nm-applet &
+	pa-applet &
 	feh --bg-scale /usr/share/liveutils/wallpaper.png
 fi
 
@@ -93,7 +95,7 @@ if [ -n "$ISLAPTOP" ]; then
 	command -v libinput-gestures \
 		&>/dev/null &&
 		libinput-gestures &
-	nm-applet &
+	! pgrep nm-applet && nm-applet &
 fi
 
 source /usr/bin/instantstatus
