@@ -3,8 +3,16 @@
 
 # spotify doesnt need a sound
 # discord already has one
-if ! echo "$1" | grep -Eiq '(discord|spotify)'; then
-    mpv ~/instantos/notifications/notification.ogg
-fi
 
 echo "($(date +%H:%M)) [$1] <b>$2</b> | <i>$3</i>" >>/tmp/notifications/notif.txt
+
+if ! echo "$1" | grep -Eiq '(discord|spotify)'; then
+
+    if ! [ -e ~/instantos/notifications/notification.ogg ]; then
+        if $(ping -c 1 google.com); then
+            wget -qO ~/instantos/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
+        fi
+        exit
+    fi
+    mpv ~/instantos/notifications/notification.ogg
+fi
