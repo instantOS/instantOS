@@ -86,10 +86,12 @@ if [ -z "$ISLIVE" ]; then
 else
 	/usr/share/instantthemes/manjaro.sh apply
 	xrdb ~/.Xresources
-	installapplet &
-	nm-applet &
-	pa-applet &
 	feh --bg-scale /usr/share/liveutils/wallpaper.png
+	installapplet &
+	sleep 1
+	nm-applet &
+	sleep 1
+	pa-applet &
 fi
 
 # laptop specific background jobs
