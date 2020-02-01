@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-####################################################
+###############################################
 ## script for instantOS autostart            ##
-####################################################
+###############################################
 
 if [ -z "$1" ]; then
 	bashes=$(pgrep bash | wc -l)
@@ -84,6 +84,8 @@ if [ -z "$ISLIVE" ]; then
 	command -v conky &>/dev/null && conky &
 
 else
+	/usr/share/instantthemes/manjaro.sh apply
+	xrdb ~/.Xresources
 	installapplet &
 	nm-applet &
 	pa-applet &
