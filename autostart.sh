@@ -4,10 +4,14 @@
 ## script for instantOS autostart            ##
 ####################################################
 
-bashes=$(pgrep bash | wc -l)
-if [ "$bashes" -gt 2 ]; then
-	echo "already running"
-	exit
+if [ -z "$1" ]; then
+	bashes=$(pgrep bash | wc -l)
+	if [ "$bashes" -gt 2 ]; then
+		echo "already running"
+		exit
+	fi
+else
+	echo "force run"
 fi
 
 cd
@@ -77,6 +81,8 @@ if [ -z "$ISLIVE" ]; then
 	if locale | grep -q 'de_DE'; then
 		setxkbmap -layout de
 	fi
+	command -v conky &>/dev/null && conky &
+
 else
 	installapplet &
 	feh --bg-scale /usr/share/liveutils/wallpaper.png
@@ -89,6 +95,5 @@ if [ -n "$ISLAPTOP" ]; then
 		libinput-gestures &
 	nm-applet &
 fi
-command -v conky &>/dev/null && conky &
 
 source /usr/bin/instantstatus

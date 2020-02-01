@@ -3,9 +3,6 @@
 ######################################################
 ## installs all system wide programs for instantOS  ##
 ######################################################
-source <(curl -Ls https://git.io/JerLG)
-pb install
-pb git
 
 if ! [ $(whoami) = "root" ]; then
     echo "please run this as root"
@@ -77,28 +74,6 @@ fi
 rm -rf /tmp/instantinstall
 mkdir /tmp/instantinstall
 cd /tmp/instantinstall
-
-# laptop specific stuff
-if acpi | grep -q '[0-9]%' &>/dev/null; then
-    # fix tap to click not working with tiling wms
-    if ! [ -e /etc/X11/xorg.conf.d/90-touchpad.conf ] ||
-        ! cat /etc/X11/xorg.conf.d/90-touchpad.conf | grep -iq 'tapping.*"on"'; then
-        curl -s "$RAW/instantOS/instantOS/master/xorg/90-touchpad.conf" >/etc/X11/xorg.conf.d/90-touchpad.conf
-        # three and four finger swipes on laptop
-        if ! command -v libinput-gestures &>/dev/null; then
-            git clone --depth=1 https://github.com/bulletmark/libinput-gestures.git
-            cd libinput-gestures
-            sudo make install
-            cd ..
-            rm -rf libinput-gestures
-        fi
-    fi
-else
-    echo "system is on a desktop"
-    # slow down mouse sensitivity a little
-    [ -e /etc/X11/xorg.conf.d/95-mouse-accel.conf ] ||
-        curl -s "$RAW/instantOS/instantOS/master/xorg/95-mouse-accel.conf" >/etc/X11/xorg.conf.d/95-mouse-accel.conf
-fi
 
 echo "the theme is $THEME"
 
