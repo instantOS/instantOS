@@ -44,6 +44,13 @@ userrun() {
     rm /tmp/instantinstall.sh
 }
 
+usercmd() {
+    for i in $REALUSERS; do
+        echo "processing user $i"
+        sudo su "$i" -c "$1"
+    done
+}
+
 rootrun() {
     if [[ "$1" =~ "/" ]]; then
         RUNSCRIPT="$1"

@@ -4,14 +4,8 @@
 ## installs all instantOS tools            ##
 #############################################
 
-cd "$HOME"
-
+cd
 echo "installing instantOS tools"
-
-RAW="https://raw.githubusercontent.com"
-LINK="$RAW/instantos/instantos/master"
-
-cd "$HOME"
 
 # laptop specific stuff
 if acpi | grep -q '[0-9]%' &>/dev/null; then
