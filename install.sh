@@ -69,11 +69,7 @@ rootrun rootinstall.sh "$1"
 
 userrun "$RAW/instantos/instantos/master/userinstall.sh"
 
-echo "installing theme"
-userrun "$RAW/instantOS/instantTHEMES/master/$THEME.sh"
+usercmd /usr/share/instantthemes/$THEME.sh both
 
 echo "installing dotfiles"
 instantdotfiles root
-
-# currently not needed
-# userrun "$RAW/instantos/instantos/master/userdepend.sh"

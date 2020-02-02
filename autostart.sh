@@ -54,6 +54,10 @@ if ! pgrep dunst; then
 	done &
 fi
 
+onlinetrigger() {
+	instantwallpaper
+}
+
 if [ -z "$ISLIVE" ]; then
 	cd ~/instantos
 	if ! grep -q '....' ~/instantos/monitor/max.txt; then
@@ -66,6 +70,7 @@ if [ -z "$ISLIVE" ]; then
 	if ping google.com -c 2; then
 		onlinetrigger
 	else
+		# fall back to already installed wallpapers
 		instantwallpaper offline
 		for i in $(seq 10); do
 			if ping google.com -c 2; then
