@@ -84,6 +84,7 @@ if [ -z "$ISLIVE" ]; then
 	command -v conky &>/dev/null && conky &
 
 else
+	instantmonitor
 	/usr/share/instantthemes/manjaro.sh apply
 	xrdb ~/.Xresources
 	feh --bg-scale /usr/share/liveutils/wallpaper.png
