@@ -7,9 +7,9 @@
 echo "($(date +%H:%M)) [$1] <b>$2</b> | <i>$3</i>" >>/tmp/notifications/notif.txt
 
 if ! echo "$1" | grep -Eiq '(discord|spotify)'; then
-
     if ! [ -e ~/instantos/notifications/notification.ogg ]; then
-        if $(ping -c 1 google.com); then
+        if ping -c 1 google.com; then
+            mkdir -p ~/instantos/notifications/
             wget -qO ~/instantos/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
         fi
         exit

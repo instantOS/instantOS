@@ -45,6 +45,7 @@ userrun() {
 }
 
 usercmd() {
+    REALUSERS="$(ls /home/ | grep -v '+')"
     for i in $REALUSERS; do
         echo "processing user $i"
         sudo su "$i" -c "$1"

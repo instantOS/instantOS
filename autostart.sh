@@ -108,4 +108,8 @@ if [ -n "$ISLAPTOP" ]; then
 	! pgrep nm-applet && nm-applet &
 fi
 
+if ! [ -e ~/instantos/themes/config ]; then
+	/usr/share/instantthemes/manjaro.sh apply
+fi
+
 source /usr/bin/instantstatus
