@@ -90,7 +90,7 @@ if [ -z "$ISLIVE" ]; then
 
 else
 	instantmonitor
-	/usr/share/instantthemes/manjaro.sh apply
+	/usr/share/instantthemes/arc.sh apply
 	xrdb ~/.Xresources
 	feh --bg-scale /usr/share/liveutils/wallpaper.png
 	installapplet &
@@ -109,7 +109,7 @@ if [ -n "$ISLAPTOP" ]; then
 fi
 
 if ! [ -e ~/instantos/themes/config ]; then
-	/usr/share/instantthemes/manjaro.sh apply
+	/usr/share/instantthemes/arc.sh apply
 fi
 
 source /usr/bin/instantstatus

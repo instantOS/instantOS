@@ -22,7 +22,7 @@ else
 fi
 
 REALUSERS="$(ls /home/ | grep -v '+')"
-export THEME=${1:-dracula}
+export THEME=${1:-arc}
 
 # run a tool as every existing
 # "real"(there's a human behind it) user
