@@ -38,10 +38,14 @@ else
 	echo "not a laptop"
 fi
 
-if command -v picom &>/dev/null; then
-	picom &
+if ! [ -e /opt/instantos/potato ]; then
+	if command -v picom &>/dev/null; then
+		picom &
+	else
+		compton &
+	fi
 else
-	compton &
+	echo "your computer is a potato"
 fi
 
 sleep 1
@@ -90,7 +94,7 @@ if [ -z "$ISLIVE" ]; then
 
 else
 	instantmonitor
-	/usr/share/instantthemes/arc.sh apply
+	instantthemes apply
 	xrdb ~/.Xresources
 	feh --bg-scale /usr/share/liveutils/wallpaper.png
 	installapplet &
@@ -108,8 +112,6 @@ if [ -n "$ISLAPTOP" ]; then
 	! pgrep nm-applet && nm-applet &
 fi
 
-if ! [ -e ~/instantos/themes/config ]; then
-	/usr/share/instantthemes/arc.sh apply
-fi
+instantthemes a
 
 source /usr/bin/instantstatus

@@ -70,7 +70,7 @@ rootrun rootinstall.sh "$1"
 
 userrun "$RAW/instantos/instantos/master/userinstall.sh"
 
-usercmd /usr/share/instantthemes/$THEME.sh both
+instantthemes f
 
 echo "installing dotfiles"
 instantdotfiles root

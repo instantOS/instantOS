@@ -79,3 +79,12 @@ echo "the theme is $THEME"
 
 cd /tmp
 rm -rf instantos
+
+# check if computer is a potato
+if grep -iq 'Ryzen' /proc/cpuinfo || lshw -C display | grep -q 'nvidia'; then
+    echo "classifying pc as not a potato"
+else
+    echo "looks like your pc is a potato"
+    mkdir -p /opt/instantos
+    echo "true" >/opt/instantos/potato
+fi
