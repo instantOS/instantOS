@@ -62,6 +62,8 @@ onlinetrigger() {
 	instantwallpaper
 }
 
+instantthemes a
+
 if [ -z "$ISLIVE" ]; then
 	cd ~/instantos
 	if ! grep -q '....' ~/instantos/monitor/max.txt; then
@@ -93,10 +95,9 @@ if [ -z "$ISLIVE" ]; then
 	command -v conky &>/dev/null && conky &
 
 else
-	instantmonitor
-	instantthemes apply
 	xrdb ~/.Xresources
-	feh --bg-scale /usr/share/liveutils/wallpaper.png
+	instantmonitor
+	feh --bg-scale /usr/share/instantwallpaper/defaultphoto.png
 	installapplet &
 	sleep 1
 	nm-applet &
@@ -111,7 +112,5 @@ if [ -n "$ISLAPTOP" ]; then
 		libinput-gestures &
 	! pgrep nm-applet && nm-applet &
 fi
-
-instantthemes a
 
 source /usr/bin/instantstatus
