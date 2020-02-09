@@ -11,7 +11,7 @@ if [ -z "$1" ]; then
 		exit
 	fi
 else
-	echo "force run"
+	echo "forced run"
 fi
 
 cd
@@ -31,7 +31,7 @@ xdotool key 'super+2'
 sleep 0.1
 xdotool key 'super+1'
 
-if acpi | grep -q '%' &>/dev/null; then
+if acpi | grep -q '[0-9]%' &>/dev/null; then
 	export ISLAPTOP="true"
 	echo "laptop detected"
 else
@@ -39,16 +39,15 @@ else
 fi
 
 if ! [ -e /opt/instantos/potato ]; then
-	if command -v picom &>/dev/null; then
-		picom &
-	else
-		compton &
-	fi
+	picom &
 else
 	echo "your computer is a potato"
 fi
 
-sleep 1
+if ! xrdb -query -all | grep -q 'ScrollPage:.*false'; then
+	instantthemes a
+	xrdb ~/.Xresources
+fi
 
 mkdir -p /tmp/notifications &>/dev/null
 if ! pgrep dunst; then
@@ -61,8 +60,6 @@ fi
 onlinetrigger() {
 	instantwallpaper
 }
-
-instantthemes a
 
 if [ -z "$ISLIVE" ]; then
 	cd ~/instantos
@@ -92,12 +89,14 @@ if [ -z "$ISLIVE" ]; then
 	if locale | grep -q 'de_DE'; then
 		setxkbmap -layout de
 	fi
-	command -v conky &>/dev/null && conky &
+
+	cat /usr/share/instantwidgets/tooltips.txt | shuf | head -1 >~/.cache/tooltips.txt
+	conky -c /usr/share/instantwidgets/tooltips.conf
 
 else
-	xrdb ~/.Xresources
 	instantmonitor
 	feh --bg-scale /usr/share/instantwallpaper/defaultphoto.png
+	conky -c /usr/share/instantwidgets/install.conf &
 	installapplet &
 	sleep 1
 	nm-applet &
