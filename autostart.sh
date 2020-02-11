@@ -49,6 +49,14 @@ if ! xrdb -query -all | grep -q 'ScrollPage:.*false'; then
 	xrdb ~/.Xresources
 fi
 
+# dynamically switch between light and dark gtk theme
+DATEHOUR=$(date +%H)
+if [ "$DATEHOUR" -gt "20" ]; then
+	instantthemes d &
+else
+	instantthemes l &
+fi
+
 mkdir -p /tmp/notifications &>/dev/null
 if ! pgrep dunst; then
 	while :; do
