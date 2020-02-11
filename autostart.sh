@@ -91,7 +91,7 @@ if [ -z "$ISLIVE" ]; then
 	fi
 
 	cat /usr/share/instantwidgets/tooltips.txt | shuf | head -1 >~/.cache/tooltips.txt
-	conky -c /usr/share/instantwidgets/tooltips.conf
+	conky -c /usr/share/instantwidgets/tooltips.conf &
 
 else
 	instantmonitor

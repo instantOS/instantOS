@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# toggle on/off
 if pgrep xdotool; then
     pkill xdotool
     exit
