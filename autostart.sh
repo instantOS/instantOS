@@ -27,9 +27,9 @@ if command -v calamares_polkit &>/dev/null; then
 fi
 
 # fix small graphical glitch on status bar startup
-xdotool key 'super+2'
-sleep 0.1
-xdotool key 'super+1'
+xdotool key 'super+0' && sleep 0.1
+xdotool key 'super+c' && sleep 0.1
+xdotool key 'super+1' && sleep 0.1
 
 if acpi | grep -q '[0-9]%' &>/dev/null; then
 	export ISLAPTOP="true"
@@ -93,12 +93,23 @@ if [ -z "$ISLIVE" ]; then
 		done
 	fi
 
-	# apply german keybpard layout
-	if locale | grep -q 'de_DE'; then
-		setxkbmap -layout de
+	# apply keybpard layout
+	if [ -e ~/instantos/keyboard ]; then
+		setxkbmap -layout $(cat ~/instantos/keyboard)
+	else
+		CURLOCALE=$(locale | grep LANG | sed 's/.*=\(.*\)\..*/\1/')
+		case "$CURLOCALE" in
+		de_DE)
+			setxkbmap -layout de
+
+			;;
+		*)
+			echo "no keyboard layout found for your locale"
+			;;
+		esac
 	fi
 
-	cat /usr/share/instantwidgets/tooltips.txt | shuf | head -1 >~/.cache/tooltips.txt
+	cat /usr/share/instantwidgets/tooltips.txt | shuf | head -1 >~/.cache/tooltip
 	conky -c /usr/share/instantwidgets/tooltips.conf &
 
 else
