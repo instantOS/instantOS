@@ -77,6 +77,7 @@ pacinstall instantutils
 pacinstall instantwallpaper
 pacinstall instantdotfiles
 pacinstall instantassist
+pacinstall instantwidgets
 
 pacinstall instantmenu-"$THEME"
 pacinstall instantwm-"$THEME"

@@ -29,6 +29,7 @@ fi
 # fix small graphical glitch on status bar startup
 xdotool key 'super+0' && sleep 0.1
 xdotool key 'super+c' && sleep 0.1
+xdotool key 'super+2' && sleep 0.1
 xdotool key 'super+1' && sleep 0.1
 
 if acpi | grep -q '[0-9]%' &>/dev/null; then
