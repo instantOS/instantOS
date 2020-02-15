@@ -88,3 +88,17 @@ else
     mkdir -p /opt/instantos
     echo "true" >/opt/instantos/potato
 fi
+
+# install a custom repo
+if ! grep -q '\[instant\]' /etc/pacman.conf; then
+    echo "instantos repo not found"
+
+    echo '# paperbegin' >>/etc/pacman.conf
+    echo '[instant]' >>/etc/pacman.conf
+    echo 'SigLevel = Optional TrustAll' >>/etc/pacman.conf
+    echo 'Server = http://instantos.surge.sh' >>/etc/pacman.conf
+    echo '# paperend' >>/etc/pacman.conf
+
+else
+    echo "instantOS repo found"
+fi
