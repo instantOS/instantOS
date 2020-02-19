@@ -70,6 +70,9 @@ onlinetrigger() {
 	instantwallpaper
 }
 
+# set up oh-my-zsh config if not existing already
+instantshell
+
 if [ -z "$ISLIVE" ]; then
 	cd ~/instantos
 	if ! grep -q '....' ~/instantos/monitor/max.txt; then
