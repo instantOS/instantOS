@@ -26,11 +26,8 @@ ipkg() {
 ipkg wget
 ipkg hwinfo
 
-if ! grep -q 'instantos\.surge\.sh' /etc/pacman.conf; then
-    echo "[instant]" >>/etc/pacman.conf
-    echo "SigLevel = Optional TrustAll" >>/etc/pacman.conf
-    echo "Server = http://instantos.surge.sh" >>/etc/pacman.conf
-fi
+# add the custom repo
+curl -s https://raw.githubusercontent.com/instantOS/instantOS/master/rootinstall.sh | bash
 
 sudo pacman -Syu --noconfirm
 
