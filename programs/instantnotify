@@ -3,10 +3,12 @@
 # x to mark as readentry headerentry headerentry headerentry headerentry headerentry header
 # esc to exit
 
-[ -e /tmp/notifications ] || mkdir /tmp/notifications
-cd /tmp/notifications
-
-[ -e notif.txt ] && grep -q '....' <notif.txt || exit
+if ! [ -e /tmp/notifications/notif.txt ]; then
+    echo "creating notification dir"
+    mkdir /tmp/notifications
+    cd /tmp/notifications
+    echo "alt+X to clear out a notification" >notif.txt
+fi
 
 NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
 

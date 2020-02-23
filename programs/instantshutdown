@@ -5,20 +5,25 @@
 ###################################################
 
 answer=$(echo " " | instantmenu -p "do you want to shut down?")
-if [ "$answer" = "y" ]; then
+
+case "$answer" in
+y)
     rm ~/.instantosrunning
     sleep 0.4
     shutdown now
-fi
-
-if [ "$answer" = "r" ]; then
+    ;;
+r)
     rm ~/.instantosrunning
     sleep 0.4
     reboot
-fi
+    ;;
 
-if [ "$answer" = "s" ]; then
+s)
     rm ~/.instantosrunning
     sleep 0.4
     kill -9 -1
-fi
+    ;;
+*)
+    echo "no choice, not shutting down"
+    ;;
+esac
