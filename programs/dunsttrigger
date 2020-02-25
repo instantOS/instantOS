@@ -11,8 +11,9 @@ if ! echo "$1" | grep -Eiq '(discord|spotify)'; then
         if ping -c 1 google.com; then
             mkdir -p ~/instantos/notifications/
             wget -qO ~/instantos/notifications/notification.ogg "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
+        else
+            exit
         fi
-        exit
     fi
     mpv ~/instantos/notifications/notification.ogg
 fi

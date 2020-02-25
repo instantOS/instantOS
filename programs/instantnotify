@@ -10,6 +10,8 @@ if ! [ -e /tmp/notifications/notif.txt ]; then
     echo "alt+X to clear out a notification" >notif.txt
 fi
 
+cd /tmp/notifications
+
 NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
 
 while [ -n "$NREAD" ]; do
