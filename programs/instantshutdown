@@ -6,19 +6,38 @@
 
 answer=$(echo " " | instantmenu -p "do you want to shut down?")
 
+# if there are apps open, ask for confirmation
+zconfirm() {
+    if wmctrl -l | grep -q '..'; then
+        echo "windows found"
+        if zenity --question --text="there are apps running, sure you want to $1"; then
+            echo "yes"
+            return 0
+        else
+            echo "no"
+            exit
+        fi
+    else
+        echo "no windows found"
+    fi
+}
+
 case "$answer" in
 y)
+    zconfirm "shutdown"
     rm ~/.instantosrunning
     sleep 0.4
     shutdown now
     ;;
 r)
+    zconfirm "reboot"
     rm ~/.instantosrunning
     sleep 0.4
     reboot
     ;;
 
 s)
+    zconfirm "sign out"
     rm ~/.instantosrunning
     sleep 0.4
     kill -9 -1
