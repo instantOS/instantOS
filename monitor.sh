@@ -11,8 +11,17 @@ xrandr | grep '[^s]connected' | grep -o '[0-9]*x[0-9]*+[0-9]*' | grep -o '[0-9]*
 AMOUNT=$(cat positions.txt | wc -l)
 
 # get monitor with highest resolution
-xrandr | grep '[^s]connected' | grep -Eo '[0-9]{1,}x[0-9]{1,}\+[0-9]{1,}\+[0-9]{1,}' |
-    grep -o '[0-9]*x[0-9]*' >resolutions.txt
+RESOLUTIONS=$(xrandr | grep '[^s]connected' | grep -Eo '[0-9]{1,}x[0-9]{1,}\+[0-9]{1,}\+[0-9]{1,}' |
+    grep -o '[0-9]*x[0-9]*' | sed 's/ /\n/g')
+OLDRES=$(cat resolutions.txt)
+
+# see if resolution has changed
+if ! [ "$RESOLUTIONS" = "$OLDRES" ]; then
+    echo "$RESOLUTIONS" >resolutions.txt
+    sed -i 's/ /\n/g' resolutions.txt
+    CHANGERES="True"
+    echo "Resolution change detected"
+fi
 
 if [ $(cat resolutions.txt | sort -u | wc -l) = "1" ]; then
     echo "resolutions identical"
@@ -27,8 +36,21 @@ else
     fi
 fi
 
+# rebuild wallpaper after resolution change
+changetrigger() {
+    if [ -z "$CHANGERES" ]; then
+        echo "no resolution change"
+    else
+        if [ -e ~/instantos/wallpapers ] && command -v instantwallpaper; then
+            rm -rf ~/instantos/wallpapers
+            instantwallpaper random
+        fi
+    fi
+}
+
 if [ "$AMOUNT" = "1" ]; then
     echo "only one monitor found, further setup not needed"
+    changetrigger
     exit
 else
     if [ "$AMOUNT" -gt 2 ]; then
@@ -49,3 +71,4 @@ else
     echo "Monitor 2 is ${MONITOR2}px on the right"
     echo "$MONITOR1" >right.txt
 fi
+changetrigger
