@@ -4,17 +4,14 @@
     <img width="300" height="300" src="https://raw.githubusercontent.com/instantOS/instantLOGO/master/png/logo.png">
 </div>
 
+<p align="left">
+<a href="https://www.buymeacoffee.com/paperbenni" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+</p>
+
+# instantOS
+
+instantOS is a manjaro based distro that works out of the box but is still aimed at power users. 
+Everything is lightning fast and works out of the box. 
+
 --------
 ### instantOS is still in early beta, contributions always welcome
-
-instantOS will be a distro based on manjaro, 
-but as of now, the components that are already functional can be installed on top of 
-an existing install of either arch or manjaro. 
-
-### Installation on top of an existing distro-install
-#### WARNING THIS WILL OVERRIDE ANY EXISTING CONFIGURATION
-```sh
-curl -Ls https://git.io/JvIfw | sudo bash
-```
-## Requirements:
-This requires xorg, it does NOT work with wayland as it relies on x utilities
