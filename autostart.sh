@@ -113,7 +113,7 @@ if [ -z "$ISLIVE" ]; then
 		esac
 	fi
 
-	cat /usr/share/instantwidgets/tooltips.txt | shuf | head -1 >~/.cache/tooltip
+	shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
 	conky -c /usr/share/instantwidgets/tooltips.conf &
 
 else

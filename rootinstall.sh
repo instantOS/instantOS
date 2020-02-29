@@ -16,7 +16,7 @@ ugroup() {
     groupadd "$1" &>/dev/null
     for USER in $(ls /home/ | grep -v '+'); do
         if ! sudo su "$USER" -c groups | grep -Eq " $1|$1 "; then
-            sudo gpasswd -a $USER $1
+            sudo gpasswd -a "$USER" "$1"
         fi
     done
 }

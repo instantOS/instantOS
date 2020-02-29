@@ -14,4 +14,4 @@ instantOS is a manjaro based distro that works out of the box but is still aimed
 Everything is lightning fast and works out of the box. 
 
 --------
-### instantOS is still in early beta, contributions always welcome
+## instantOS is still in early beta, contributions always welcome
