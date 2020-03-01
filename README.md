@@ -10,6 +10,8 @@
 
 # instantOS
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a5ff3ab070e34744a0fd3f47c1a46a63)](https://app.codacy.com/gh/instantOS/instantOS?utm_source=github.com&utm_medium=referral&utm_content=instantOS/instantOS&utm_campaign=Badge_Grade_Settings)
+
 instantOS is a manjaro based distro that works out of the box but is still aimed at power users. 
 Everything is lightning fast and works out of the box. 
 
