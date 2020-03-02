@@ -116,6 +116,12 @@ if [ -z "$ISLIVE" ]; then
 	shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
 	conky -c /usr/share/instantwidgets/tooltips.conf &
 
+	# don't need applet for ethernet
+	if [ -e ~/.cache/haswifi ]; then
+		echo "wifi enabled"
+		nm-applet &
+	fi
+
 else
 	instantmonitor
 	feh --bg-scale /usr/share/instantwallpaper/defaultphoto.png
@@ -131,8 +137,7 @@ fi
 if [ -n "$ISLAPTOP" ]; then
 	command -v libinput-gestures \
 		&>/dev/null &&
-		libinput-gestures &
-	! pgrep nm-applet && nm-applet &
+		libinput-gestures
 fi
 
 source /usr/bin/instantstatus
