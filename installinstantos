@@ -1,6 +1,7 @@
 #!/bin/bash
 
 if ping -c 1 google.com; then
+    # upgrade to repo even if version numbers dont match
     sudo pacman -Syuu --noconfirm
     if [ -z "$@" ]; then
         curl -s https://raw.githubusercontent.com/instantos/instantos/master/install.sh | sudo bash 2>&1 | tee ~/instantosinstall.log

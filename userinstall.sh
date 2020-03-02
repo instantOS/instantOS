@@ -10,6 +10,7 @@ echo "installing instantOS tools"
 # laptop specific stuff
 if acpi | grep -q '[0-9]%' &>/dev/null; then
     # config file to indicate being a laptop
+    echo "device appears to be a laptop"
     touch .cache/islaptop
 fi
 
