@@ -13,6 +13,12 @@ if acpi | grep -q '[0-9]%' &>/dev/null; then
     touch .cache/islaptop
 fi
 
+# needed for nm-applet start
+if lspci | grep -Eiq '(wifi|wireless)'; then
+    echo "device has wifi capabilities"
+    touch .cache/haswifi
+fi
+
 cd
 mkdir -p instantos/notifications &>/dev/null
 
