@@ -140,4 +140,9 @@ if [ -n "$ISLAPTOP" ]; then
 		libinput-gestures
 fi
 
-source /usr/bin/instantstatus
+source /usr/bin/instantstatus &
+
+# welcome greeter app
+if iconf -b welcome; then
+	instantwelcome
+fi
