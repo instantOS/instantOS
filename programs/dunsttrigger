@@ -4,7 +4,12 @@
 # spotify doesnt need a sound
 # discord already has one
 
-echo "($(date +%H:%M)) [$1] <b>$2</b> | <i>$3</i>" >>/tmp/notifications/notif.txt
+# escape characters that cause problems with pango
+cleanstring() {
+    sed 's/&/&amp;/g' <<<"$@"
+}
+
+echo "($(date +%H:%M)) [$(cleanstring $1)] <b>$(cleanstring $2)</b> | <i>$(cleanstring $3)</i>" >>/tmp/notifications/notif.txt
 
 if ! echo "$1" | grep -Eiq '(discord|spotify)'; then
     if ! [ -e ~/instantos/notifications/notification.ogg ]; then
