@@ -27,9 +27,9 @@ if command -v calamares_polkit &>/dev/null; then
 fi
 
 # fix small graphical glitch on status bar startup
+xdotool key 'super+2' && sleep 0.1
 xdotool key 'super+0' && sleep 0.1
 xdotool key 'super+c' && sleep 0.1
-xdotool key 'super+2' && sleep 0.1
 xdotool key 'super+1' && sleep 0.1
 
 if iconf islaptop; then
