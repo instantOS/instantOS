@@ -66,6 +66,35 @@ else
     echo "java workaround already applied"
 fi
 
+# color scheme for tty
+if ! grep -q '# nord colors' /etc/profile; then
+    echo "applying color scheme"
+    cat <<EOT >>/etc/profile
+# nord colors
+if [ "$TERM" = "linux" ]; then
+    echo -en "\e]P0383c4a" #black
+    echo -en "\e]P8404552" #darkgrey
+    echo -en "\e]P19A4138" #darkred
+    echo -en "\e]P9E7766B" #red
+    echo -en "\e]P24BEC90" #darkgreen
+    echo -en "\e]PA3CBF75" #green
+    echo -en "\e]P3CFCD63" #brown
+    echo -en "\e]PBFFD75F" #yellow
+    echo -en "\e]P45294e2" #darkblue
+    echo -en "\e]PC579CEF" #blue
+    echo -en "\e]P5CE50DD" #darkmagenta
+    echo -en "\e]PDE7766B" #magenta
+    echo -en "\e]P66BE5E7" #darkcyan
+    echo -en "\e]PE90FDFF" #cyan
+    echo -en "\e]P7CCCCCC" #lightgrey
+    echo -en "\e]PFFFFFFF" #white
+    clear #for background artifacting
+fi
+
+EOT
+
+fi
+
 if [ -e /etc/lightdm/lightdm.conf ] && ! grep -q 'instantwm' /etc/lightdm/lightdm.conf; then
     sudo sed -i 's/^user-session=.*/user-session=instantwm/g' /etc/lightdm/lightdm.conf
     sudo sed -i '# user-session = Session to load for users/user-session=instantwm/g' /etc/lightdm/lightdm.conf
