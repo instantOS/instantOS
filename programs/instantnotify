@@ -12,9 +12,19 @@ fi
 
 cd /tmp/notifications
 
-NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
+NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -markup-rows)
 
 while [ -n "$NREAD" ]; do
-    grep -vF "$NREAD" notif.txt >tmp.notif && mv tmp.notif notif.txt
-    NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -kb-accept-entry 'Alt+x' -markup-rows)
+    CHOICE=$(echo "r: read
+x: delete" | instantmenu -x 500 -y 300 -n -w 100 -l 2 -bw 4 -h 50)
+    case "$CHOICE" in
+    r*)
+        echo "$NREAD" | sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] <b>\(.*\)<\/b> | <i>\(.*\)<\/i>/time: \1\nApp:  \2\n      \3\n      \4/g ' >/tmp/instantmessage
+        urxvt -e sh -c "less /tmp/instantmessage"
+        ;;
+    x*)
+        grep -vF "$NREAD" notif.txt >tmp.notif && mv tmp.notif notif.txt
+        ;;
+    esac
+    NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -markup-rows)
 done
