@@ -60,9 +60,9 @@ else
     echo "$AMOUNT monitors found"
 fi
 
-iconf names "(xrandr | grep '[^s]connected' | grep -o '^[^ ]*')"
+iconf names "$(xrandr | grep '[^s]connected' | grep -o '^[^ ]*')"
 
-MONITOR1=$(head -1 <<<"$POSTITIONS")
+MONITOR1=$(head -1 <<<"$POSITIONS")
 MONITOR2=$(tail -1 <<<"$POSITIONS")
 
 if [ "$MONITOR1" -gt "$MONITOR2" ]; then

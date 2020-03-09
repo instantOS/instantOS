@@ -45,7 +45,7 @@ else
 	echo "your computer is a potato"
 fi
 
-if ! xrdb -query -all | grep -q 'ScrollPage:.*false'; then
+if ! xrdb -query -all | grep -q 'URxvt.perl-ext-common'; then
 	instantthemes a
 	xrdb ~/.Xresources
 fi
