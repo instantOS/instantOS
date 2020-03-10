@@ -4,6 +4,11 @@
 ## cli wrapper for spotify ##
 #############################
 
+if ! pgrep spotify &>/dev/null; then
+    LD_PRELOAD=opt/instantos/spotify-adblock.so spotify
+    exit
+fi
+
 case "$1" in
 m)
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
