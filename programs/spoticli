@@ -5,7 +5,7 @@
 #############################
 
 if ! pgrep spotify &>/dev/null; then
-    LD_PRELOAD=opt/instantos/spotify-adblock.so spotify
+    LD_PRELOAD="/opt/instantos/spotify-adblock.so" spotify
     exit
 fi
 
