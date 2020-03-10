@@ -25,7 +25,8 @@ x: delete" | instantmenu -x 500 -y 300 -n -w 100 -l 2 -bw 4 -h 50)
     case "$CHOICE" in
     r*)
         echo "$NREAD" |
-            sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] <b>\(.*\)<\/b> | <i>\(.*\)<\/i>/time: \1\nApp:  \2\n      \3\n\n      \4/g ' >/tmp/instantmessage
+            sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] <b>\(.*\)<\/b> | <i>\(.*\)<\/i>/time: \1\nApp:  \2\n      \3\n\n      \4/g ' |
+            sed 's/&amp;/&/g' >/tmp/instantmessage
         urxvt -e sh -c "less /tmp/instantmessage"
         ;;
     x*)
