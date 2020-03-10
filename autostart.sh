@@ -15,9 +15,16 @@ else
 fi
 
 cd
-if ! [ -e instantos ]; then
+if ! iconf -i dotfiles; then
+	echo "installing dotfiles"
 	instantdotfiles &
 	mkdir instantos
+	iconf -i dotfiles 1
+
+	echo "installing ranger plugins"
+	mkdir -p ~/.config/ranger/plugins
+	cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
+
 fi
 
 # find out if we're on an installation medium
@@ -45,9 +52,10 @@ else
 	echo "your computer is a potato"
 fi
 
-if ! xrdb -query -all | grep -q 'URxvt.perl-ext-common'; then
+if ! iconf -i instantthemes; then
 	instantthemes a
 	xrdb ~/.Xresources
+	iconf -i instantthemes 1
 fi
 
 # dynamically switch between light and dark gtk theme
