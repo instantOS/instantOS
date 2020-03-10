@@ -25,14 +25,14 @@ fi
 
 if [ $(echo "$RESOLUTIONS" | sort -u | wc -l) = "1" ]; then
     echo "resolutions identical"
-    iconf max $(head -1 <<<"$RESOLUTIONS")
+    iconf -i max $(head -1 <<<"$RESOLUTIONS")
 else
     let PIXELS1="$(head -1 <<<$RESOLUTIONS | grep -o '^[0-9]*') * $(head -1 <<<$RESOLUTIONS | grep -o '[0-9]*$')"
     let PIXELS2="$(tail -1 <<<$RESOLUTIONS | grep -o '^[0-9]*') * $(tail -1 <<<$RESOLUTIONS | grep -o '[0-9]*$')"
     if [ "$PIXELS1" -gt "$PIXELS2" ]; then
-        iconf max "$(head -1 <<<$RESOLUTIONS)"
+        iconf -i max "$(head -1 <<<$RESOLUTIONS)"
     else
-        iconf max "$(tail -1 <<<$RESOLUTIONS)"
+        iconf -i max "$(tail -1 <<<$RESOLUTIONS)"
     fi
 fi
 

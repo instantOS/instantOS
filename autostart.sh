@@ -75,7 +75,7 @@ instantshell
 
 if [ -z "$ISLIVE" ]; then
 	cd ~/instantos
-	if ! grep -q '....' ~/instantos/monitor/max.txt; then
+	if ! iconf -i max; then
 		instantmonitor
 	fi
 
