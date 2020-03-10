@@ -149,6 +149,7 @@ if [ -n "$ISLAPTOP" ]; then
 fi
 
 source /usr/bin/instantstatus &
+lxpolkit &
 
 # welcome greeter app
 if iconf -b welcome; then
