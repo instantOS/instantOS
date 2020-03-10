@@ -69,9 +69,11 @@ fi
 # color scheme for tty
 if ! grep -q '# nord colors' /etc/profile; then
     echo "applying color scheme"
+    
+    echo '# nord colors' >>/etc/profile
+    echo 'if [ "$TERM" = "linux" ]; then' >>/etc/profile
+
     cat <<EOT >>/etc/profile
-# nord colors
-if [ "$TERM" = "linux" ]; then
     echo -en "\e]P0383c4a" #black
     echo -en "\e]P8404552" #darkgrey
     echo -en "\e]P19A4138" #darkred
