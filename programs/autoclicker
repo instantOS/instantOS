@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if ! iconf -i autoclicker; then
+    exit
+fi
+
 # toggle on/off
 if pgrep xdotool; then
     pkill xdotool
