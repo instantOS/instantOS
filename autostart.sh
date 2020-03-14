@@ -15,9 +15,16 @@ else
 fi
 
 cd
-if ! [ -e instantos ]; then
+if ! iconf -i dotfiles; then
+	echo "installing dotfiles"
 	instantdotfiles &
 	mkdir instantos
+	iconf -i dotfiles 1
+
+	echo "installing ranger plugins"
+	mkdir -p ~/.config/ranger/plugins
+	cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
+
 fi
 
 # find out if we're on an installation medium
@@ -27,12 +34,12 @@ if command -v calamares_polkit &>/dev/null; then
 fi
 
 # fix small graphical glitch on status bar startup
+xdotool key 'super+2' && sleep 0.1
 xdotool key 'super+0' && sleep 0.1
 xdotool key 'super+c' && sleep 0.1
-xdotool key 'super+2' && sleep 0.1
 xdotool key 'super+1' && sleep 0.1
 
-if acpi | grep -q '[0-9]%' &>/dev/null; then
+if iconf islaptop; then
 	export ISLAPTOP="true"
 	echo "laptop detected"
 else
@@ -45,9 +52,10 @@ else
 	echo "your computer is a potato"
 fi
 
-if ! xrdb -query -all | grep -q 'ScrollPage:.*false'; then
+if ! iconf -i instantthemes; then
 	instantthemes a
 	xrdb ~/.Xresources
+	iconf -i instantthemes 1
 fi
 
 # dynamically switch between light and dark gtk theme
@@ -75,7 +83,7 @@ instantshell
 
 if [ -z "$ISLIVE" ]; then
 	cd ~/instantos
-	if ! grep -q '....' ~/instantos/monitor/max.txt; then
+	if ! iconf -i max; then
 		instantmonitor
 	fi
 
@@ -113,8 +121,14 @@ if [ -z "$ISLIVE" ]; then
 		esac
 	fi
 
-	cat /usr/share/instantwidgets/tooltips.txt | shuf | head -1 >~/.cache/tooltip
+	shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
 	conky -c /usr/share/instantwidgets/tooltips.conf &
+
+	# don't need applet for ethernet
+	if [ -e ~/.cache/haswifi ]; then
+		echo "wifi enabled"
+		nm-applet &
+	fi
 
 else
 	instantmonitor
@@ -131,8 +145,13 @@ fi
 if [ -n "$ISLAPTOP" ]; then
 	command -v libinput-gestures \
 		&>/dev/null &&
-		libinput-gestures &
-	! pgrep nm-applet && nm-applet &
+		libinput-gestures
 fi
 
-source /usr/bin/instantstatus
+source /usr/bin/instantstatus &
+lxpolkit &
+
+# welcome greeter app
+if iconf -b welcome; then
+	instantwelcome
+fi

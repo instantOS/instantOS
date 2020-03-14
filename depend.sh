@@ -2,7 +2,7 @@
 
 # installs dependencies for instantOS
 
-LINK="https://raw.githubusercontent.com/instantos/instantos/master"
+export LINK="https://raw.githubusercontent.com/instantos/instantos/master"
 
 # install on arch based system
 pacinstall() {

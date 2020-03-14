@@ -12,7 +12,7 @@ fi
 
 RAW="https://raw.githubusercontent.com"
 
-if cat /etc/os-release | grep -Eiq 'name.*(arch|manjaro)'; then
+if grep -Eiq 'name.*(arch|manjaro)' /etc/os-release; then
     curl -s "$RAW/instantOS/instantLOGO/master/ascii.txt"
     echo ""
 else
@@ -32,7 +32,7 @@ userrun() {
     curl -s "$1" >/tmp/instantinstall.sh
     chmod 777 /tmp/instantinstall.sh
 
-    if [ -n "$2" ] && getent passwd $2 && [ -e /home/$2 ]; then
+    if [ -n "$2" ] && getent passwd "$2" && [ -e /home/"$2" ]; then
         echo "single user installation for $1"
         sudo su "$2" -c /tmp/instantinstall.sh
     else

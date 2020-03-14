@@ -1,0 +1,34 @@
+#!/bin/bash
+
+if command -v winetricks && pacman -Qi wine &>/dev/null && [ -e ~/.wine ]; then
+    echo "dependency check successful"
+else
+    echo "please install wine, winetricks and create a wineprefix"
+    exit
+fi
+
+if ! ping -c 1 google.com; then
+    echo "internet is required"
+    exit
+fi
+
+cd
+cd ${WINEPREFIX:-.wine}
+cd drive_c/windows/Resources/Themes
+mkdir Windows\ 10
+cd Windows*
+wget -O 'Windows 10.msstyles' http://winetheme.surge.sh/wine.msstyles
+
+# font smoothing
+winetricks settings fontsmooth=rgb
+
+# user has to manually set that up in the gui
+zenity --info --text "when the next window pops up, click on Desktop-integration and select windows 10 as a theme, then click ok"
+winecfg
+
+# did the user apply the theme?
+if ! grep -q 'Windows 10' ~/.wine/user.reg; then
+    zenity --info --text "you didn't do it, did you? Try again, last chance"
+    winecfg
+    zenity --info --text "Well I told you what to do, I'll leave you alone now"
+fi

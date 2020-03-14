@@ -16,7 +16,7 @@ ugroup() {
     groupadd "$1" &>/dev/null
     for USER in $(ls /home/ | grep -v '+'); do
         if ! sudo su "$USER" -c groups | grep -Eq " $1|$1 "; then
-            sudo gpasswd -a $USER $1
+            sudo gpasswd -a "$USER" "$1"
         fi
     done
 }
@@ -48,7 +48,7 @@ addenv() {
 
 addenv -f "QT_QPA_PLATFORMTHEME" "qt5ct"
 addenv -f "PAGER" "less"
-command -v nvim &>/dev/null && addenv -f "EDITOR" "$(which nvim)"
+addenv -f "EDITOR" "$(which nvim)"
 
 # needed for instantLOCK
 if grep -q 'nobody' </etc/groups || grep -q 'nobody' </etc/group; then
@@ -64,6 +64,37 @@ if ! grep -q 'instantwm' </etc/profile; then
     echo 'export _JAVA_AWT_WM_NONREPARENTING=1' >>/etc/profile
 else
     echo "java workaround already applied"
+fi
+
+# color scheme for tty
+if ! grep -q '# nord colors' /etc/profile; then
+    echo "applying color scheme"
+    
+    echo '# nord colors' >>/etc/profile
+    echo 'if [ "$TERM" = "linux" ]; then' >>/etc/profile
+
+    cat <<EOT >>/etc/profile
+    echo -en "\e]P0383c4a" #black
+    echo -en "\e]P8404552" #darkgrey
+    echo -en "\e]P19A4138" #darkred
+    echo -en "\e]P9E7766B" #red
+    echo -en "\e]P24BEC90" #darkgreen
+    echo -en "\e]PA3CBF75" #green
+    echo -en "\e]P3CFCD63" #brown
+    echo -en "\e]PBFFD75F" #yellow
+    echo -en "\e]P45294e2" #darkblue
+    echo -en "\e]PC579CEF" #blue
+    echo -en "\e]P5CE50DD" #darkmagenta
+    echo -en "\e]PDE7766B" #magenta
+    echo -en "\e]P66BE5E7" #darkcyan
+    echo -en "\e]PE90FDFF" #cyan
+    echo -en "\e]P7CCCCCC" #lightgrey
+    echo -en "\e]PFFFFFFF" #white
+    clear #for background artifacting
+fi
+
+EOT
+
 fi
 
 if [ -e /etc/lightdm/lightdm.conf ] && ! grep -q 'instantwm' /etc/lightdm/lightdm.conf; then

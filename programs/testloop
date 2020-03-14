@@ -1,0 +1,9 @@
+#!/bin/bash
+# just a test loop for messing with background jobs
+
+echo "starting testloop"
+while :; do
+    sleep 2
+    echo "testloop"
+done
+echo "quit test loop"

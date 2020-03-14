@@ -4,17 +4,18 @@
     <img width="300" height="300" src="https://raw.githubusercontent.com/instantOS/instantLOGO/master/png/logo.png">
 </div>
 
+<p align="left">
+<a href="https://www.buymeacoffee.com/paperbenni" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+</p>
+
+# instantOS
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a5ff3ab070e34744a0fd3f47c1a46a63)](https://app.codacy.com/gh/instantOS/instantOS?utm_source=github.com&utm_medium=referral&utm_content=instantOS/instantOS&utm_campaign=Badge_Grade_Settings)
+![Discord](https://img.shields.io/discord/683782260071071764)
+![Maintenance](https://img.shields.io/maintenance/yes/2020)
+
+instantOS is a manjaro based distro that works out of the box but is still aimed at power users. 
+Everything is lightning fast and works out of the box. 
+
 --------
-### instantOS is still in early beta, contributions always welcome
-
-instantOS will be a distro based on manjaro, 
-but as of now, the components that are already functional can be installed on top of 
-an existing install of either arch or manjaro. 
-
-### Installation on top of an existing distro-install
-#### WARNING THIS WILL OVERRIDE ANY EXISTING CONFIGURATION
-```sh
-curl -Ls https://git.io/JvIfw | sudo bash
-```
-## Requirements:
-This requires xorg, it does NOT work with wayland as it relies on x utilities
+## instantOS is still in early beta, contributions always welcome
