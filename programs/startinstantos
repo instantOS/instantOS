@@ -9,6 +9,10 @@ touch ~/.instantosrunning
 
 # loop so crashing instantwm doesn't end the x session
 while test -e ~/.instantosrunning; do
-    # Log stderror to a file
-    instantwm 2>~/.instantos.log
+    # Log stderror or stdout to a file
+    if ! [ -e ~/.instantdebug ]; then
+        instantwm 2>~/.instantos.log
+    else
+        instantwm &>~/.instantos.log
+    fi
 done
