@@ -143,9 +143,10 @@ fi
 
 # laptop specific background jobs
 if [ -n "$ISLAPTOP" ]; then
+echo "libinput gestures"
 	command -v libinput-gestures \
 		&>/dev/null &&
-		libinput-gestures
+		libinput-gestures &
 fi
 
 source /usr/bin/instantstatus &
