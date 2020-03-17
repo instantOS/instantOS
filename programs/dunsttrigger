@@ -2,15 +2,11 @@
 
 # gets executed each time dunst receives a notification
 
-# escape characters that cause problems with pango
-cleanstring() {
-    echo "$@" | sed 's/&/&amp;/g'
-}
+# ignore some apps
+if echo "$2" | grep -q 'instantASSIST'; then
+    exit
+fi
 
-# add pango markup
-echo "($(date +%H:%M)) [$(cleanstring $1)] <b>$(cleanstring $2)</b> | <i>$(cleanstring $3)</i>" >>/tmp/notifications/notif.txt
-
-# some apps dont need/already have notification sounds
 if ! echo "$1" | grep -Eiq '(discord|spotify|thunderbird|mailspring)'; then
     if ! [ -e ~/instantos/notifications/notification.ogg ]; then
         if ping -c 1 google.com; then
@@ -23,3 +19,12 @@ if ! echo "$1" | grep -Eiq '(discord|spotify|thunderbird|mailspring)'; then
     fi
     mpv ~/instantos/notifications/notification.ogg
 fi
+
+# escape characters that cause problems with pango
+# some apps dont need/already have notification sounds
+cleanstring() {
+    echo "$@" | sed 's/&/&amp;/g'
+}
+
+# add pango markup
+echo "($(date +%H:%M)) [$(cleanstring $1)] <b>$(cleanstring $2)</b> | <i>$(cleanstring $3)</i>" >>/tmp/notifications/notif.txt
