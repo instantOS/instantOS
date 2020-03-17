@@ -35,7 +35,10 @@ while :; do
             fi
         fi
     fi
-    sleep 2m
+    sleep 1m
+
+    # needed only for shorttime cache, remove in case it changes
+    [ -e /tmp/instantos/pasink ] && rm /tmp/instantos/pasink
 done &
 
 # 30m loop
