@@ -1,0 +1,27 @@
+#!/bin/bash
+
+############################################################
+## Auto restart discord when it silently decides to crash ##
+############################################################
+
+# toggle like behaviour
+if [ -e /tmp/instantos/discord ]; then
+    echo "discord restart disabled"
+    rm /tmp/instantos/discord
+    exit
+else
+    echo "discord restart enabled"
+    mkdir /tmp/instantos
+    touch /tmp/instantos/discord
+fi
+
+while :; do
+    if ! [ -e /tmp/instantos/discord ]; then
+        exit
+    fi
+
+    if ! pgrep Discord; then
+        Discord
+    fi
+    sleep 10
+done
