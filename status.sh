@@ -7,9 +7,13 @@
 INTERNET="X"
 date=""
 
+
+RED='#fc4138'
+GREEN='#73d216'
+
 # append item with brackets
 addstatus() {
-    date="${date}[$@] "
+    date="${date}| $@"
 }
 
 # update different parts with different frequency
@@ -19,19 +23,19 @@ while :; do
     if ping -q -c 1 -W 1 8.8.8.8; then
         INTERNET="i"
     else
-        INTERNET="^c#ff0000^X^d^"
+        INTERNET="^c$RED^X^d^"
     fi
 
     # battery indicator on laptop
     if [ -n "$ISLAPTOP" ]; then
         TMPBAT=$(acpi)
         if [[ $TMPBAT =~ "Charging" ]]; then
-            BATTERY="^c#00ff00^B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"^d^"
+            BATTERY="^c$GREEN^B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"^d^"
         else
             BATTERY="B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")
             # make indicator red on low battery
             if [ $(grep '[0-9]*' <<<$BATTERY) -lt 10 ]; then
-                BATTERY="^c#ff0000^$BATTERY^d^"
+                BATTERY="^c$RED^$BATTERY^d^"
             fi
         fi
     fi
@@ -68,7 +72,7 @@ while :; do
     fi
 
     # date time
-    addstatus "$(date +'%d-%m|%H:%M')"
+    addstatus "$(date +'%d-%m,%H:%M')"
     # volume
     addstatus "A$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
 
