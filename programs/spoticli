@@ -4,6 +4,11 @@
 ## cli wrapper for spotify ##
 #############################
 
+if ! [ -e /opt/spotify/spotify ]; then
+    notify-send "please run 'yay -S spotify' in a terminal to use this"
+    exit
+fi
+
 if ! pgrep spotify &>/dev/null; then
     LD_PRELOAD="/opt/instantos/spotify-adblock.so" spotify
     exit
