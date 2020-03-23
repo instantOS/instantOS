@@ -127,23 +127,32 @@ if [ -z "$ISLIVE" ]; then
 	# don't need applet for ethernet
 	if [ -e ~/.cache/haswifi ]; then
 		echo "wifi enabled"
-		nm-applet &
+		while :; do
+			if ! pgrep nm-applet; then
+				nm-applet &
+			fi
+			sleep 6m
+		done &
 	fi
 
 else
 	instantmonitor
 	feh --bg-scale /usr/share/instantwallpaper/defaultphoto.png
 	conky -c /usr/share/instantwidgets/install.conf &
-	installapplet &
+	sleep 0.3
+	while :; do
+		if ! pgrep nm-applet; then
+			installapplet &
+			nm-applet &
+		fi
+		sleep 6m
+	done &
 	sleep 1
-	nm-applet &
-	sleep 1
-	pa-applet &
 fi
 
 # laptop specific background jobs
 if [ -n "$ISLAPTOP" ]; then
-echo "libinput gestures"
+	echo "libinput gestures"
 	command -v libinput-gestures \
 		&>/dev/null &&
 		libinput-gestures &
