@@ -34,10 +34,14 @@ if command -v calamares_polkit &>/dev/null; then
 fi
 
 # fix small graphical glitch on status bar startup
-xdotool key 'super+2' && sleep 0.1
-xdotool key 'super+0' && sleep 0.1
-xdotool key 'super+c' && sleep 0.1
-xdotool key 'super+1' && sleep 0.1
+NMON=$(iconf names | wc -l)
+for i in $(eval "echo {1..$NMON}"); do
+	xdotool key 'super+2' && sleep 0.1
+	xdotool key 'super+0' && sleep 0.1
+	xdotool key 'super+c' && sleep 0.1
+	xdotool key 'super+1' && sleep 0.1
+	xdotool key 'super+comma' && sleep 0.1
+done &
 
 if iconf islaptop; then
 	export ISLAPTOP="true"
@@ -64,7 +68,7 @@ if [ "$DATEHOUR" -gt "20" ]; then
 	instantthemes d &
 else
 	instantthemes l &
-fi
+fi &
 
 mkdir -p /tmp/notifications &>/dev/null
 if ! pgrep dunst; then
@@ -75,11 +79,11 @@ if ! pgrep dunst; then
 fi
 
 onlinetrigger() {
-	instantwallpaper
+	instantwallpaper &
 }
 
 # set up oh-my-zsh config if not existing already
-instantshell
+instantshell &
 
 if [ -z "$ISLIVE" ]; then
 	cd ~/instantos
