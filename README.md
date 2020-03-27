@@ -17,6 +17,8 @@
 instantOS is a manjaro based distro that works out of the box but is still aimed at power users. 
 Everything is lightning fast and works out of the box. 
 
+[![introduction video](http://img.youtube.com/vi/9J1sWrmhJGU/0.jpg)](http://www.youtube.com/watch?v=9J1sWrmhJGU "what is instantos?")
+
 ## Information
 
 instantOS is based on Manjaro, but with a way smaller footprint. The ISO fits on a 2gb USB stick and ram usage on idle is ~140MB. 
