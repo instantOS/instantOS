@@ -4,7 +4,9 @@
 ## shut down pc and break instantwm restart loop ##
 ###################################################
 
-answer=$(echo " " | instantmenu -p "do you want to shut down?")
+answer=$(echo "y
+s
+r" | instantmenu -n -p "do you want to shut down?")
 
 # if there are apps open, ask for confirmation
 zconfirm() {
