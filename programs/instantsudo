@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# replacement for gksudo using instantmenu
+PASSWORD=$(echo '' | instantmenu -p "password for $USER" -P)
+
+echo "$PASSWORD" | sudo -S $@
