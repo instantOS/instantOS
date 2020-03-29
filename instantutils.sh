@@ -12,8 +12,7 @@ fi
 
 case "$1" in
 install)
-    sudo /usr/share/instantutils/rootinstall.sh
-    /usr/share/instantutils/userinstall.sh
+    sudo /usr/share/instantutils/install.sh
     ;;
 root)
     sudo /usr/share/instantutils/rootinstall.sh

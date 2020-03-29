@@ -12,13 +12,9 @@ fi
 
 RAW="https://raw.githubusercontent.com"
 
-if grep -Eiq 'name.*(arch|manjaro)' /etc/os-release; then
+if ! grep -Eiq 'name.*(arch|manjaro)' /etc/os-release; then
     curl -s "$RAW/instantOS/instantLOGO/master/ascii.txt"
-    echo ""
-else
-    echo "distro not supported"
-    echo "supported are: Arch, Manjaro"
-    exit
+    echo "warning: distro unsupported"
 fi
 
 REALUSERS="$(ls /home/ | grep -v '+')"
@@ -28,47 +24,19 @@ export THEME=${1:-arc}
 # "real"(there's a human behind it) user
 
 userrun() {
-    rm -rf /tmp/instantinstall.sh &>/dev/null
-    curl -s "$1" >/tmp/instantinstall.sh
-    chmod 777 /tmp/instantinstall.sh
-
-    if [ -n "$2" ] && getent passwd "$2" && [ -e /home/"$2" ]; then
-        echo "single user installation for $1"
-        sudo su "$2" -c /tmp/instantinstall.sh
-    else
-        for i in $REALUSERS; do
-            echo "processing user $i"
-            sudo su "$i" -c /tmp/instantinstall.sh
-        done
-    fi
-    rm /tmp/instantinstall.sh
-}
-
-usercmd() {
-    REALUSERS="$(ls /home/ | grep -v '+')"
     for i in $REALUSERS; do
         echo "processing user $i"
-        sudo su "$i" -c "$1"
+        sudo su "$i" -c $1
     done
 }
 
-rootrun() {
-    if [[ "$1" =~ "/" ]]; then
-        RUNSCRIPT="$1"
-    else
-        RUNSCRIPT="$RAW/instantos/instantos/master/$1"
-    fi
-    shift
-    curl -s "$RUNSCRIPT" | bash -s $@
-}
-
 echo "installing dependencies"
-rootrun depend.sh
+/usr/share/instantutils/depend.sh
 
 echo "root: installing tools"
-rootrun rootinstall.sh "$1"
+/usr/sharea/instantutils/rootinstall.sh
 
-userrun "$RAW/instantos/instantos/master/userinstall.sh"
+userrun /usr/share/instantutils/userinstall.sh
 
 instantthemes f
 
