@@ -1,0 +1,24 @@
+#!/bin/bash
+USAGE="usage: instantutils install
+instantutils root
+instantutils user
+instantutils repo
+instantutils refresh"
+
+if [ -z "$1" ]; then
+    echo "$USAGE"
+    exit
+fi
+
+case "$1" in
+install)
+    sudo /usr/share/instantutils/rootinstall.sh
+    /usr/share/instantutils/userinstall.sh
+    ;;
+root)
+    sudo /usr/share/instantutils/rootinstall.sh
+    ;;
+user)
+    /usr/share/instantutils/userinstall.sh
+    ;;
+esac
