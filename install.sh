@@ -34,7 +34,7 @@ echo "installing dependencies"
 /usr/share/instantutils/depend.sh
 
 echo "root: installing tools"
-/usr/sharea/instantutils/rootinstall.sh
+/usr/share/instantutils/rootinstall.sh
 
 userrun /usr/share/instantutils/userinstall.sh
 

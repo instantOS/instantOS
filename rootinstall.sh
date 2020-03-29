@@ -69,7 +69,7 @@ fi
 # color scheme for tty
 if ! grep -q '# nord colors' /etc/profile; then
     echo "applying color scheme"
-    
+
     echo '# nord colors' >>/etc/profile
     echo 'if [ "$TERM" = "linux" ]; then' >>/etc/profile
 
@@ -122,14 +122,7 @@ fi
 
 # install a custom repo
 if ! grep -q '\[instant\]' /etc/pacman.conf; then
-    echo "instantos repo not found"
-
-    echo '# paperbegin' >>/etc/pacman.conf
-    echo '[instant]' >>/etc/pacman.conf
-    echo 'SigLevel = Optional TrustAll' >>/etc/pacman.conf
-    echo 'Server = http://instantos.surge.sh' >>/etc/pacman.conf
-    echo '# paperend' >>/etc/pacman.conf
-
+    /usr/share/instantutils/repo.sh
 else
     echo "instantOS repo found"
 fi
