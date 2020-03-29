@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Shut Down
+Exec=instantshutdown
+Icon=robo3t
+Terminal=false
+Type=Application
