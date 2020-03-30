@@ -76,9 +76,9 @@ pacinstall instantdotfiles
 pacinstall instantassist
 pacinstall instantwidgets
 
-pacinstall instantmenu-"$THEME"
-pacinstall instantwm-"$THEME"
-pacinstall instantlock-"$THEME"
+pacinstall instantmenu
+pacinstall instantwm
+pacinstall instantlock
 
 pacinstall xdragon
 pacinstall autojump
