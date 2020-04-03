@@ -26,20 +26,20 @@ zconfirm() {
 }
 
 case "$answer" in
-y)
+y*)
     zconfirm "shutdown"
     rm ~/.instantosrunning
     sleep 0.4
     shutdown now
     ;;
-r)
+r*)
     zconfirm "reboot"
     rm ~/.instantosrunning
     sleep 0.4
     reboot
     ;;
 
-s)
+s*)
     zconfirm "sign out"
     rm ~/.instantosrunning
     sleep 0.4
