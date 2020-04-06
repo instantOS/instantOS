@@ -7,7 +7,8 @@
 answer=$(echo "yes
 no
 logout
-reboot" | instantmenu -n -p "do you want to shut down?")
+reboot
+kill wm" | instantmenu -n -p "do you want to shut down?")
 
 # if there are apps open, ask for confirmation
 zconfirm() {
@@ -39,11 +40,14 @@ r*)
     reboot
     ;;
 
-s*)
+l*)
     zconfirm "sign out"
     rm ~/.instantosrunning
     sleep 0.4
     kill -9 -1
+    ;;
+k*)
+    pkill instantwm
     ;;
 *)
     echo "no choice, not shutting down"
