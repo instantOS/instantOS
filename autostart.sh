@@ -91,8 +91,11 @@ if [ -z "$ISLIVE" ]; then
 		instantmonitor
 	fi
 
-	[ -e ~/instantos/monitor.sh ] &&
+	if [ -e ~/instantos/monitor.sh ]; then
 		bash ~/instantos/monitor.sh &
+	elif [ -e ~/.config/autorandr/instantos/config ]; then
+		autorandr instantos &
+	fi
 
 	if ping google.com -c 2; then
 		onlinetrigger
