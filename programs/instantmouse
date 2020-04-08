@@ -6,6 +6,7 @@
 
 case "$1" in
 g*)
+    # detect connected mouse devices
     IDS=$(xinput | grep -o 'id=[0-9]*' | grep -o '[0-9]*')
     echo "generating mouse IDS"
     [ -e /tmp/mouse ] && rm /tmp/mouse
@@ -18,11 +19,13 @@ g*)
     iconf mouse "$(cat /tmp/mouse)"
     ;;
 s*)
+    # set sensitivity
     while read -r line; do
         xinput set-prop $line "libinput Accel Speed" "${2:--0.4}"
     done <<<"$(iconf mouse)"
     ;;
 l*)
+    # get current sensitivity
     xinput list-props "$(iconf mouse | head -1)" | grep 'libinput Accel Speed' | head -1 | grep -o '[-.0-9]*$'
     ;;
 esac
