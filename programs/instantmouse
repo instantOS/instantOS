@@ -1,0 +1,28 @@
+#!/bin/bash
+
+##################################
+## set mouse speed for libinput ##
+##################################
+
+case "$1" in
+g*)
+    IDS=$(xinput | grep -o 'id=[0-9]*' | grep -o '[0-9]*')
+    echo "generating mouse IDS"
+    [ -e /tmp/mouse ] && rm /tmp/mouse
+    while read -r line; do
+        if xinput list-props "$line" | grep -q 'libinput Accel Speed'; then
+            echo "$line"
+            echo "$line" >>/tmp/mouse
+        fi
+    done <<<"$IDS"
+    iconf mouse "$(cat /tmp/mouse)"
+    ;;
+s*)
+    while read -r line; do
+        xinput set-prop $line "libinput Accel Speed" "${2:--0.4}"
+    done <<<"$(iconf mouse)"
+    ;;
+l*)
+    xinput list-props "$(iconf mouse | head -1)" | grep 'libinput Accel Speed' | head -1 | grep -o '[-.0-9]*$'
+    ;;
+esac
