@@ -39,7 +39,7 @@ while :; do
         else
             BATTERY=$(egrep -o '[0-9]*%' <<<"$TMPBAT")
             # make indicator red on low battery
-            if [ $(grep '[0-9]*' <<<$BATTERY) -lt 10 ]; then
+            if [ $(grep '[0-9]*' <<<"$BATTERY") -lt 10 ]; then
                 BATTERY="^c$RED^$BATTERY^d^"
             fi
         fi

@@ -1,8 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=Shut Down
+Name=Lock Screen
 Exec=instantlock
 Icon=1password
 Terminal=false
 Type=Application
-Name[de_DE]=Lock Screen

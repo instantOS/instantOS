@@ -26,7 +26,7 @@ export THEME=${1:-arc}
 userrun() {
     for i in $REALUSERS; do
         echo "processing user $i"
-        sudo su "$i" -c $1
+        sudo su "$i" -c "$1"
     done
 }
 
