@@ -25,3 +25,5 @@ if lsusb | grep -iq 'bluetooth'; then
     echo "device has bluetooth"
     iconf -i hasbluetooth 1
 fi
+
+instantmouse gen
