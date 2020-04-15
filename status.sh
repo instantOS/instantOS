@@ -8,15 +8,14 @@ INTERNET="X"
 date=""
 
 RED='#fc4138'
-GREEN='#73d216'
+GREEN='#52E067'
+DARKBACK='#3E485A'
+LIGHTBACK='#5B6579'
 
 istat() {
     echo "$2" >/tmp/instantos/status/"$1"
 }
 
-addstatus() {
-    date="${date} [$@]"
-}
 
 mkdir -p /tmp/instantos/status
 
@@ -25,25 +24,26 @@ mkdir -p /tmp/instantos/status
 # 1m loop
 while :; do
     if ping -q -c 1 -W 1 8.8.8.8; then
-        INTERNET="^c$GREEN^i^d^"
+        INTERNET="^c$GREEN^  i  ^d^"
     else
-        INTERNET="^c$RED^X^d^"
+        INTERNET="^c$RED^  i  ^d^"
     fi
+
     istat INTERNET "$INTERNET"
 
     # battery indicator on laptop
     if [ -n "$ISLAPTOP" ]; then
         TMPBAT=$(acpi)
         if [[ $TMPBAT =~ "Charging" ]]; then
-            BATTERY="^c$GREEN^"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"^d^"
+            BATTERY="^c$GREEN^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
         else
-            BATTERY=$(egrep -o '[0-9]*%' <<<"$TMPBAT")
+            BATTERY="  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
             # make indicator red on low battery
             if [ $(grep '[0-9]*' <<<"$BATTERY") -lt 10 ]; then
-                BATTERY="^c$RED^$BATTERY^d^"
+                BATTERY="^c$RED^  B$BATTERY  ^d^"
             fi
         fi
-        istat BATTERY "B$BATTERY"
+        istat BATTERY "$BATTERY"
     fi
     sleep 1m
 
@@ -72,22 +72,22 @@ sleep 2
 # 10 sec loop
 while :; do
     # option to disable status text and check for enabling it again
-    if [ -e ~/.instantsilent ]; then
+    if [ -e ~/.instantsilent ] && [ -z "$FORCESTATUS" ]; then
         sleep 1m
         continue
     fi
 
     for i in /tmp/instantos/status/*; do
-        date="${date} [$(cat $i)]"
+        date="${date}$(cat $i)"
     done
 
     # date time
-    addstatus "$(date +'%d-%m|%H:%M')"
+    date="$date^d^  $(date +'%d-%m')  ^c$DARKBACK^  $(date +'%H:%M')  "
     # volume
-    addstatus "A$(amixer get Master | egrep -o '[0-9]{1,3}%' | head -1)"
+    date="$date^c$LIGHTBACK^  A$(amixer get Master | grep -Eo '[0-9]{1,3}%' | head -1)  "
 
     # add 11 px spacing
-    xsetroot -name "^f11^$date"
+    xsetroot -name "^d^^f11^$date^d^"
     date=""
 
     sleep 10
