@@ -5,10 +5,21 @@
 ###############################################
 
 if [ -z "$1" ]; then
-	bashes=$(pgrep bash | wc -l)
-	if [ "$bashes" -gt 2 ]; then
-		echo "already running"
-		exit
+	if uname -m | grep -q '^arm'
+	then
+		if [ -e /tmp/osautostart ]
+		then
+			echo "already running"
+			exit
+		else
+			touch /tmp/osautostart
+		fi
+	else
+		bashes=$(pgrep bash | wc -l)
+		if [ "$bashes" -gt 2 ]; then
+			echo "already running"
+			exit
+		fi
 	fi
 else
 	echo "forced run"
