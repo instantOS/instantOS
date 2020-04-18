@@ -13,6 +13,7 @@ if [ -z "$1" ]; then
 			exit
 		else
 			touch /tmp/osautostart
+			export ISRASPI=true
 		fi
 	else
 		bashes=$(pgrep bash | wc -l)
@@ -53,6 +54,19 @@ for i in $(eval "echo {1..$NMON}"); do
 	xdotool key 'super+1' && sleep 0.1
 	xdotool key 'super+comma' && sleep 0.1
 done &
+
+if [ -n "$ISRASPI" ]
+then
+	# enable double drawing for moving floating windows
+	# greatly increases smoothness
+	xdotool key super+alt+shift+d
+	if ! [ -e ~/.config/instantos/israspi ]
+	then
+		echo "marking machine as raspi"
+		mkdir -p ~/.config/instantos
+		touch ~/.config/instantos/israspi
+	fi
+fi
 
 if iconf islaptop; then
 	export ISLAPTOP="true"
