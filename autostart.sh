@@ -65,6 +65,8 @@ then
 		echo "marking machine as raspi"
 		mkdir -p ~/.config/instantos
 		touch ~/.config/instantos/israspi
+		# logo does not work on raspi
+		iconf -i nologo 1
 	fi
 fi
 
