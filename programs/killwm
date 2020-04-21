@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if ! [ -e /tmp/wmpid ]; then
+    if pgrep instantwm; then
+        pkill instantwm
+        exit
+    fi
+else
+    WMPID="$(cat /tmp/wmpid)"
+    if kill -0 "$WMPID"; then
+        kill "$WMPID"
+        exit
+    fi
+fi
+
+echo "no running window manager found"
