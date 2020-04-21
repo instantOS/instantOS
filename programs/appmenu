@@ -1,3 +1,7 @@
 #!/usr/bin/dash
-
-rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary'
+if ! [ -e ~/.config/instantos/israspi ]
+then
+	rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary'
+else
+	jgmenu_run
+fi
