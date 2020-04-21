@@ -9,6 +9,7 @@ else
     WMPID="$(cat /tmp/wmpid)"
     if kill -0 "$WMPID"; then
         kill "$WMPID"
+        rm /tmp/wmpid
         exit
     fi
 fi

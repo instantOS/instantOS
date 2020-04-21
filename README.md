@@ -20,5 +20,3 @@ Everything is lightning fast and works out of the box.
 ## [website](https://instantos.github.io)
 
 This repo contains utilities used all around instantOS, but for a proper README refer to the [website](https://instantos.github.io)  
-
-As it stands there is not single repo/hub containing all instantOS code, this is the closest thing to something like that, but instantOS is **modular** on purpose. 
