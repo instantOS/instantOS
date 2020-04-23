@@ -4,6 +4,12 @@
 ## shut down pc and break instantwm restart loop ##
 ###################################################
 
+# multiple instances would overlap
+if pgrep instantmenu; then
+    echo "instantmenu already running"
+    exit
+fi
+
 answer=$(echo "yes
 no
 logout
