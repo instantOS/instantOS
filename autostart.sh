@@ -5,10 +5,8 @@
 ###############################################
 
 if [ -z "$1" ]; then
-	if uname -m | grep -q '^arm'
-	then
-		if [ -e /tmp/osautostart ]
-		then
+	if uname -m | grep -q '^arm'; then
+		if [ -e /tmp/osautostart ]; then
 			echo "already running"
 			exit
 		else
@@ -55,13 +53,11 @@ for i in $(eval "echo {1..$NMON}"); do
 	xdotool key 'super+comma' && sleep 0.1
 done &
 
-if [ -n "$ISRASPI" ]
-then
+if [ -n "$ISRASPI" ]; then
 	# enable double drawing for moving floating windows
 	# greatly increases smoothness
 	xdotool key super+alt+shift+d
-	if ! [ -e ~/.config/instantos/israspi ]
-	then
+	if ! [ -e ~/.config/instantos/israspi ]; then
 		echo "marking machine as raspi"
 		mkdir -p ~/.config/instantos
 		touch ~/.config/instantos/israspi
@@ -198,4 +194,9 @@ lxpolkit &
 # welcome greeter app
 if iconf -b welcome; then
 	instantwelcome
+fi &
+
+# user declared autostart
+if [ -e ~/.instantautostart ]; then
+	bash ~/.instantautostart
 fi
