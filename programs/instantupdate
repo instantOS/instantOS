@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if ! ping -c 1 google.com &>/dev/null; then
+    echo "internet is required to upgrade instantOS"
+    exit 1
+fi
+
+curl -s "https://raw.githubusercontent.com/instantOS/iso-profiles/master/pacclear.sh" | sudo bash
+sudo pacman -Sy
+
+if pacman -Qi instantmenu-arc &>/dev/null; then
+    sudo pacman -R instantmenu-arc
+    sudo pacman -S instantmenu
+fi
+
+if pacman -Qi instantlock-arc &>/dev/null; then
+    sudo pacman -R instantlock-arc
+    sudo pacman -S instantlock
+fi
+
+if pacman -Qi instantwm-arc &>/dev/null; then
+    sudo pacman -R instantmwm-arc
+    sudo pacman -S instantwm
+fi
+
+instantshell
+sudo pacman -Syuu
+instantdotfiles
+instantthemes a arc
