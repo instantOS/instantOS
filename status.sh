@@ -16,7 +16,6 @@ istat() {
     echo "$2" >/tmp/instantos/status/"$1"
 }
 
-
 mkdir -p /tmp/instantos/status
 
 # update different parts with different frequency

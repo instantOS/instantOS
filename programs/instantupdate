@@ -6,24 +6,24 @@ if ! ping -c 1 google.com &>/dev/null; then
 fi
 
 curl -s "https://raw.githubusercontent.com/instantOS/iso-profiles/master/pacclear.sh" | sudo bash
-sudo pacman -Sy
+sudo pacman -Sy --noconfirm
 
 if pacman -Qi instantmenu-arc &>/dev/null; then
-    sudo pacman -R instantmenu-arc
-    sudo pacman -S instantmenu
+    sudo pacman -R --noconfirm instantmenu-arc
+    sudo pacman -S --noconfirm instantmenu
 fi
 
 if pacman -Qi instantlock-arc &>/dev/null; then
-    sudo pacman -R instantlock-arc
-    sudo pacman -S instantlock
+    sudo pacman -R --noconfirm instantlock-arc
+    sudo pacman -S --noconfirm instantlock
 fi
 
 if pacman -Qi instantwm-arc &>/dev/null; then
-    sudo pacman -R instantmwm-arc
-    sudo pacman -S instantwm
+    sudo pacman -R --noconfirm instantmwm-arc
+    sudo pacman -S --noconfirm instantwm
 fi
 
 instantshell
-sudo pacman -Syuu
+sudo pacman -Syuu --noconfirm
 instantdotfiles
 instantthemes a arc
