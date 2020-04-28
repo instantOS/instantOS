@@ -190,6 +190,7 @@ fi
 
 source /usr/bin/instantstatus &
 lxpolkit &
+xfce4-power-manager &
 
 # welcome greeter app
 if iconf -b welcome; then
