@@ -43,7 +43,7 @@ changetrigger() {
     else
         if [ -e ~/instantos/wallpapers ] && command -v instantwallpaper; then
             rm -rf ~/instantos/wallpapers
-            instantwallpaper random
+            instantwallpaper w
         fi
     fi
 }

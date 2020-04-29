@@ -87,7 +87,7 @@ fi
 
 # dynamically switch between light and dark gtk theme
 DATEHOUR=$(date +%H)
-if [ "$DATEHOUR" -gt "20" ]; then
+if [ "$DATEHOUR" -gt "20" ] && [ "$DATEHOUR" -lt "7" ]; then
 	instantthemes d &
 else
 	instantthemes l &
