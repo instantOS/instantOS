@@ -79,7 +79,7 @@ else
 	echo "your computer is a potato"
 fi
 
-if ! iconf -i instantthemes; then
+if ! iconf -i notheming; then
 	instantthemes a
 	xrdb ~/.Xresources
 	iconf -i instantthemes 1
@@ -151,13 +151,15 @@ if [ -z "$ISLIVE" ]; then
 		esac
 	fi
 
-	shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
-	conky -c /usr/share/instantwidgets/tooltips.conf &
+	if ! iconf -i noconky; then
+		shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
+		conky -c /usr/share/instantwidgets/tooltips.conf &
+	fi
 
 	# don't need applet for ethernet
-	if [ -e ~/.cache/haswifi ]; then
+	if [ -e ~/.cache/haswifi ] || iconf -i wifiapplet; then
 		echo "wifi enabled"
-		while :; do
+		while iconf -i wifiapplet:; do
 			if ! pgrep nm-applet; then
 				nm-applet &
 			fi
