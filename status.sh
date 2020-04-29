@@ -67,7 +67,7 @@ while :; do
 
     if ! iconf -i notheming; then
         DATEHOUR="$(date +%H)"
-        if [ "$DATEHOUR" -lt "7" ] && [ "$DATEHOUR" -gt "20" ]; then
+        if [ "$DATEHOUR" -lt "7" ] || [ "$DATEHOUR" -gt "20" ]; then
             if ! [ -e /tmp/instantdarkmode ]; then
                 instantthemes d &
                 touch /tmp/instantdarkmode
