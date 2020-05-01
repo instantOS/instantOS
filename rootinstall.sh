@@ -112,7 +112,9 @@ cd /tmp
 rm -rf instantos
 
 # check if computer is a potato
-if grep -iq 'Ryzen' /proc/cpuinfo || lshw -C display | grep -q 'nvidia'; then
+MEMAMOUNT="$(free -m | grep -vi swap | grep -o '[0-9]*' | sort -n | tail -1)"
+
+if grep -iq 'Ryzen' /proc/cpuinfo || lshw -C display | grep -q 'nvidia' || [ "$MEMAMOUNT" -gt 3500 ]; then
     echo "classifying pc as not a potato"
 else
     echo "looks like your pc is a potato"
