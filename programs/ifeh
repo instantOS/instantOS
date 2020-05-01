@@ -1,0 +1,10 @@
+#!/bin/bash
+if pgrep ROX &>/dev/null; then
+    pkill ROX
+    feh --bg-scale "$@"
+    if ! pgrep ROX; then
+        rox --pinboard Default
+    fi
+else
+    feh --bg-scale "$@"
+fi
