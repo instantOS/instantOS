@@ -199,6 +199,11 @@ if iconf -b welcome; then
 	instantwelcome
 fi &
 
+# desktop icons
+if iconf -i desktopicons; then
+	rox --pinboard Default
+fi &
+
 # user declared autostart
 if [ -e ~/.instantautostart ]; then
 	bash ~/.instantautostart
