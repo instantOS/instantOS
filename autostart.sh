@@ -169,7 +169,7 @@ if [ -z "$ISLIVE" ]; then
 
 else
 	instantmonitor
-	feh --bg-scale /usr/share/instantwallpaper/defaultphoto.png
+	ifeh /usr/share/instantwallpaper/defaultphoto.png
 	conky -c /usr/share/instantwidgets/install.conf &
 	sleep 0.3
 	while :; do
