@@ -10,8 +10,8 @@ if pgrep instantmenu; then
     exit
 fi
 
-answer=$(echo "yes
-no
+answer=$(echo "cancel
+shutdown
 logout
 reboot
 kill wm" | instantmenu -l 10 -c -n -F -p "do you want to shut down?")
@@ -19,7 +19,7 @@ kill wm" | instantmenu -l 10 -c -n -F -p "do you want to shut down?")
 # if there are apps open, ask for confirmation
 zconfirm() {
     if wmctrl -l | grep -q '..'; then
-        echo "windows found"
+        echo "running applications found"
         if zenity --question --text="there are apps running, sure you want to $1"; then
             echo "yes"
             return 0
@@ -28,12 +28,12 @@ zconfirm() {
             exit
         fi
     else
-        echo "no windows found"
+        echo "no running applications found"
     fi
 }
 
 case "$answer" in
-y*)
+s*)
     zconfirm "shutdown"
     rm ~/.instantosrunning
     sleep 0.4
@@ -55,6 +55,6 @@ k*)
     pkill instantwm
     ;;
 *)
-    echo "no choice, not shutting down"
+    echo "canceled"
     ;;
 esac
