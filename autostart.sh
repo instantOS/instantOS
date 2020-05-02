@@ -4,6 +4,12 @@
 ## script for instantOS autostart            ##
 ###############################################
 
+# run userinstall to determine device properties
+if ! iconf -i userinstall; then
+	/usr/share/instantutils/userinstall.sh
+fi
+
+# architecture detection
 if [ -z "$1" ]; then
 	if uname -m | grep -q '^arm'; then
 		if [ -e /tmp/osautostart ]; then
@@ -37,7 +43,7 @@ if ! iconf -i dotfiles; then
 
 fi
 
-# find out if we're on an installation medium
+# find out if it's a live session
 if command -v calamares_polkit &>/dev/null; then
 	ISLIVE="True"
 	echo "live session detected"
@@ -46,11 +52,7 @@ fi
 # fix small graphical glitch on status bar startup
 NMON=$(iconf names | wc -l)
 for i in $(eval "echo {1..$NMON}"); do
-	xdotool key 'super+2' && sleep 0.1
-	xdotool key 'super+0' && sleep 0.1
-	xdotool key 'super+c' && sleep 0.1
-	xdotool key 'super+1' && sleep 0.1
-	xdotool key 'super+comma' && sleep 0.1
+	echo "found monitor $i"
 done &
 
 if [ -n "$ISRASPI" ]; then
@@ -66,7 +68,7 @@ if [ -n "$ISRASPI" ]; then
 	fi
 fi
 
-if iconf islaptop; then
+if iconf -i islaptop; then
 	export ISLAPTOP="true"
 	echo "laptop detected"
 else
@@ -76,7 +78,7 @@ fi
 if ! [ -e /opt/instantos/potato ]; then
 	picom &
 else
-	echo "your computer is a potato"
+	echo "your computer is a potato, no compositing for you"
 fi
 
 if ! iconf -i notheming; then
@@ -89,15 +91,22 @@ fi
 DATEHOUR=$(date +%H)
 if [ "$DATEHOUR" -gt "20" ] || [ "$DATEHOUR" -lt "7" ]; then
 	instantthemes d &
+	touch /tmp/instantdarkmode
+	[ -e /tmp/instantlightmode ] && rm /tmp/instantlightmode
 else
 	instantthemes l &
+	touch /tmp/instantlightmode
+	[ -e /tmp/instantdarkmode ] && rm /tmp/instantdarkmode
 fi &
 
 mkdir -p /tmp/notifications &>/dev/null
 if ! pgrep dunst; then
 	while :; do
-		dunst
-		sleep 10
+		# wait for theming before starting dunst
+		if [ -e /tmp/instantdarkmode ] || [ -e /tmp/instantlightmode ]; then
+			dunst
+		fi
+		sleep 2
 	done &
 fi
 
@@ -133,7 +142,7 @@ if [ -z "$ISLIVE" ]; then
 				sleep 10
 			fi
 		done
-	fi
+	fi &
 
 	# apply keybpard layout
 	if [ -e ~/instantos/keyboard ]; then
@@ -143,7 +152,6 @@ if [ -z "$ISLIVE" ]; then
 		case "$CURLOCALE" in
 		de_DE)
 			setxkbmap -layout de
-
 			;;
 		*)
 			echo "no keyboard layout found for your locale"
@@ -156,43 +164,32 @@ if [ -z "$ISLIVE" ]; then
 		conky -c /usr/share/instantwidgets/tooltips.conf &
 	fi
 
-	# don't need applet for ethernet
-	if [ -e ~/.cache/haswifi ] || iconf -i wifiapplet; then
-		echo "wifi enabled"
-		while iconf -i wifiapplet:; do
-			if ! pgrep nm-applet; then
-				nm-applet &
-			fi
-			sleep 6m
-		done &
-	fi
-
 else
 	instantmonitor
-	ifeh /usr/share/instantwallpaper/defaultphoto.png
+	iconf -b welcome 1
+	iconf -i wifiapplet 1
+	instantwallpaper set /usr/share/instantwallpaper/defaultphoto.png
 	conky -c /usr/share/instantwidgets/install.conf &
 	sleep 0.3
 	while :; do
-		if ! pgrep nm-applet; then
-			installapplet &
-			nm-applet &
-		fi
+		if ! pgrep installapplet; then
+			installapplet
+		fi &
 		sleep 6m
 	done &
 	sleep 1
 fi
 
-# laptop specific background jobs
-if [ -n "$ISLAPTOP" ]; then
-	echo "libinput gestures"
-	command -v libinput-gestures \
-		&>/dev/null &&
-		libinput-gestures &
-fi
-
 source /usr/bin/instantstatus &
 lxpolkit &
 xfce4-power-manager &
+
+while iconf -i wifiapplet:; do
+	if ! pgrep nm-applet; then
+		nm-applet &
+	fi
+	sleep 6m
+done &
 
 # welcome greeter app
 if iconf -b welcome; then

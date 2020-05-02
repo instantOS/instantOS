@@ -71,11 +71,14 @@ while :; do
             if ! [ -e /tmp/instantdarkmode ]; then
                 instantthemes d &
                 touch /tmp/instantdarkmode
+                [ -e /tmp/instantlightmode ] && rm /tmp/instantlightmode
             fi
         else
             if ! [ -e /tmp/instantlightmode ]; then
                 instantthemes l &
                 touch /tmp/instantlightmode
+                [ -e /tmp/instantdarkmode ] && rm /tmp/instantdarkmode
+
             fi
         fi
     fi
