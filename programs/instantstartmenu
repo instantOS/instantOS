@@ -4,22 +4,30 @@ CHOICE="$(echo 'applications
 settings
 terminal
 info
-shutdown' | instantmenu -n -l 10 -C -F)"
+shutdown
+get started
+close menu' | instantmenu -n -l 10 -C -F)"
 
 [ -z "$CHOICE" ] && exit
 echo "$CHOICE"
 case "$CHOICE" in
 applications)
-    zenity --info --text="Click in the top right is the recommended way to launch applications"
+    zenity --info --text="it is recommended to launch applications by clicking in the top right corner instead"
     appmenu &
     ;;
 settings)
     instantsettings &
     ;;
 info)
-    urxvt -e sh -c 'neofetch | less' &
+    urxvt -e sh -c 'neofetch | less -r' &
     ;;
 shutdown)
     instantshutdown &
+    ;;
+terminal)
+    urxvt -cd "$HOME" &
+    ;;
+close+)
+    echo "closed menu"
     ;;
 esac

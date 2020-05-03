@@ -172,7 +172,7 @@ else
 	conky -c /usr/share/instantwidgets/install.conf &
 	sleep 0.3
 	while :; do
-		if ! pgrep installapplet; then
+		if ! pgrep python; then
 			installapplet
 		fi &
 		sleep 6m
