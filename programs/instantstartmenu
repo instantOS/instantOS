@@ -6,7 +6,7 @@ terminal
 info
 shutdown
 get started
-close menu' | instantmenu -n -l 10 -C -F)"
+close menu' | instantmenu -w 200 -n -l 10 -x 0 -y 0 -F)"
 
 [ -z "$CHOICE" ] && exit
 echo "$CHOICE"
