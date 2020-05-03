@@ -14,6 +14,7 @@ answer=$(echo "cancel
 shutdown
 logout
 reboot
+lock screen
 kill wm" | instantmenu -l 10 -c -n -F -p "do you want to shut down?")
 
 # if there are apps open, ask for confirmation
@@ -45,11 +46,14 @@ r*)
     sleep 0.4
     reboot
     ;;
-l*)
+log*)
     zconfirm "sign out"
     rm ~/.instantosrunning
     sleep 0.4
     kill -9 -1
+    ;;
+loc*)
+    ilock
     ;;
 k*)
     pkill instantwm
