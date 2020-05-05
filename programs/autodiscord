@@ -20,8 +20,15 @@ while :; do
         exit
     fi
 
-    if ! pgrep Discord; then
-        Discord
+    if command -v discord; then
+        if ! pgrep discord; then
+            discord
+        fi
+    elif command -v Discord; then
+        if ! pgrep Discord; then
+            Discord
+        fi
     fi
+
     sleep 10
 done
