@@ -31,12 +31,10 @@ else
 fi
 
 cd
-if ! iconf -i dotfiles; then
-	echo "installing dotfiles"
-	instantdotfiles &
-	mkdir instantos
-	iconf -i dotfiles 1
+instantdotfiles
 
+if ! iconf -i rangerplugins; then
+	mkdir instantos
 	echo "installing ranger plugins"
 	mkdir -p ~/.config/ranger/plugins
 	cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
@@ -53,12 +51,16 @@ fi
 NMON=$(iconf names | wc -l)
 for i in $(eval "echo {1..$NMON}"); do
 	echo "found monitor $i"
+	xdotool key super+comma
+	if iconf -i nobar; then
+		xdotool key super+b
+	fi
 done &
 
 if [ -n "$ISRASPI" ]; then
 	# enable double drawing for moving floating windows
 	# greatly increases smoothness
-	xdotool key super+alt+shift+d
+	iconf -i highfps 1
 	if ! [ -e ~/.config/instantos/israspi ]; then
 		echo "marking machine as raspi"
 		mkdir -p ~/.config/instantos
@@ -178,6 +180,10 @@ else
 		sleep 6m
 	done &
 	sleep 1
+fi
+
+if iconf -i highfps; then
+	xdotool key super+alt+shift+d
 fi
 
 source /usr/bin/instantstatus &
