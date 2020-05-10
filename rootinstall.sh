@@ -51,7 +51,7 @@ addenv -f "PAGER" "less"
 addenv -f "EDITOR" "$(which nvim)"
 
 # needed for instantLOCK
-if grep -q 'nobody' </etc/groups || grep -q 'nobody' </etc/group; then
+if grep -q 'nobody' </etc/groups &>/dev/null || grep -q 'nobody' </etc/group &>/dev/null; then
     echo "nobody workaround not required"
 else
     sudo groupadd nobody

@@ -117,8 +117,8 @@ ipkg youtube-dl
 ipkg nautilus
 ipkg cpio
 
-if hwinfo --gfxcard --short | grep -iE 'nvidia.*(gtx|rtx|titan)'; then
-    if cat /etc/os-release | grep -qi 'manjaro'; then
+if cat /etc/os-release | grep -qi 'manjaro'; then
+    if hwinfo --gfxcard --short | grep -iE 'nvidia.*(gtx|rtx|titan)'; then
         echo "installing nvidia graphics drivers"
         sudo mhwd -a pci nonfree 0300
         if grep -Eiq 'instantos|manjaro' /etc/os-release; then
@@ -135,7 +135,7 @@ if hwinfo --gfxcard --short | grep -iE 'nvidia.*(gtx|rtx|titan)'; then
             fi
             pacinstall nvidia
         fi
-    elif grep -qi 'arch' /etc/os-release; then
-        pacinstall nvidia
     fi
+else
+    pacinstall xdg-desktop-portal-gtk
 fi
