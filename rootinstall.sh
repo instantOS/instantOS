@@ -128,3 +128,6 @@ if ! grep -q '\[instant\]' /etc/pacman.conf; then
 else
     echo "instantOS repo found"
 fi
+
+# fix brightness permissions
+bash /opt/instantos/menus/data/backlight.sh
