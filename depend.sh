@@ -69,7 +69,6 @@ pacinstall which
 
 pacinstall p7zip
 
-pacinstall panther_launcher
 pacinstall instantutils
 pacinstall instantwallpaper
 pacinstall instantdotfiles
@@ -82,7 +81,6 @@ pacinstall instantlock
 
 pacinstall xdragon
 pacinstall autojump
-pacinstall wmutils
 pacinstall grub-theme-instantos
 
 ipkg bash
@@ -109,7 +107,6 @@ ipkg lxappearance
 ipkg rofi
 ipkg conky
 ipkg dunst
-ipkg rxvt-unicode
 
 ipkg xdotool
 ipkg wmctrl
