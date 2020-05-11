@@ -5,7 +5,7 @@ settings
 terminal
 info
 shutdown
-get started
+documentation
 close menu' | instantmenu -w 200 -n -l 10 -x 0 -y 0 -F)"
 
 [ -z "$CHOICE" ] && exit
@@ -26,10 +26,13 @@ shutdown)
 terminal)
     urxvt -cd "$HOME" &
     ;;
+documentation)
+    firefox 'https://instantos.github.io/instantos.github.io/documentation'
+    ;;
 close)
     echo "closed menu"
     ;;
-get*)
-    firefox 'https://instantos.github.io/instantos.github.io/documentation'
+*)
+    echo "no choice"
     ;;
 esac
