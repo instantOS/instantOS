@@ -7,7 +7,7 @@ else
     exit
 fi
 
-if ! ping -c 1 google.com; then
+if ! ping -c 1 archlinux.org; then
     echo "internet is required"
     exit
 fi

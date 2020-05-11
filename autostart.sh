@@ -118,8 +118,18 @@ onlinetrigger() {
 
 # set up oh-my-zsh config if not existing already
 instantshell &
+if ! [ iconf -i userinstall ]; then
+	bash /usr/share/instantutils/userinstall.sh
+fi
 
 if [ -z "$ISLIVE" ]; then
+
+	if [ -e /opt/instantos/installtrigger ]; then
+		zenity --info --text "finishing installation in background" &
+		sudo instantpostinstall
+		pkill zenity
+	fi
+
 	cd ~/instantos
 	if ! iconf -i max; then
 		instantmonitor
@@ -131,13 +141,13 @@ if [ -z "$ISLIVE" ]; then
 		autorandr instantos &
 	fi
 
-	if ping google.com -c 2; then
+	if ping archlinux.org -c 2; then
 		onlinetrigger
 	else
 		# fall back to already installed wallpapers
 		instantwallpaper offline
 		for i in $(seq 10); do
-			if ping google.com -c 2; then
+			if ping archlinux.org -c 2; then
 				onlinetrigger
 				break
 			else

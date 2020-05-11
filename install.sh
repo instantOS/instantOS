@@ -35,11 +35,6 @@ echo "installing dependencies"
 
 echo "root: installing tools"
 /usr/share/instantutils/rootinstall.sh
-/usr/share/instantdotfiles/rootinstall.sh
 
-userrun /usr/share/instantutils/userinstall.sh
 
 instantthemes f
-
-echo "installing dotfiles"
-instantdotfiles -f root

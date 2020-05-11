@@ -134,3 +134,10 @@ fi
 
 # fix brightness permissions
 bash /opt/instantos/menus/data/backlight.sh
+
+# set up postinstall trigger
+echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
+echo "" >>/etc/sudoers
+
+mkdir -p /opt/instantos
+touch /opt/instantos/installtrigger

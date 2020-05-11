@@ -8,7 +8,7 @@ cd
 echo "installing instantOS tools"
 
 # laptop specific stuff
-if acpi | grep -q '.' &> /dev/null; then
+if acpi | grep -q '.' &>/dev/null; then
     # config file to indicate being a laptop
     echo "device appears to be a laptop"
     iconf -i islaptop 1
@@ -28,3 +28,6 @@ if lsusb | grep -iq 'bluetooth'; then
 fi
 
 instantmouse gen
+
+mkdir ~/instantos
+iconf -i userinstall 1
