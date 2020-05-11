@@ -12,14 +12,13 @@ close menu' | instantmenu -w 200 -n -l 10 -x 0 -y 0 -F)"
 echo "$CHOICE"
 case "$CHOICE" in
 applications)
-    zenity --info --text="it is recommended to launch applications by clicking in the top right corner instead"
     appmenu &
     ;;
 settings)
     instantsettings &
     ;;
 info)
-    urxvt -e sh -c 'neofetch | less -r' &
+    urxvt -e sh -c 'neofetch && sleep 60m' &
     ;;
 shutdown)
     instantshutdown &
@@ -27,7 +26,10 @@ shutdown)
 terminal)
     urxvt -cd "$HOME" &
     ;;
-close+)
+close)
     echo "closed menu"
+    ;;
+get*)
+    firefox 'https://instantos.github.io/instantos.github.io/documentation'
     ;;
 esac
