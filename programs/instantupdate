@@ -25,5 +25,5 @@ fi
 
 instantshell
 sudo pacman -Syuu --noconfirm
-instantdotfiles
+instantdotfiles -f
 instantthemes a arc

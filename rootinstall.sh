@@ -23,7 +23,6 @@ ugroup() {
 
 ugroup video
 ugroup input
-ugroup autologin
 
 RAW="https://raw.githubusercontent.com"
 
@@ -114,6 +113,9 @@ rm -rf instantos
 
 # check if computer is a potato
 MEMAMOUNT="$(free -m | grep -vi swap | grep -o '[0-9]*' | sort -n | tail -1)"
+
+# computer is not a potato if it has an nvidia card, a ryzen processor or more than 3,5gb of ram.
+# it can be unpotatoed at any time.
 
 if grep -iq 'Ryzen' /proc/cpuinfo || lshw -C display | grep -q 'nvidia' || [ "$MEMAMOUNT" -gt 3500 ]; then
     echo "classifying pc as not a potato"
