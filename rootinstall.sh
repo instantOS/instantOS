@@ -23,6 +23,7 @@ ugroup() {
 
 ugroup video
 ugroup input
+ugroup autologin
 
 RAW="https://raw.githubusercontent.com"
 
