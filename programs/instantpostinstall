@@ -5,5 +5,5 @@ bash /root/instantARCH/postinstall.sh
 bash /usr/share/instantdotfiles/rootinstall.sh
 
 # require password for root account
-sed -i '/.*#instantosroot/d' /etc/sudoers
+sed -i '/.*NOPASSWD/d' /etc/sudoers
 rm /opt/instantos/installtrigger
