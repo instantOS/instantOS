@@ -42,7 +42,7 @@ if ! iconf -i rangerplugins; then
 fi
 
 # find out if it's a live session
-if command -v calamares_polkit &>/dev/null; then
+if [ -e /usr/share/liveutils ] &>/dev/null; then
 	ISLIVE="True"
 	echo "live session detected"
 fi
@@ -123,7 +123,7 @@ if ! [ iconf -i userinstall ]; then
 fi
 
 if [ -z "$ISLIVE" ]; then
-
+	echo "not a live session"
 	if [ -e /opt/instantos/installtrigger ]; then
 		zenity --info --text "finishing installation in background" &
 		sudo instantpostinstall
@@ -177,6 +177,7 @@ if [ -z "$ISLIVE" ]; then
 	fi
 
 else
+	echo "live session detected"
 	instantmonitor
 	iconf -b welcome 1
 	iconf -i wifiapplet 1
