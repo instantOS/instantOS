@@ -97,34 +97,6 @@ EOT
 
 fi
 
-if [ -e /etc/lightdm/lightdm.conf ] && ! grep -q 'instantwm' /etc/lightdm/lightdm.conf; then
-    sudo sed -i 's/^user-session=.*/user-session=instantwm/g' /etc/lightdm/lightdm.conf
-    sudo sed -i '# user-session = Session to load for users/user-session=instantwm/g' /etc/lightdm/lightdm.conf
-fi
-
-rm -rf /tmp/instantinstall
-mkdir /tmp/instantinstall
-cd /tmp/instantinstall
-
-echo "the theme is $THEME"
-
-cd /tmp
-rm -rf instantos
-
-# check if computer is a potato
-MEMAMOUNT="$(free -m | grep -vi swap | grep -o '[0-9]*' | sort -n | tail -1)"
-
-# computer is not a potato if it has an nvidia card, a ryzen processor or more than 3,5gb of ram.
-# it can be unpotatoed at any time.
-
-if grep -iq 'Ryzen' /proc/cpuinfo || lshw -C display | grep -q 'nvidia' || [ "$MEMAMOUNT" -gt 3500 ]; then
-    echo "classifying pc as not a potato"
-else
-    echo "looks like your pc is a potato"
-    mkdir -p /opt/instantos
-    echo "true" >/opt/instantos/potato
-fi
-
 # install a custom repo
 if ! grep -q '\[instant\]' /etc/pacman.conf; then
     /usr/share/instantutils/repo.sh
@@ -132,12 +104,35 @@ else
     echo "instantOS repo found"
 fi
 
-# fix brightness permissions
-bash /opt/instantos/menus/data/backlight.sh
-
-# set up postinstall trigger
 echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
 echo "" >>/etc/sudoers
 
-mkdir -p /opt/instantos
-touch /opt/instantos/installtrigger
+if [ -e /opt/livebuilder ]; then
+    echo "live session builder detected"
+else
+    if [ -e /etc/lightdm/lightdm.conf ] && ! grep -q 'instantwm' /etc/lightdm/lightdm.conf; then
+        sudo sed -i 's/^user-session=.*/user-session=instantwm/g' /etc/lightdm/lightdm.conf
+        sudo sed -i '# user-session = Session to load for users/user-session=instantwm/g' /etc/lightdm/lightdm.conf
+    fi
+
+    # check if computer is a potato
+    MEMAMOUNT="$(free -m | grep -vi swap | grep -o '[0-9]*' | sort -n | tail -1)"
+
+    # computer is not a potato if it has an nvidia card, a ryzen processor or more than 3,5gb of ram.
+    # it can be unpotatoed at any time.
+
+    if grep -iq 'Ryzen' /proc/cpuinfo || lshw -C display | grep -q 'nvidia' || [ "$MEMAMOUNT" -gt 3500 ]; then
+        echo "classifying pc as not a potato"
+    else
+        echo "looks like your pc is a potato"
+        mkdir -p /opt/instantos
+        echo "true" >/opt/instantos/potato
+    fi
+
+    # fix brightness permissions
+    bash /opt/instantos/menus/data/backlight.sh
+    # set up postinstall trigger
+
+    mkdir -p /opt/instantos
+    touch /opt/instantos/installtrigger
+fi

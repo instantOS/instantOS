@@ -3,7 +3,7 @@
 
 export PAPERSILENT="True"
 
-if [ $(whoami) = "root" ] || [ $(whoami) = "manjaro" ]; then
+if [ $(whoami) = "root" ] || [ $(whoami) = "manjaro" ] || [ $(whoami) = "archiso" ];; then
     echo "user check successful"
 else
     echo "please run this as root"
@@ -18,7 +18,6 @@ if ! grep -Eiq 'name.*(arch|manjaro)' /etc/os-release; then
 fi
 
 REALUSERS="$(ls /home/ | grep -v '+')"
-export THEME=${1:-arc}
 
 # run a tool as every existing
 # "real"(there's a human behind it) user
