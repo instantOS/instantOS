@@ -6,7 +6,7 @@ terminal
 info
 shutdown
 documentation
-close menu' | instantmenu -w 200 -n -l 10 -x 0 -y 0 -F)"
+close menu' | instantmenu -bw 4 -w 200 -n -l 10 -x 0 -y 34 -F)"
 
 [ -z "$CHOICE" ] && exit
 echo "$CHOICE"
