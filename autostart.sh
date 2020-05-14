@@ -45,6 +45,11 @@ fi
 if [ -e /usr/share/liveutils ] &>/dev/null; then
 	ISLIVE="True"
 	echo "live session detected"
+
+	# fix resolution on virtualbox
+	if sudo dmidecode | grep -iq 'virtualbox'; then
+		bash /opt/instantos/menus/dm/tv.sh
+	fi
 fi
 
 # fix small graphical glitch on status bar startup
