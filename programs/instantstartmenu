@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pgrep instantmenu && exit
+
 CHOICE="$(echo 'applications
 settings
 terminal
