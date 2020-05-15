@@ -8,22 +8,11 @@ fi
 curl -s "https://raw.githubusercontent.com/instantOS/iso-profiles/master/pacclear.sh" | sudo bash
 sudo pacman -Sy --noconfirm
 
-if pacman -Qi instantmenu-arc &>/dev/null; then
-    sudo pacman -R --noconfirm instantmenu-arc
-    sudo pacman -S --noconfirm instantmenu
-fi
-
-if pacman -Qi instantlock-arc &>/dev/null; then
-    sudo pacman -R --noconfirm instantlock-arc
-    sudo pacman -S --noconfirm instantlock
-fi
-
-if pacman -Qi instantwm-arc &>/dev/null; then
-    sudo pacman -R --noconfirm instantmwm-arc
-    sudo pacman -S --noconfirm instantwm
-fi
-
 instantshell
 sudo pacman -Syuu --noconfirm
 instantdotfiles -f
 instantthemes a arc
+
+sudo bash /usr/share/instantutils/rootinstall.sh
+sudo bash /usr/share/instantdotfiles/rootinstall.sh
+bash /usr/share/instantdotfiles/userinstall.sh
