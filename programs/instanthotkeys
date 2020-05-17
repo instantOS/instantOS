@@ -5,7 +5,7 @@
 dlbinds() {
     curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' |
         sed 's/^\([^|#]\)/    \1/g' |
-        sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md &
+        sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md
 }
 
 if ! [ -e ~/.cache/instantos/hotkeys.md ]; then
