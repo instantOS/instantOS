@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Show a list of available key bindings
+
+if ! [ -e ~/.cache/instantos/hotkeys.md ]; then
+    mkdir -p ~/.cache/instantos &>/dev/null
+    curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' >~/.cache/instantos/hotkeys.md
+fi
+
+cp ~/.cache/instantos/hotkeys.md /tmp/hotkeys
+curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' >~/.cache/instantos/hotkeys.md &
+less /tmp/hotkeys
