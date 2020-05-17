@@ -1,6 +1,14 @@
 #!/bin/bash
 
-pgrep instantmenu && exit
+if [ -e /tmp/instantstartmenu ]
+then
+	if ! pgrep instantstartmenu
+	then
+		rm /tmp/instantmenu
+	fi
+fi
+
+touch /tmp/instantmenu
 
 CHOICE="$(echo 'applications
 settings
@@ -10,6 +18,8 @@ shutdown
 documentation
 keybindings
 close menu' | instantmenu -bw 4 -w 200 -n -l 10 -x 0 -y 34 -F)"
+
+rm /tmp/instantstartmenu
 
 [ -z "$CHOICE" ] && exit
 echo "$CHOICE"
