@@ -21,7 +21,7 @@ NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -markup-rows)
 
 while [ -n "$NREAD" ]; do
     CHOICE=$(echo "r: read
-x: delete" | instantmenu -x 500 -y 300 -n -w 100 -l 2 -bw 4 -h 50)
+x: delete" | instantmenu -c -n -w 100 -l 2 -bw 4 -h 50)
     case "$CHOICE" in
     r*)
         echo "$NREAD" |
