@@ -2,11 +2,17 @@
 
 # Show a list of available key bindings
 
+dlbinds() {
+    curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' |
+        sed 's/^\([^|#]\)/    \1/g' |
+        sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md &
+}
+
 if ! [ -e ~/.cache/instantos/hotkeys.md ]; then
     mkdir -p ~/.cache/instantos &>/dev/null
-    curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' >~/.cache/instantos/hotkeys.md
+    dlbinds
 fi
 
-cp ~/.cache/instantos/hotkeys.md /tmp/hotkeys
-curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' >~/.cache/instantos/hotkeys.md &
+cat ~/.cache/instantos/hotkeys.md >/tmp/hotkeys
+dlbinds &
 less --mouse --wheel-lines=3 /tmp/hotkeys
