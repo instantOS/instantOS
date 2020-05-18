@@ -104,8 +104,10 @@ else
     echo "instantOS repo found"
 fi
 
-echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
-echo "" >>/etc/sudoers
+if ! grep -iq manjaro /etc/os-release; then
+    echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
+    echo "" >>/etc/sudoers
+fi
 
 if [ -e /opt/livebuilder ]; then
     echo "live session builder detected"

@@ -7,3 +7,7 @@ bash /usr/share/instantdotfiles/rootinstall.sh
 # require password for root account
 sed -i '/.*NOPASSWD/d' /etc/sudoers
 rm /opt/instantos/installtrigger
+
+# delete credentials
+rm /root/instantARCH/config/user
+rm /root/instantARCH/config/password
