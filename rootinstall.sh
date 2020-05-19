@@ -49,6 +49,7 @@ addenv() {
 addenv -f "QT_QPA_PLATFORMTHEME" "qt5ct"
 addenv -f "PAGER" "less"
 addenv -f "EDITOR" "$(which nvim)"
+addenv -f "XDG_MENU_PREFIX" "gnome-"
 
 # needed for instantLOCK
 if grep -q 'nobody' </etc/groups &>/dev/null || grep -q 'nobody' </etc/group &>/dev/null; then
