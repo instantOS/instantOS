@@ -83,7 +83,7 @@ else
 fi
 
 if ! [ -e /opt/instantos/potato ]; then
-	picom &
+	picom --experimental-backends &
 else
 	echo "your computer is a potato, no compositing for you"
 fi
