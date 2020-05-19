@@ -27,7 +27,7 @@ x: delete" | instantmenu -c -n -w 100 -l 2 -bw 4 -h 50)
         echo "$NREAD" |
             sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] <b>\(.*\)<\/b> | <i>\(.*\)<\/i>/time: \1\nApp:  \2\n      \3\n\n      \4/g ' |
             sed 's/&amp;/&/g' >/tmp/instantmessage
-        urxvt -e sh -c "less /tmp/instantmessage"
+        st -e sh -c "less /tmp/instantmessage"
         ;;
     x*)
         grep -vF "$NREAD" notif.txt >tmp.notif && mv tmp.notif notif.txt

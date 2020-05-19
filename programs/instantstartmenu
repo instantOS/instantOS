@@ -31,19 +31,19 @@ settings)
     instantsettings &
     ;;
 info)
-    urxvt -e sh -c 'neofetch && sleep 60m' &
+    st -e sh -c 'neofetch && sleep 60m' &
     ;;
 shutdown)
     instantshutdown &
     ;;
 terminal)
-    urxvt -cd "$HOME" &
+    st &
     ;;
 documentation)
     firefox 'https://instantos.github.io/instantos.github.io/documentation'
     ;;
 keybindings)
-    urxvt -e instanthotkeys
+    st -e instanthotkeys
     ;;
 close)
     echo "closed menu"
