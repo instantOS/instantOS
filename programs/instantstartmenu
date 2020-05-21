@@ -1,11 +1,9 @@
 #!/bin/bash
 
-if [ -e /tmp/instantstartmenu ]
-then
-	if ! pgrep instantstartmenu
-	then
-		rm /tmp/instantmenu
-	fi
+if [ -e /tmp/instantstartmenu ]; then
+    if ! pgrep instantstartmenu; then
+        rm /tmp/instantmenu
+    fi
 fi
 
 touch /tmp/instantmenu
@@ -22,6 +20,7 @@ close menu' | instantmenu -bw 4 -w 200 -n -l 10 -x 0 -y 34 -F)"
 rm /tmp/instantstartmenu
 
 [ -z "$CHOICE" ] && exit
+
 echo "$CHOICE"
 case "$CHOICE" in
 applications)
@@ -40,10 +39,10 @@ terminal)
     st &
     ;;
 documentation)
-    firefox 'https://instantos.github.io/instantos.github.io/documentation'
+    firefox 'https://instantos.github.io/instantos.github.io/documentation' &
     ;;
 keybindings)
-    st -e instanthotkeys
+    st -e instanthotkeys &
     ;;
 close)
     echo "closed menu"
@@ -52,3 +51,5 @@ close)
     echo "no choice"
     ;;
 esac
+
+exit
