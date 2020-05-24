@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# a menu of customized quick shortcuts
+
+if ! [ -e ~/instantos/quickmenu ]; then
+    mkdir ~/instantos/quickmenu
+    touch ~/instantos/quickmenu/close
+fi
+
+cd ~/instantos/quickmenu
+QUICKPATH=""
+while [ -z "$QUICKCHOICE" ]; do
+    QUICKCHOICE="$(ls | instantmenu -C -l 7 -w 300)"
+    if [ -z "$QUICKCHOICE" ] || grep -q 'close' <<<"$QUICKCHOICE"; then
+        exit
+    fi
+
+    if [ -e "$QUICKCHOICE" ]; then
+        if [ -d "$QUICKCHOICE" ]; then
+            cd "$QUICKCHOICE"
+        elif grep -q ".." "$QUICKCHOICE"; then
+            if grep -q "^#instantosterm" "$QUICKCHOICE"; then
+                st -e sh -c "bash $(realpath $QUICKCHOICE)"
+            else
+                bash "$QUICKCHOICE"
+            fi
+            exit
+        else
+            echo "$QUICKCHOICE is not a valid script" | imenu -M
+            exit
+        fi
+        unset QUICKCHOICE
+    fi
+done
