@@ -2,33 +2,70 @@
 
 # a menu of customized quick shortcuts
 
+requirefile() {
+    if ! [ -e ~/instantos/quickmenu/$1 ]; then
+        echo "# instantos generated file, do not touch" >~/instantos/quickmenu/$1
+    fi
+
+}
+
 if ! [ -e ~/instantos/quickmenu ]; then
     mkdir ~/instantos/quickmenu
-    touch ~/instantos/quickmenu/close
 fi
+
+requirefile close
+requirefile edit
 
 cd ~/instantos/quickmenu
 QUICKPATH=""
-while [ -z "$QUICKCHOICE" ]; do
-    QUICKCHOICE="$(ls | instantmenu -C -l 7 -w 300)"
-    if [ -z "$QUICKCHOICE" ] || grep -q 'close' <<<"$QUICKCHOICE"; then
-        exit
-    fi
 
-    if [ -e "$QUICKCHOICE" ]; then
-        if [ -d "$QUICKCHOICE" ]; then
-            cd "$QUICKCHOICE"
-        elif grep -q ".." "$QUICKCHOICE"; then
-            if grep -q "^#instantosterm" "$QUICKCHOICE"; then
-                st -e sh -c "bash $(realpath $QUICKCHOICE)"
-            else
-                bash "$QUICKCHOICE"
-            fi
+pickscript() {
+    cd ~/instantos/quickmenu
+    unset CHOICE
+    while [ -z "$CHOICE" ]; do
+        if [ -z "$(ls)" ]; then
+            imenu -m "directory is empty"
             exit
         else
-            echo "$QUICKCHOICE is not a valid script" | imenu -M
-            exit
+            CHOICE="$(ls | instantmenu -bw 4 -C -l 7 -w 300)"
         fi
-        unset QUICKCHOICE
+        if [ -e "$CHOICE" ]; then
+            if [ -d "$CHOICE" ]; then
+                cd "$CHOICE"
+                unset CHOICE
+            else
+                echo "$(realpath $CHOICE)"
+            fi
+        else
+            cd ~/instantos/quickmenu
+            return 1
+        fi
+    done
+    cd ~/instantos/quickmenu
+
+}
+
+QUICKCHOICE="$(pickscript)"
+echo "$QUICKCHOICE"
+
+if [ -z "$QUICKCHOICE" ]; then
+    exit
+fi
+
+case "$QUICKCHOICE" in
+close)
+    exit
+    ;;
+edit)
+    echo "editing menu"
+    ;;
+*)
+    if grep -q "^#instantosterm" "$QUICKCHOICE"; then
+        st -e sh -c "bash $(realpath $QUICKCHOICE)"
+        exit
+    else
+        bash "$QUICKCHOICE"
+        exit
     fi
-done
+    ;;
+esac
