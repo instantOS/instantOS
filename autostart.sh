@@ -181,6 +181,12 @@ if [ -z "$ISLIVE" ]; then
 		esac
 	fi
 
+	# read cursor speed
+	if iconf mousespeed; then
+		echo "setting mousespeed"
+		instantmouse s "$(iconf mousespeed)"
+	fi
+
 	if ! iconf -i noconky; then
 		shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
 		conky -c /usr/share/instantwidgets/tooltips.conf &
