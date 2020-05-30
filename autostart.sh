@@ -213,7 +213,11 @@ if iconf -i highfps; then
 	xdotool key super+alt+shift+d
 fi
 
-source /usr/bin/instantstatus &
+# make built in status optional
+if ! iconf -i nostatus; then
+	source /usr/bin/instantstatus &
+fi
+
 lxpolkit &
 xfce4-power-manager &
 
