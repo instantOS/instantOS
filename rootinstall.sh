@@ -49,6 +49,7 @@ addenv() {
 addenv -f "QT_QPA_PLATFORMTHEME" "qt5ct"
 addenv -f "PAGER" "less"
 addenv -f "EDITOR" "$(which nvim)"
+addenv -f "XDG_MENU_PREFIX" "gnome-"
 
 # needed for instantLOCK
 if grep -q 'nobody' </etc/groups &>/dev/null || grep -q 'nobody' </etc/group &>/dev/null; then
@@ -104,8 +105,10 @@ else
     echo "instantOS repo found"
 fi
 
-echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
-echo "" >>/etc/sudoers
+if ! grep -iq manjaro /etc/os-release; then
+    echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
+    echo "" >>/etc/sudoers
+fi
 
 if [ -e /opt/livebuilder ]; then
     echo "live session builder detected"

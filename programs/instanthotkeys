@@ -3,21 +3,19 @@
 # Show a list of available key bindings
 
 dlbinds() {
-    curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' |
-        sed 's/^\([^|#]\)/    \1/g' |
-        sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md
+    if ping -c 1 archlinux.org; then
+        curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' |
+            sed 's/^\([^|#]\)/    \1/g' |
+            sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md
+    fi
 }
 
 if ! [ -e ~/.cache/instantos/hotkeys.md ]; then
-    mkdir -p ~/.cache/instantos &>/dev/null
+    mkdir -p ~/.cache/instantos
     dlbinds
 fi
 
 cat ~/.cache/instantos/hotkeys.md >/tmp/hotkeys
 dlbinds &
-
-# make window slightly transparent
-WINID="$(xdotool getwindowfocus)"
-xprop -f -id "$WINID" _NET_WM_WINDOW_OPACITY 32c -set _NET_WM_WINDOW_OPACITY $(printf 0x%x $((0xffffffff * 80 / 100)))
 
 less --mouse --wheel-lines=3 /tmp/hotkeys

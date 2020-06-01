@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# a menu of customized quick shortcuts
+
+if ! [ -e ~/instantos/quickmenu ]; then
+    mkdir ~/instantos/quickmenu
+fi
+
+cd ~/instantos/quickmenu
+QUICKPATH=""
+
+pickscript() {
+    cd ~/instantos/quickmenu
+    unset CHOICE
+    while [ -z "$CHOICE" ]; do
+        if [ -z "$(ls)" ]; then
+            CHOICE="$(echo 'edit menu
+close' | instantmenu -bw 4 -C -l 7 -w 300)"
+        else
+            CHOICE="$(ls | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 7 -w 300)"
+        fi
+        if [ -e "$CHOICE" ]; then
+            if [ -d "$CHOICE" ]; then
+                cd "$CHOICE"
+                unset CHOICE
+            else
+                echo "$(realpath $CHOICE)"
+            fi
+        else
+            if grep -Eiq '^(close|edit)' <<<"$CHOICE"; then
+                echo "$CHOICE"
+                QUICKPATH="$(pwd)"
+            else
+                cd ~/instantos/quickmenu
+                return 1
+            fi
+        fi
+    done
+    cd ~/instantos/quickmenu
+
+}
+
+addmenu() {
+    ADDCHOICE="$(echo 'add entry
+edit entry
+remove entry' | instantmenu -bw 4 -C -l 7 -w 300)"
+    if [ -z "$ADDCHOICE" ]; then
+        echo "no addchoice"
+        exit
+    fi
+    cd "$QUICKCHOICE"
+    case "$ADDCHOICE" in
+
+    remove*)
+        echo "removing"
+        ;;
+
+    esac
+}
+
+QUICKCHOICE="$(pickscript)"
+echo "$QUICKCHOICE"
+
+if [ -z "$QUICKCHOICE" ]; then
+    exit
+fi
+
+case "$QUICKCHOICE" in
+close)
+    exit
+    ;;
+"edit menu")
+    echo "editing menu"
+    addmenu
+    ;;
+*)
+    if grep -q "^#instantosterm" "$QUICKCHOICE"; then
+        st -e sh -c "bash $(realpath $QUICKCHOICE)"
+        exit
+    else
+        bash "$QUICKCHOICE"
+        exit
+    fi
+    ;;
+esac

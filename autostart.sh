@@ -83,7 +83,12 @@ else
 fi
 
 if ! [ -e /opt/instantos/potato ]; then
-	picom &
+	# optional blur
+	if iconf -i blur; then
+		picom --experimental-backends &
+	else
+		picom &
+	fi
 else
 	echo "your computer is a potato, no compositing for you"
 fi
@@ -176,6 +181,12 @@ if [ -z "$ISLIVE" ]; then
 		esac
 	fi
 
+	# read cursor speed
+	if iconf mousespeed; then
+		echo "setting mousespeed"
+		instantmouse s "$(iconf mousespeed)"
+	fi
+
 	if ! iconf -i noconky; then
 		shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
 		conky -c /usr/share/instantwidgets/tooltips.conf &
@@ -202,7 +213,11 @@ if iconf -i highfps; then
 	xdotool key super+alt+shift+d
 fi
 
-source /usr/bin/instantstatus &
+# make built in status optional
+if ! iconf -i nostatus; then
+	source /usr/bin/instantstatus &
+fi
+
 lxpolkit &
 xfce4-power-manager &
 

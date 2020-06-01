@@ -14,8 +14,7 @@
 ![Discord](https://img.shields.io/discord/683782260071071764)
 ![Maintenance](https://img.shields.io/maintenance/yes/2020)
 
-instantOS is a Manjaro based distro that works out of the box but is still aimed at power users. 
-Everything is lightning fast and works out of the box. 
+instantOS is an Arch based distro that works out of the box but is still aimed at power users. 
 
 ## [website](https://instantos.github.io)
 
