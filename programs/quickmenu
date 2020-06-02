@@ -17,7 +17,7 @@ pickscript() {
             CHOICE="$(echo 'edit menu
 close' | instantmenu -bw 4 -C -l 7 -w 300)"
         else
-            CHOICE="$(ls | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 7 -w 300)"
+            CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 7 -w 300)"
         fi
         if [ -e "$CHOICE" ]; then
             if [ -d "$CHOICE" ]; then
@@ -43,18 +43,66 @@ close' | instantmenu -bw 4 -C -l 7 -w 300)"
 addmenu() {
     ADDCHOICE="$(echo 'add entry
 edit entry
-remove entry' | instantmenu -bw 4 -C -l 7 -w 300)"
+remove entry
+new category' | instantmenu -bw 4 -C -l 7 -w 300)"
     if [ -z "$ADDCHOICE" ]; then
         echo "no addchoice"
         exit
     fi
-    cd "$QUICKCHOICE"
+    #cd "$QUICKCHOICE"
     case "$ADDCHOICE" in
-
     remove*)
-        echo "removing"
-        ;;
+        echo "removing entry"
+        REMOVECHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w 300)"
+        if [ -d "$REMOVECHOICE" ] && [ -n "$(ls $REMOVECHOICE/)" ]; then
+            imenu -m "category is not empty"
+            exit
+        elif ! [ -e "$REMOVECHOICE" ]; then
+            imenu -m "selection $REMOVECHOICE invalid"
+        fi
 
+        if imenu -c "remove $REMOVECHOICE"; then
+            rm "$REMOVECHOICE"
+        fi
+
+        ;;
+    new*)
+        CATEGORYNAME="$(imenu -i 'enter category name')"
+        [ -n "$CATEGORYNAME" ] && mkdir "$CATEGORYNAME"
+        ;;
+    add*)
+        echo "adding new entry"
+        SCRIPTNAME="$(imenu -i 'enter name')"
+        touch "$SCRIPTNAME" || {
+            imenu -m "invalid script name"
+            exit
+        }
+        ADDCHOICE="$(echo 'enter command
+edit script' | imenu -l)"
+        case "$ADDCHOICE" in
+
+        enter*)
+            COMMAND="$(imenu -i 'enter command')"
+            echo "$COMMAND" >"$SCRIPTNAME"
+            ;;
+        edit*)
+            echo "editing script"
+            echo "#!/bin/bash" >"$SCRIPTNAME"
+            urxvt -e nvim -c ":e $(realpath $SCRIPTNAME)"
+            ;;
+        esac
+        ;;
+    edit*)
+        echo "editing existing entry"
+        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w 300)"
+        if [ -d "$EDITCHOICE" ]; then
+            imenu -m "selection is not a script"
+            exit
+        elif ! [ -e "$EDITCHOICE" ]; then
+            imenu -m "selection $EDITCHOICE invalid"
+        fi
+        urxvt -e nvim -c ":e $(realpath $EDITCHOICE)"
+        ;;
     esac
 }
 
