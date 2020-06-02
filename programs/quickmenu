@@ -62,7 +62,11 @@ new category' | instantmenu -bw 4 -C -l 7 -w 300)"
         fi
 
         if imenu -c "remove $REMOVECHOICE"; then
-            rm "$REMOVECHOICE"
+            if [ -d $REMOVECHOICE ]; then
+                rm -rf "$REMOVECHOICE"
+            else
+                rm "$REMOVECHOICE"
+            fi
         fi
 
         ;;
@@ -95,11 +99,13 @@ edit script' | imenu -l)"
     edit*)
         echo "editing existing entry"
         EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w 300)"
+        [ -z "$EDITCHOICE" ] && exit
         if [ -d "$EDITCHOICE" ]; then
             imenu -m "selection is not a script"
             exit
         elif ! [ -e "$EDITCHOICE" ]; then
             imenu -m "selection $EDITCHOICE invalid"
+            exit
         fi
         urxvt -e nvim -c ":e $(realpath $EDITCHOICE)"
         ;;
