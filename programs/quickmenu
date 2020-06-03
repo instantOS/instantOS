@@ -7,15 +7,14 @@ if ! [ -e ~/instantos/quickmenu ]; then
 fi
 
 cd ~/instantos/quickmenu
-QUICKPATH=""
 
 pickscript() {
-    cd ~/instantos/quickmenu
     unset CHOICE
     while [ -z "$CHOICE" ]; do
         if [ -z "$(ls)" ]; then
             CHOICE="$(echo 'edit menu
 close' | instantmenu -bw 4 -C -l 7 -w 300)"
+
         else
             CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 7 -w 300)"
         fi
@@ -29,18 +28,16 @@ close' | instantmenu -bw 4 -C -l 7 -w 300)"
         else
             if grep -Eiq '^(close|edit)' <<<"$CHOICE"; then
                 echo "$CHOICE"
-                QUICKPATH="$(pwd)"
+                pwd >/tmp/quickpath
             else
-                cd ~/instantos/quickmenu
                 return 1
             fi
         fi
     done
-    cd ~/instantos/quickmenu
-
 }
 
 addmenu() {
+    cd "$(cat /tmp/quickpath)"
     ADDCHOICE="$(echo 'add entry
 edit entry
 remove entry
@@ -49,7 +46,6 @@ new category' | instantmenu -bw 4 -C -l 7 -w 300)"
         echo "no addchoice"
         exit
     fi
-    #cd "$QUICKCHOICE"
     case "$ADDCHOICE" in
     remove*)
         echo "removing entry"
@@ -92,6 +88,9 @@ edit script' | imenu -l)"
         edit*)
             echo "editing script"
             echo "#!/bin/bash" >"$SCRIPTNAME"
+            echo "# instantosterm" >>"$SCRIPTNAME"
+            echo "# instantosarg" >>"$SCRIPTNAME"
+            echo "# remove the spaces in front of the above options to enable them" >>"$SCRIPTNAME"
             urxvt -e nvim -c ":e $(realpath $SCRIPTNAME)"
             ;;
         esac
@@ -128,12 +127,22 @@ close)
     addmenu
     ;;
 *)
-    if grep -q "^#instantosterm" "$QUICKCHOICE"; then
-        st -e sh -c "bash $(realpath $QUICKCHOICE)"
-        exit
-    else
-        bash "$QUICKCHOICE"
+    if ! [ -e "$QUICKCHOICE" ]; then
+        echo ""
+        echo "choice $QUICKCHOICE not found"
         exit
     fi
+
+    if grep -q "^#instantosarg" "$QUICKCHOICE"; then
+        QUICKARGS="$(imenu -i options)"
+    fi
+
+    if grep -q "^#instantosterm" "$QUICKCHOICE"; then
+        chmod +x "$QUICKCHOICE"
+        st -e bash -c "$QUICKCHOICE $QUICKARGS"
+    else
+        bash $QUICKCHOICE $QUICKARGS
+    fi
+
     ;;
 esac
