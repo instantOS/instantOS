@@ -135,6 +135,7 @@ close)
 
     if grep -q "^#instantosarg" "$QUICKCHOICE"; then
         QUICKARGS="$(imenu -i options)"
+        [ -z "$QUICKARGS" ] && exit
     fi
 
     if grep -q "^#instantosterm" "$QUICKCHOICE"; then
