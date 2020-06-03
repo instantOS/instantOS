@@ -41,6 +41,7 @@ addmenu() {
     ADDCHOICE="$(echo 'add entry
 edit entry
 remove entry
+rename entry
 new category' | instantmenu -bw 4 -C -l 7 -w 300)"
     if [ -z "$ADDCHOICE" ]; then
         echo "no addchoice"
@@ -107,6 +108,20 @@ edit script' | imenu -l)"
             exit
         fi
         urxvt -e nvim -c ":e $(realpath $EDITCHOICE)"
+        ;;
+    rename*)
+        echo "renaming entry"
+        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w 300)"
+        [ -z "$EDITCHOICE" ] && exit
+
+        if ! [ -e "$EDITCHOICE" ]; then
+            imenu -m "$EDITCHOICE does not exist"
+        fi
+
+        NEWNAME="$(imenu -i 'enter new name')"
+        [ -z "$NEWNAME" ] && exit
+        mv "$EDITCHOICE" "$NEWNAME"
+
         ;;
     esac
 }
