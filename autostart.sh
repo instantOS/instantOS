@@ -233,6 +233,29 @@ if iconf -b welcome; then
 	instantwelcome
 fi &
 
+# prompt to fix configuration if installed from the AUR
+if ! iconf -i norootinstall && [ -z "$ISLIVE" ]; then
+	if ! command -v imenu || ! command -v instantmenu; then
+		notify-send "please install instantmenu and imenu"
+	else
+		if ! [ -e /opt/instantos/rootinstall ]; then
+			imenu -m "instantOS is missing some configuration"
+			while ! [ -e /tmp/rootskip ]; do
+				if imenu -c "would you like to fix that?"; then
+					touch /tmp/topinstall
+					instantsudo bash -c "instantutils root && touch /opt/instantos/rootinstall && echo done"
+					touch /tmp/rootskip
+				else
+					if imenu -c "Are you sure? this will prevent parts of instantOS from functioning correctly"; then
+						touch /tmp/rootskip
+					fi
+				fi
+
+			done
+		fi
+	fi
+fi
+
 # desktop icons
 if iconf -i desktopicons; then
 	rox --pinboard Default

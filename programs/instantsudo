@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # replacement for gksudo using instantmenu
-PASSWORD=$(echo '' | instantmenu -p "sudo password for $USER" -P)
+PASSWORD=$(echo '' | instantmenu -c -bw 4 -p "sudo password for $USER" -P)
 
 if [ -z "$PASSWORD" ]; then
     echo "sudo canceled by user"
@@ -9,10 +9,10 @@ if [ -z "$PASSWORD" ]; then
 fi
 
 while ! echo "$PASSWORD" | sudo -S true; do
-    PASSWORD=$(echo '' | instantmenu -p "wrong password, enter sudo password for $USER" -P)
+    PASSWORD=$(echo '' | instantmenu -c -bw 4 -p "wrong password, enter sudo password for $USER" -P)
     if [ -z "$PASSWORD" ]; then
         exit
     fi
 done
 
-echo "$PASSWORD" | sudo -S $@
+echo "$PASSWORD" | sudo -S "$@"
