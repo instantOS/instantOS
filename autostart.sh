@@ -236,7 +236,7 @@ if ! iconf -i norootinstall && [ -z "$ISLIVE" ]; then
 			while ! [ -e /tmp/rootskip ]; do
 				if imenu -c "would you like to fix that?"; then
 					touch /tmp/topinstall
-					instantsudo bash -c "instantutils root && touch /opt/instantos/rootinstall && echo done"
+					instantsudo bash -c "instantutils root"
 					touch /tmp/rootskip
 				else
 					if imenu -c "Are you sure? this will prevent parts of instantOS from functioning correctly"; then

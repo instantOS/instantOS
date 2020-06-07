@@ -141,3 +141,6 @@ else
     mkdir -p /opt/instantos
     touch /opt/instantos/installtrigger
 fi
+
+# indicator file
+touch /opt/instantos/rootinstall
