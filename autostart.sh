@@ -12,19 +12,12 @@ fi
 # architecture detection
 if [ -z "$1" ]; then
 	if uname -m | grep -q '^arm'; then
-		if [ -e /tmp/osautostart ]; then
-			echo "already running"
-			exit
-		else
-			touch /tmp/osautostart
-			export ISRASPI=true
-		fi
-	else
-		bashes=$(pgrep bash | wc -l)
-		if [ "$bashes" -gt 2 ]; then
-			echo "already running"
-			exit
-		fi
+		export ISRASPI=true
+	fi
+
+	if [ "$(ps aux bash | grep instantautostart | wc -l)" -gt 2 ]; then
+		echo "already running"
+		exit
 	fi
 else
 	echo "forced run"
