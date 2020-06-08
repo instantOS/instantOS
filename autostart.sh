@@ -15,7 +15,7 @@ if [ -z "$1" ]; then
 		export ISRASPI=true
 	fi
 
-	if [ "$(ps aux bash | grep instantautostart | wc -l)" -gt 2 ]; then
+	if [ "$(ps aux | grep bash | grep instantautostart | wc -l)" -gt 2 ]; then
 		echo "already running"
 		exit
 	fi
