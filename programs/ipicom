@@ -47,7 +47,7 @@ fi
 if ! grep -q 'hypervisor' /proc/cpuinfo &&
     grep -q 'instantos' .config/picom/picom.conf &&
     iconf -i blur; then
-    picom --experimental-backends
+    picom --experimental-backends &
 else
-    picom "$@"
+    picom "$@" &
 fi
