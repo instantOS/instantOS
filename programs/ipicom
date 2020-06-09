@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# picom launcher that adapts to the environment
+
+genconfig() {
+
+    if [ -e ~/.compton.conf ]; then
+        rm ~/.compton.conf
+        echo "removed old compton file"
+    fi
+
+    mkdir -p ~/.config/picom
+    echo '# instantos
+# remove the above comment to disable auto settings' >.config/picom/picom.conf
+
+    if ! grep -q 'hypervisor' /proc/cpuinfo; then
+        echo 'fading = true
+fade-in-step = 0.15
+fade-out-step = 0.15' >>.config/picom/picom.conf
+
+        echo "not a vm"
+        if iconf -i blur; then
+            echo 'backend = "glx"
+blur-background = true;
+blur-background-frame = true;
+blur-background-fixed = true;
+
+blur-kern = "3x3box";
+blur-method = "dual_kawase";
+blur-strength = 5;' >>.config/picom/picom.conf
+        fi
+    else
+        echo "vm detected"
+    fi
+
+}
+
+cd
+if ! [ -e .config/picom/picom.conf ] || grep -q 'instantos' .config/picom/picom.conf; then
+    genconfig
+fi
+
+if ! grep -q 'hypervisor' /proc/cpuinfo &&
+    grep -q 'instantos' .config/picom/picom.conf &&
+    iconf -i blur; then
+    picom --experimental-backends
+else
+    picom "$@"
+fi
