@@ -70,16 +70,7 @@ else
 	echo "not a laptop"
 fi
 
-if ! [ -e /opt/instantos/potato ]; then
-	# optional blur
-	if iconf -i blur; then
-		picom --experimental-backends &
-	else
-		picom &
-	fi
-else
-	echo "your computer is a potato, no compositing for you"
-fi
+ipicom
 
 if ! iconf -i notheming; then
 	instantthemes a
