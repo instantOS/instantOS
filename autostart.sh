@@ -38,11 +38,6 @@ fi
 if [ -e /usr/share/liveutils ] &>/dev/null; then
 	ISLIVE="True"
 	echo "live session detected"
-
-	# fix resolution on virtualbox
-	if sudo dmidecode | grep -iq 'virtualbox'; then
-		bash /opt/instantos/menus/dm/tv.sh
-	fi
 fi
 
 # fix small graphical glitch on status bar startup
@@ -123,6 +118,19 @@ onlinetrigger() {
 instantshell &
 if ! [ iconf -i userinstall ]; then
 	bash /usr/share/instantutils/userinstall.sh
+fi
+
+# fix resolution on virtual machine
+if ! iconf -i novmfix && cat /proc/cpuinfo | grep -q hypervisor; then
+	if echo "virtual machine detected.
+Would you like to switch to a 1080p resolution?" | imenu -C; then
+		echo "applying virtualbox workaround"
+		/opt/instantos/menus/dm/tv.sh
+	else
+		if ! imenu -c "ask again next session"; then
+			iconf -i novmfix 1
+		fi
+	fi
 fi
 
 if [ -z "$ISLIVE" ]; then
