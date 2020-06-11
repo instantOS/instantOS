@@ -1,6 +1,6 @@
 #!/usr/bin/dash
 if ! [ -e ~/.config/instantos/israspi ]; then
-	if [ -e /opt/instantos/kvm ]; then
+	if [ -e /opt/instantos/kvm ] && iconf -i qxl; then
 		instantmenu_path | instantmenu -l 10 -c "$@" | ${SHELL:-"/bin/bash"} &
 	else
 		rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary'

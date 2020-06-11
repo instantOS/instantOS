@@ -3,7 +3,7 @@
 # Show a list of available key bindings
 
 dlbinds() {
-    if ping -c 1 archlinux.org; then
+    if checkinternet; then
         curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' |
             sed 's/^\([^|#]\)/    \1/g' |
             sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md

@@ -114,16 +114,23 @@ fi
 # fix resolution on virtual machine
 if ! iconf -i novmfix && cat /proc/cpuinfo | grep -q hypervisor; then
 	if [ -e /opt/instantos/kvm ]; then
-		iconf -i doubledraw 1
-		if ! iconf -i potato && ! iconf -i nopotato; then
-			if echo "picom requires GPU passthrough to to proper transparency on KVM
-Disable it for this VM?" | imenu -C; then
-				iconf -i potato 1
-			else
-				if ! imenu -c "ask again next time?"; then
-					iconf -i nopotato 1
+		iconf -i highfps 1
+		if lshw -c video | grep qxl && xrandr | grep '^xql'; then
+			iconf -i qxl 1
+			# iconf -i noanimations 1
+			if ! iconf -i potato && ! iconf -i nopotato; then
+				if echo "please set your graphics to virtio on KVM
+Otherwise picom and st will not function properly
+Disable compositing for this VM?" | imenu -C; then
+					iconf -i potato 1
+				else
+					if ! imenu -c "ask again next time?"; then
+						iconf -i nopotato 1
+					fi
 				fi
 			fi
+		else
+			iconf -i qxl 1
 		fi
 	fi
 	if echo "virtual machine detected.
@@ -156,13 +163,13 @@ if [ -z "$ISLIVE" ]; then
 		autorandr instantos &
 	fi
 
-	if ping archlinux.org -c 2; then
+	if checkinternet; then
 		onlinetrigger
 	else
 		# fall back to already installed wallpapers
 		instantwallpaper offline
 		for i in $(seq 10); do
-			if ping archlinux.org -c 2; then
+			if checkinternet; then
 				onlinetrigger
 				break
 			else
@@ -214,10 +221,6 @@ else
 	sleep 1
 fi
 
-if iconf -i highfps; then
-	xdotool key super+alt+shift+d
-fi
-
 # make built in status optional
 if ! iconf -i nostatus; then
 	source /usr/bin/instantstatus &
@@ -261,10 +264,12 @@ if ! iconf -i norootinstall && [ -z "$ISLIVE" ]; then
 	fi
 fi
 
-# doubledraw enables higher refresh rates
-# and speeds up animations
-if iconf -i doubledraw; then
-	xdotool key Super+Alt+Shift+D
+if iconf -i highfps; then
+	xdotool key super+alt+shift+d
+fi
+
+if iconf -i noanimations; then
+	xdotool key super+alt+shift+s
 fi
 
 # desktop icons

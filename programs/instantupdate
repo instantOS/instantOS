@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! ping -c 1 archlinux.org &>/dev/null; then
+if ! checkinternet; then
     echo "internet is required to upgrade instantOS"
     exit 1
 fi

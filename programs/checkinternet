@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# quick utility to check for internet access
+
+if timeout 10 ping -q -c 1 -W 1 8.8.8.8 &>/dev/null; then
+    exit 0
+else
+    echo "internet access is unreliable or not working"
+    exit 1
+fi

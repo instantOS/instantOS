@@ -10,7 +10,7 @@ fi
 # some apps dont need/already have notification sounds
 if ! echo "$1" | grep -Eiq '(discord|spotify|thunderbird|mailspring)' && ! iconf -i mutenotifications; then
     if ! [ -e ~/instantos/notifications/notification.ogg ]; then
-        if ping -c 1 archlinux.org; then
+        if checkinternet; then
             mkdir -p ~/instantos/notifications/
             wget -qO ~/instantos/notifications/notification.ogg \
                 "https://notificationsounds.com/notification-sounds/me-too-603/download/ogg"
