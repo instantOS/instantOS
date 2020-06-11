@@ -271,7 +271,7 @@ fi
 # displays message user opens the terminal for the first time
 if ! iconf -i nohelp; then
 	if ! grep -q 'instantterminalhelp' ~/.zshrc; then
-		echo "instantterminalhelp" >>~/.zshrc
+		echo '[[ $- == *i* ]] && instantterminalhelp' >>~/.zshrc
 	fi
 fi
 

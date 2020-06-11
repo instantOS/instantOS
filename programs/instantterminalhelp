@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# first time help message when opening the terminal
+
+echo "Welcome
+> instantOS is using the st terminal emulator and tmux terminal multiplexer
+> Because of this, some things work differently
+> selecting text is done with Shift + Left mouse button
+> Copy Paste is Ctrl + Shift + C/V
+> Font size is set with Ctrl + +/-
+> Confituration is done with Xresources or rolling your own st build
+OK
+Don't show again" | imenu -l >/tmp/helpmsg
+
+if grep '^Don' /tmp/helpmsg; then
+    sed -i 's/.*instanttermhelp.*//g' ~/.zshrc
+    iconf -i nohelp 1
+fi
