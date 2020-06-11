@@ -15,7 +15,7 @@ if [ -z "$1" ]; then
 		export ISRASPI=true
 	fi
 
-	if [ "$(ps aux | grep bash | grep instantautostart | wc -l)" -gt 2 ]; then
+	if [ "$(ps aux | grep bash | grep instantautostart | wc -l)" -gt 3 ]; then
 		echo "already running"
 		exit
 	fi
@@ -70,7 +70,7 @@ else
 	echo "not a laptop"
 fi
 
-ipicom
+iconf -i potato || ipicom
 
 if ! iconf -i notheming; then
 	instantthemes a
@@ -127,6 +127,7 @@ but switching really is recommended.
 (or switch to virtualbox, no issues there...)
 Disable compositing for this VM?" | imenu -C; then
 					iconf -i potato 1
+					pkill picom
 				else
 					if ! imenu -c "ask again next time?"; then
 						iconf -i nopotato 1
