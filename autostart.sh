@@ -113,14 +113,18 @@ fi
 
 # fix resolution on virtual machine
 if ! iconf -i novmfix && cat /proc/cpuinfo | grep -q hypervisor; then
+	# indicator file only exists on kvm/QEMU on amd
 	if [ -e /opt/instantos/kvm ]; then
 		iconf -i highfps 1
 		if lshw -c video | grep qxl && xrandr | grep '^xql'; then
 			iconf -i qxl 1
 			# iconf -i noanimations 1
 			if ! iconf -i potato && ! iconf -i nopotato; then
-				if echo "please set your graphics to virtio on KVM
-Otherwise picom and st will not function properly
+				if echo "please set your video card to virtio or passthrough
+QXL on AMD on QEMU/kvm has been known to cause a severe Xorg memory leak. 
+Disabling compositing makes this somewhat bearable,
+but switching really is recommended.
+(or switch to virtualbox, no issues there...)
 Disable compositing for this VM?" | imenu -C; then
 					iconf -i potato 1
 				else
