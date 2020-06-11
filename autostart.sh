@@ -113,9 +113,22 @@ fi
 
 # fix resolution on virtual machine
 if ! iconf -i novmfix && cat /proc/cpuinfo | grep -q hypervisor; then
+	if [ -e /opt/instantos/kvm ]; then
+		iconf -i doubledraw 1
+		if ! iconf -i potato && ! iconf -i nopotato; then
+			if echo "picom requires GPU passthrough to to proper transparency on KVM
+Disable it for this VM?" | imenu -C; then
+				iconf -i potato 1
+			else
+				if ! imenu -c "ask again next time?"; then
+					iconf -i nopotato 1
+				fi
+			fi
+		fi
+	fi
 	if echo "virtual machine detected.
 Would you like to switch to a 1080p resolution?" | imenu -C; then
-		echo "applying virtualbox workaround"
+		echo "applying virtual machine workaround"
 		/opt/instantos/menus/dm/tv.sh
 	else
 		if ! imenu -c "ask again next session"; then
@@ -246,6 +259,12 @@ if ! iconf -i norootinstall && [ -z "$ISLIVE" ]; then
 			done
 		fi
 	fi
+fi
+
+# doubledraw enables higher refresh rates
+# and speeds up animations
+if iconf -i doubledraw; then
+	xdotool key Super+Alt+Shift+D
 fi
 
 # desktop icons
