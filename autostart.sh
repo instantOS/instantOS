@@ -268,6 +268,13 @@ if ! iconf -i norootinstall && [ -z "$ISLIVE" ]; then
 	fi
 fi
 
+# displays message user opens the terminal for the first time
+if ! iconf -i nohelp; then
+	if ! grep -q 'instantterminalhelp' ~/.zshrc; then
+		echo "instantterminalhelp" >>~/.zshrc
+	fi
+fi
+
 if iconf -i highfps; then
 	xdotool key super+alt+shift+d
 fi

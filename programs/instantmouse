@@ -24,8 +24,32 @@ s*)
         xinput set-prop $line "libinput Accel Speed" "${2:--0.4}"
     done <<<"$(iconf mouse)"
     ;;
+r*)
+    if [ -n "$2" ]; then
+        if [ "$2" = "0" ]; then
+            iconf -i reversemouse 1
+        else
+            iconf -i reversemouse 0
+        fi
+    fi
+
+    if iconf -i reversemouse; then
+        iconf -i reversemouse 0
+        while read -r line; do
+            xinput set-prop $line "libinput Natural Scrolling Enabled" "0"
+        done <<<"$(iconf mouse)"
+        echo "reverse scrolling disabled"
+    else
+        iconf -i reversemouse 1
+        echo "reverse scrolling enabled"
+        while read -r line; do
+            xinput set-prop $line "libinput Natural Scrolling Enabled" "1"
+        done <<<"$(iconf mouse)"
+    fi
+    ;;
 l*)
     # get current sensitivity
     xinput list-props "$(iconf mouse | head -1)" | grep 'libinput Accel Speed' | head -1 | grep -o '[-.0-9]*$'
     ;;
+
 esac
