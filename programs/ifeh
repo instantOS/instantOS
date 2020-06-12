@@ -1,10 +1,20 @@
 #!/bin/bash
+
+VARTIMES="$(xrandr | grep '[^s]connected.*x' | wc -l)"
+if [ "$VARTIMES" -gt 1 ]; then
+    echo "settings wallpaper for $VARTIMES monitors"
+    for i in $(seq 0 $(expr $VARTIMES - 1)); do
+        echo "i $i"
+        nitrogen --set-scaled --save --head="$i" "$1"
+    done
+else
+    echo "settings wallpaper for one monitor"
+    nitrogen --set-scaled --save "$1"
+fi
+
 if pgrep ROX &>/dev/null; then
     pkill ROX
-    feh --bg-scale "$@"
     if ! pgrep ROX; then
         rox --pinboard Default
     fi
-else
-    feh --bg-scale "$@"
 fi
