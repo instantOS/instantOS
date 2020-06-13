@@ -18,4 +18,9 @@ fi
 cat ~/.cache/instantos/hotkeys.md >/tmp/hotkeys
 dlbinds &
 
-less --mouse --wheel-lines=3 /tmp/hotkeys
+# optional GUI mode
+if [ -z "$1" ]; then
+    less --mouse --wheel-lines=3 /tmp/hotkeys
+else
+    cat /tmp/hotkeys | sed 's/^/>/g' | instantmenu -c -l 35 -fn "Fira Code Nerd Font:pixelsize=13" -bw 3
+fi
