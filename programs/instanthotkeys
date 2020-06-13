@@ -16,6 +16,14 @@ if ! [ -e ~/.cache/instantos/hotkeys.md ]; then
 fi
 
 cat ~/.cache/instantos/hotkeys.md >/tmp/hotkeys
+
+# allow user to add to the list
+if [ -e ~/.config/instantos/hotkeys ]; then
+    echo "user generated notes: 
+" >>/tmp/hotkeys
+    cat ~/.config/instantos/hotkeys >>/tmp/hotkeys
+fi
+
 dlbinds &
 
 # optional GUI mode
