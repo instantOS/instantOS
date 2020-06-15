@@ -98,6 +98,8 @@ EOT
 
 fi
 
+# /tmp/topinstall is present if rootinstall is running on postinstall
+# like on existing installations
 if ! [ -e /tmp/topinstall ]; then
     # install a custom repo
     if ! grep -q '\[instant\]' /etc/pacman.conf; then
@@ -106,10 +108,28 @@ if ! [ -e /tmp/topinstall ]; then
         echo "instantOS repo found"
     fi
 
+    # deactivate root password, will be reenabled on postinstall
     if ! grep -iq manjaro /etc/os-release; then
         echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
         echo "" >>/etc/sudoers
     fi
+
+    echo "installing boot splash screen"
+    plymouth-set-default-theme instantos
+
+    if ! grep -q 'instantos boot animation' /etc/default/grub; then
+        sed -i '0,/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
+            /etc/default/grub
+    fi
+
+    if ! grep -q '.*plymouth.* # boot screen' /etc/mkinitcpio.conf; then
+        sed -i '0,/^HOOKS/aHOOKS+=(plymouth) # boot screen' /etc/mkinitcpio.conf
+    fi
+
+    /etc/mkinitcpio.conf
+    update-grub
+    mkinitcpio -P
+
 fi
 
 if [ -e /opt/livebuilder ]; then

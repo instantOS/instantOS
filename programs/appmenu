@@ -1,11 +1,15 @@
 #!/usr/bin/dash
+
 if ! [ -e ~/.config/instantos/israspi ]; then
+	# switch to instantmenu on qxl graphics
 	if [ -e /opt/instantos/kvm ] && iconf -i qxl; then
 		pgrep instantmenu && exit
 		instantmenu_path | instantmenu -bw 4 -l 10 -c "$@" | ${SHELL:-"/bin/bash"} &
 	else
+		# normal graphical menu
 		rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary'
 	fi
 else
+	# rofi doesn't perform well on raspberry pi
 	jgmenu_run
 fi
