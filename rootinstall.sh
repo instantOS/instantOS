@@ -118,12 +118,12 @@ if ! [ -e /tmp/topinstall ]; then
     plymouth-set-default-theme instantos
 
     if ! grep -q 'instantos boot animation' /etc/default/grub; then
-        sed -i '0,/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
+        sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
             /etc/default/grub
     fi
 
     if ! grep -q '.*plymouth.* # boot screen' /etc/mkinitcpio.conf; then
-        sed -i '0,/^HOOKS/aHOOKS+=(plymouth) # boot screen' /etc/mkinitcpio.conf
+        sed -i '/^HOOKS/aHOOKS+=(plymouth) # boot screen' /etc/mkinitcpio.conf
     fi
 
     /etc/mkinitcpio.conf
