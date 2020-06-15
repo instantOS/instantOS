@@ -130,6 +130,9 @@ if ! [ -e /tmp/topinstall ]; then
     update-grub
     mkinitcpio -P
 
+    systemctl disable lightdm
+    systemctl enable lightdm-plymouth
+
 fi
 
 if [ -e /opt/livebuilder ]; then
