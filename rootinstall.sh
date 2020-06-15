@@ -100,7 +100,7 @@ fi
 
 # /tmp/topinstall is present if rootinstall is running on postinstall
 # like on existing installations
-if ! [ -e /tmp/topinstall ]; then
+if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme; then
     # install a custom repo
     if ! grep -q '\[instant\]' /etc/pacman.conf; then
         /usr/share/instantutils/repo.sh
