@@ -100,7 +100,7 @@ fi
 
 # /tmp/topinstall is present if rootinstall is running on postinstall
 # like on existing installations
-if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme; then
+if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -iq 'manjaro' /etc/os-release; then
     # install a custom repo
     if ! grep -q '\[instant\]' /etc/pacman.conf; then
         /usr/share/instantutils/repo.sh
@@ -126,12 +126,12 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme; then
         sed -i '/^HOOKS/aHOOKS+=(plymouth) # boot screen' /etc/mkinitcpio.conf
     fi
 
+    systemctl disable lightdm
+    systemctl enable lightdm-plymouth
+
     /etc/mkinitcpio.conf
     update-grub
     mkinitcpio -P
-
-    systemctl disable lightdm
-    systemctl enable lightdm-plymouth
 
 fi
 
