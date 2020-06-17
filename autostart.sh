@@ -76,19 +76,21 @@ if ! iconf -i notheming; then
 	instantthemes a
 	xrdb ~/.Xresources
 	iconf -i instantthemes 1
-fi
 
-# dynamically switch between light and dark gtk theme
-DATEHOUR=$(date +%H)
-if [ "$DATEHOUR" -gt "20" ] || [ "$DATEHOUR" -lt "7" ]; then
-	instantthemes d &
-	touch /tmp/instantdarkmode
-	[ -e /tmp/instantlightmode ] && rm /tmp/instantlightmode
+	# dynamically switch between light and dark gtk theme
+	DATEHOUR=$(date +%H)
+	if [ "$DATEHOUR" -gt "20" ] || [ "$DATEHOUR" -lt "7" ]; then
+		instantthemes d &
+		touch /tmp/instantdarkmode
+		[ -e /tmp/instantlightmode ] && rm /tmp/instantlightmode
+	else
+		instantthemes l &
+		touch /tmp/instantlightmode
+		[ -e /tmp/instantdarkmode ] && rm /tmp/instantdarkmode
+	fi &
 else
-	instantthemes l &
 	touch /tmp/instantlightmode
-	[ -e /tmp/instantdarkmode ] && rm /tmp/instantdarkmode
-fi &
+fi
 
 mkdir -p /tmp/notifications &>/dev/null
 if ! pgrep dunst; then
