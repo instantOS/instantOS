@@ -135,7 +135,12 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         mkinitcpio -P
         touch /opt/instantos/bootscreen
     fi
+fi
 
+# tmux doesn't count as console user
+if ! [ -e /etc/X11/Xwrapper.config ]; then
+    echo "enabling startx"
+    echo 'allowed_users=anybody' >/etc/X11/Xwrapper.config
 fi
 
 if [ -e /opt/livebuilder ]; then
