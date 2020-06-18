@@ -1,0 +1,14 @@
+#!/bin/bash
+
+###############################################
+## x session for instantOS, use with startx ##
+###############################################
+
+# used for shutdown
+[ -e ~/.instantosrunning ] || touch ~/.instantosrunning
+
+# loop so crashing instantwm doesn't end the x session
+while test -e ~/.instantosrunning; do
+    instantwm
+    sleep 1
+done
