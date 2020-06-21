@@ -70,8 +70,6 @@ else
 	echo "not a laptop"
 fi
 
-iconf -i potato || ipicom
-
 if ! iconf -i notheming; then
 	instantthemes a
 	xrdb ~/.Xresources
@@ -222,6 +220,12 @@ if [ -z "$ISLIVE" ]; then
 else
 	echo "live session detected"
 	instantmonitor
+
+	echo "disabling compositing for qxl graphics"
+	if lshw -c video | grep -i 'qxl' || xrandr | grep -i '^qxl'; then
+		iconf -i potato 1
+	fi
+
 	iconf -b welcome 1
 	iconf -i wifiapplet 1
 	instantwallpaper set /usr/share/instantwallpaper/defaultphoto.png
@@ -240,6 +244,8 @@ fi
 if ! iconf -i nostatus; then
 	source /usr/bin/instantstatus &
 fi
+
+iconf -i potato || ipicom &
 
 lxpolkit &
 xfce4-power-manager &
