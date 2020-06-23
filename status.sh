@@ -89,11 +89,6 @@ sleep 2
 
 # 10 sec loop
 while :; do
-    # option to disable status text and check for enabling it again
-    if [ -e ~/.instantsilent ] && [ -z "$FORCESTATUS" ]; then
-        sleep 1m
-        continue
-    fi
 
     for i in /tmp/instantos/status/*; do
         date="${date}$(cat $i)"
@@ -104,9 +99,14 @@ while :; do
     # volume
     date="$date^c$LIGHTBACK^  A$(amixer get Master | grep -Eo '[0-9]{1,3}%' | head -1)  "
 
-    # add 11 px spacing
-    xsetroot -name "^d^^f11^$date^d^"
-    date=""
+    # option to disable status text
+    if [ -e ~/.instantsilent ] && [ -z "$FORCESTATUS" ]; then
+        echo "^d^^f11^$date^d^"
+    else
+        # add 11 px spacing
+        xsetroot -name "^d^^f11^$date^d^"
+    fi
 
+    date=""
     sleep 10
 done
