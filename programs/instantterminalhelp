@@ -8,7 +8,7 @@ echo "> Welcome
 > selecting text is done with Shift + Left mouse button
 > Copy Paste is Ctrl + Shift + C/V
 > Font size is set with Ctrl + +/-
-> Confituration is done with Xresources or rolling your own st build
+> Configuration is done with Xresources or rolling your own st build
 OK
 Don't show again" | imenu cli -l "quick info" >/tmp/helpmsg
 
