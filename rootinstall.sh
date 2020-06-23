@@ -114,7 +114,7 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         echo "" >>/etc/sudoers
     fi
 
-    if ! [ -e /opt/instantos/bootscreen ]; then
+    if ! [ -e /opt/instantos/bootscreen ] && [ -e /opt/instantos/realinstall ]; then
         echo "installing boot splash screen"
         plymouth-set-default-theme instantos
 
