@@ -1,5 +1,9 @@
 #!/bin/bash
 
+###############################################################################
+## add repo containing instantOS programs and required prebuilt aur programs ##
+###############################################################################
+
 echo "adding instantOS repo"
 
 if ! uname -m | grep -q '^i'; then

@@ -7,6 +7,7 @@
 # run userinstall to determine device properties
 if ! iconf -i userinstall; then
 	/usr/share/instantutils/userinstall.sh
+	iconf -i userinstall 1
 fi
 
 # architecture detection
@@ -31,7 +32,7 @@ if ! iconf -i rangerplugins; then
 	echo "installing ranger plugins"
 	mkdir -p ~/.config/ranger/plugins
 	cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
-
+	iconf -i rangerplugins 1
 fi
 
 # find out if it's a live session
@@ -40,15 +41,30 @@ if [ -e /usr/share/liveutils ] &>/dev/null; then
 	echo "live session detected"
 fi
 
-# fix small graphical glitch on status bar startup
-NMON=$(iconf names | wc -l)
-for i in $(eval "echo {1..$NMON}"); do
-	echo "found monitor $i"
-	xdotool key super+comma
-	if iconf -i nobar; then
-		xdotool key super+b
+if iconf -i islaptop; then
+	export ISLAPTOP="true"
+	echo "laptop detected"
+else
+	echo "not a laptop"
+fi
+
+islive() {
+	if [ -n "$ISLIVE" ]; then
+		return 0
+	else
+		return 1
 	fi
-done &
+}
+
+# optionally disable status bar
+if iconf -i nobar; then
+	NMON=$(iconf names | wc -l)
+	for i in $(eval "echo {1..$NMON}"); do
+		echo "found monitor $i"
+		xdotool key super+comma
+		xdotool key super+b
+	done &
+fi
 
 if [ -n "$ISRASPI" ]; then
 	# enable double drawing for moving floating windows
@@ -61,13 +77,6 @@ if [ -n "$ISRASPI" ]; then
 		# logo does not work on raspi
 		iconf -i nologo 1
 	fi
-fi
-
-if iconf -i islaptop; then
-	export ISLAPTOP="true"
-	echo "laptop detected"
-else
-	echo "not a laptop"
 fi
 
 if ! iconf -i notheming; then
@@ -106,10 +115,7 @@ onlinetrigger() {
 }
 
 # set up oh-my-zsh config if not existing already
-instantshell &
-if ! [ iconf -i userinstall ]; then
-	bash /usr/share/instantutils/userinstall.sh
-fi
+iconf -i nozsh || instantshell &
 
 # fix resolution on virtual machine
 if ! iconf -i novmfix && cat /proc/cpuinfo | grep -q hypervisor; then
@@ -149,7 +155,7 @@ Would you like to switch to a 1080p resolution?" | imenu -C; then
 	fi
 fi
 
-if [ -z "$ISLIVE" ]; then
+if ! islive; then
 	echo "not a live session"
 	if [ -e /opt/instantos/installtrigger ]; then
 		zenity --info --text "finishing installation in background" &
@@ -263,7 +269,7 @@ if iconf -b welcome; then
 fi &
 
 # prompt to fix configuration if installed from the AUR
-if ! iconf -i norootinstall && [ -z "$ISLIVE" ]; then
+if ! iconf -i norootinstall && ! islive; then
 	if ! command -v imenu || ! command -v instantmenu; then
 		notify-send "please install instantmenu and imenu"
 	else

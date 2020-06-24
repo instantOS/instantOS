@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # installs dependencies for instantOS
+# this is deprecated
 
 export LINK="https://raw.githubusercontent.com/instantos/instantos/master"
 

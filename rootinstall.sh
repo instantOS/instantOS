@@ -1,8 +1,8 @@
 #!/bin/bash
 
-######################################################
-## installs all system wide programs for instantOS  ##
-######################################################
+####################################################
+## installs all system wide tweaks for instantOS  ##
+####################################################
 
 if ! [ $(whoami) = "root" ]; then
     echo "please run this as root"

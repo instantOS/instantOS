@@ -1,5 +1,7 @@
 #!/bin/bash
+
 # central installer script for instantOS
+# this is deprecated
 
 export PAPERSILENT="True"
 
@@ -34,6 +36,5 @@ echo "installing dependencies"
 
 echo "root: installing tools"
 /usr/share/instantutils/rootinstall.sh
-
 
 instantthemes f

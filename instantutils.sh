@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# wrapper script for other installation scripts
+
 USAGE="usage: instantutils install
 instantutils root
 instantutils user
