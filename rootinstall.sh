@@ -152,7 +152,7 @@ else
     fi
 
     # check if computer is a potato
-    MEMAMOUNT="$(free -m | grep -vi swap | grep -o '[0-9]*' | sort -n | tail -1)"
+    MEMAMOUNT="$($(which free) -m | grep -vi swap | grep -o '[0-9]*' | sort -n | tail -1)"
 
     # computer is not a potato if it has an nvidia card, a ryzen processor or more than 3,5gb of ram.
     # it can be unpotatoed at any time.
