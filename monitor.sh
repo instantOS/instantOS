@@ -26,7 +26,6 @@ if iconf resolutions; then
     # see if resolution has changed
     if ! [ "$RESOLUTIONS" = "$OLDRES" ]; then
         iconf resolutions "$RESOLUTIONS"
-        CHANGERES="True"
         echo "Resolution change detected"
     else
         echo "no resolution change"

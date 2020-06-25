@@ -118,7 +118,7 @@ onlinetrigger() {
 iconf -i nozsh || instantshell &
 
 # fix resolution on virtual machine
-if ! iconf -i novmfix && cat /proc/cpuinfo | grep -q hypervisor; then
+if ! iconf -i novmfix && grep -q 'hypervisor' /proc/cpuinfo; then
 	# indicator file only exists on kvm/QEMU on amd
 	if [ -e /opt/instantos/kvm ]; then
 		iconf -i highfps 1
