@@ -24,6 +24,21 @@ s*)
         xinput set-prop $line "libinput Accel Speed" "${2:--0.4}"
     done <<<"$(iconf mouse)"
     ;;
+z)
+    # toggle mouse on/off
+    if ! iconf mousespeed &>/dev/null; then
+        iconf mousespeed -.4
+    fi
+
+    if [ -e /tmp/zeromouse ]; then
+        rm /tmp/zeromouse
+        instantmouse s "$(iconf mousespeed)"
+    else
+        instantmouse s -1
+        touch /tmp/zeromouse
+    fi
+
+    ;;
 r*)
     if [ -n "$2" ]; then
         if [ "$2" = "0" ]; then
