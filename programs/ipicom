@@ -40,7 +40,10 @@ blur-strength = 5;' >>.config/picom/picom.conf
 }
 
 cd
-if ! [ -e .config/picom/picom.conf ] || grep -q 'instantos' .config/picom/picom.conf; then
+
+if ! [ -e .config/picom/picom.conf ] ||
+    grep -q 'instantos' .config/picom/picom.conf &&
+    ! grep 'picom' ~/.instantrc | grep '0[^a-zA-Z]*$'; then
     genconfig
 fi
 
