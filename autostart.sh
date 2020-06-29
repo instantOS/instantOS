@@ -311,6 +311,11 @@ if iconf -i desktopicons; then
 	rox --pinboard Default
 fi &
 
+# optional udiskie
+if iconf -i udiskie; then
+	command -v udiskie && udiskie -t &
+fi
+
 # user declared autostart
 if [ -e ~/.instantautostart ]; then
 	bash ~/.instantautostart
