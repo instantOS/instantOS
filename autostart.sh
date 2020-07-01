@@ -232,6 +232,8 @@ else
 		iconf -i potato 1
 	fi
 
+	sudo systemctl start NetworkManager
+
 	iconf -b welcome 1
 	iconf -i wifiapplet 1
 	instantwallpaper set /usr/share/instantwallpaper/defaultphoto.png
