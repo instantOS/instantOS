@@ -8,7 +8,7 @@
 <a href="https://www.buymeacoffee.com/paperbenni" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 </p>
 
-<a href="https://www.patreon.com/bePatron?u=8814964" data-patreon-widget-type="become-patron-button">Become a Patron!</a><script async src="https://c6.patreon.com/becomePatronButton.bundle.js"></script>
+[![BECOME A PATRON](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?u=8814964)
 
 # [instantOS](https://instantos.github.io)
 
