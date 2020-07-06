@@ -50,9 +50,12 @@ else
 fi
 
 # rebuild wallpaper after resolution change
+
 changetrigger() {
+    rm ~/instantos/wallpapers/overlay.*
+    rm -rf ~/instantos/wallpapers/default
+
     if iconf -i setwallpaper; then
-        rm -rf ~/instantos/wallpapers
         instantwallpaper resolution
     fi
 }

@@ -144,13 +144,16 @@ Disable compositing for this VM?" | imenu -C; then
 			iconf -i qxl 1
 		fi
 	fi
-	if echo "virtual machine detected.
+
+	if ! [ -e /opt/instantos/guestadditions ]; then
+		if echo "virtual machine detected.
 Would you like to switch to a 1080p resolution?" | imenu -C; then
-		echo "applying virtual machine workaround"
-		/opt/instantos/menus/dm/tv.sh
-	else
-		if ! imenu -c "ask again next session"; then
-			iconf -i novmfix 1
+			echo "applying virtual machine workaround"
+			/opt/instantos/menus/dm/tv.sh
+		else
+			if ! imenu -c "ask again next session"; then
+				iconf -i novmfix 1
+			fi
 		fi
 	fi
 fi
