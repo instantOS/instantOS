@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# this program checks with instantOS components are installed and
+# warns the user what will not work without the missing components
+
+# ensure we can use imenu
+setup() {
+    mkdir -p /tmp/instantcheck
+    if command -v imenu && command -v instantmenu; then
+        echo "all notification software installed"
+        return
+    fi
+
+    cd /tmp/instantcheck
+
+    if ! command -v instantmenu; then
+        wget instantmenu.surge.sh/instantmenu
+        chmod +x instantmenu
+    fi
+    export PATH=$PATH:/tmp/instantcheck
+    if ! command -v imenu; then
+        curl -s https://raw.githubusercontent.com/instantOS/imenu/master/imenu.sh >imenu
+        chmod +x imenu
+    fi
+}
+
+warning() {
+    ! [ -e /tmp/instantcheck ] && mkdir -p /tmp/instantcheck
+    if ! [ -e /tmp/instantcheck/list ]; then
+        echo "WARNING: Some instantOS packages are missing. The system will be functional except for the features contained in these packages"
+        echo "here is a list of missing packages and things that will not work because of them"
+    fi
+    echo "$@" >>/tmp/instantcheck/list
+
+}
+
+commandwarning() {
+    if ! command -v "$1"; then
+        warning "$2"
+    fi
+}
+
+commandwarning iconf "instantconfig missing. The system will be unable to set or save instantOS settings"
+commandwarning instantwallpaper "instantwallpaper missing. wallpaper settings, wallpaper on startup and the wallpaper scraper will not work"
+commandwarning instantmenu "instantmenu is missing. the start menu, shutdown menu, quickmenu and instantASSIST will not work"
+commandwarning imenu "imenu is missing. some messages and setup menus will not work"
+commandwarning instantlock "instantlock is missing. You will not be able to lock the screen"
+commandwarning st "st is missing. Bindings opening a terminal emulator, including the cheatsheet will not work"
+commandwarning instantshutdown "instantutils are missing. Basically nothing instantOS related except basic parts of the WM will work"
+commandwarning instantthemes "instantthemes missing. adaptive dark/light mode won't work, terminal coloring and other visual features will look odd"
+commandwarning rofi "rofi not found. The graphical application menu and super + space menu will not work"
+[ -e /usr/share/instantdotfiles ] ||
+    warning "instantdotfiles not found. the graphical application menu, notification center and default settings will not work"
+commandwarning instantassist "instantASSIST not found. Taking screenshots"
+

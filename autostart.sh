@@ -25,9 +25,9 @@ else
 fi
 
 cd
-instantdotfiles
+command -v instantdotfiles && instantdotfiles
 
-if ! iconf -i rangerplugins; then
+if ! iconf -i rangerplugins && command -v rangerplugins; then
 	mkdir instantos
 	echo "installing ranger plugins"
 	mkdir -p ~/.config/ranger/plugins
