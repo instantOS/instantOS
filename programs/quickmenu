@@ -2,11 +2,11 @@
 
 # a menu of customized quick shortcuts
 
-if ! [ -e ~/instantos/quickmenu ]; then
-    mkdir ~/instantos/quickmenu
+if ! [ -e ~/.config/instantos/quickmenu ]; then
+    mkdir -p ~/.config/instantos/quickmenu
 fi
 
-cd ~/instantos/quickmenu
+cd ~/.config/instantos/quickmenu
 
 pickscript() {
     unset CHOICE
