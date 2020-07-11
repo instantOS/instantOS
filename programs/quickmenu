@@ -36,6 +36,50 @@ close' | instantmenu -bw 4 -C -l 7 -w 300)"
     done
 }
 
+# create a new script with the given arguments
+chooseaddmode() {
+    ADDCHOICE="$(echo 'enter command
+edit script
+options
+cancel' | imenu -l)"
+
+    if [ -z "$1" ]; then
+        echo "#!/bin/bash
+" >"$SCRIPTNAME"
+    fi
+
+    case "$ADDCHOICE" in
+    enter*)
+        COMMAND="$(imenu -i 'enter command')"
+        echo "$COMMAND" >>"$SCRIPTNAME"
+        ;;
+    edit*)
+        echo "editing script"
+        echo "# instantOS quickmenu script" >>"$SCRIPTNAME"
+        urxvt -e nvim -c ":e $(realpath $SCRIPTNAME)"
+        ;;
+    options)
+        echo "#!/bin/bash" >"$SCRIPTNAME"
+        ADDTEMPLATE="$(echo 'run in terminal
+enable argument dialog' | imenu -b)"
+        if grep -q 'terminal' <<<"$ADDTEMPLATE"; then
+            echo "enabling terminal"
+            echo '#instantosterm' >>"$SCRIPTNAME"
+        fi
+
+        if grep -q 'argument' <<<"$ADDTEMPLATE"; then
+            echo "enabling argument"
+            echo '#instantosarg' >>"$SCRIPTNAME"
+        fi
+        chooseaddmode no
+        ;;
+    cancel)
+        [ -e "$SCRIPTNAME" ] && rm "$SCRIPTNAME"
+        exit
+        ;;
+    esac
+}
+
 addmenu() {
     cd "$(cat /tmp/quickpath)"
     ADDCHOICE="$(echo 'add entry
@@ -74,27 +118,17 @@ new category' | instantmenu -bw 4 -C -l 7 -w 300)"
     add*)
         echo "adding new entry"
         SCRIPTNAME="$(imenu -i 'enter name')"
+
+        if [ -e "$SCRIPTNAME" ]; then
+            imenu -m "script $SCRIPTNAME already existing"
+            exit
+        fi
+
         touch "$SCRIPTNAME" || {
             imenu -m "invalid script name"
             exit
         }
-        ADDCHOICE="$(echo 'enter command
-edit script' | imenu -l)"
-        case "$ADDCHOICE" in
-
-        enter*)
-            COMMAND="$(imenu -i 'enter command')"
-            echo "$COMMAND" >"$SCRIPTNAME"
-            ;;
-        edit*)
-            echo "editing script"
-            echo "#!/bin/bash" >"$SCRIPTNAME"
-            echo "# instantosterm" >>"$SCRIPTNAME"
-            echo "# instantosarg" >>"$SCRIPTNAME"
-            echo "# remove the spaces in front of the above options to enable them" >>"$SCRIPTNAME"
-            urxvt -e nvim -c ":e $(realpath $SCRIPTNAME)"
-            ;;
-        esac
+        chooseaddmode
         ;;
     edit*)
         echo "editing existing entry"
@@ -157,7 +191,7 @@ close)
         chmod +x "$QUICKCHOICE"
         st -e bash -c "$QUICKCHOICE $QUICKARGS"
     else
-        bash $QUICKCHOICE $QUICKARGS
+        bash "$QUICKCHOICE" $QUICKARGS
     fi
 
     ;;
