@@ -51,5 +51,4 @@ commandwarning instantthemes "instantthemes missing. adaptive dark/light mode wo
 commandwarning rofi "rofi not found. The graphical application menu and super + space menu will not work"
 [ -e /usr/share/instantdotfiles ] ||
     warning "instantdotfiles not found. the graphical application menu, notification center and default settings will not work"
-commandwarning instantassist "instantASSIST not found. Taking screenshots"
-
+commandwarning instantassist "instantASSIST not found. All super + a bindings including screenshots will not work"
