@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# symlink default applications
+
+[ -e ~/.config/instantos/default ] || mkdir -p ~/.config/instantos/default
+cd ~/.config/instantos/default || exit
+
+XDGBROWSER="$(xdg-settings get default-web-browser)"
+BROWSERLOCATION="$(grep -m 1 Exec </usr/share/applications/$XDGBROWSER | sed 's/Exec=*//g' | sed 's/[ ][^ ]*//')"
+
+# symlink browser
+if [ -e "$BROWSERLOCATION" ]; then
+    echo "setting default browser to $BROWSERLOCATION"
+    [ -e browser ] && rm browser
+    ln -s "$BROWSERLOCATION" ./browser
+fi
+
+setprogram() {
+    [ -e "$1" ] && rm "$1"
+    TEMPSETTING=$(iconf $1:$2)
+    echo "setting $1 to $TEMPSETTING"
+    ln -s "$(which $TEMPSETTING)" ./$1
+}
+
+setprogram terminal st
+setprogram filemanager nautilus
+setprogram appmenu appmenu
