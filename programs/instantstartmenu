@@ -1,40 +1,41 @@
 #!/bin/bash
 
-CHOICE="$(echo 'applications
-settings
-terminal
-info
-shutdown
-documentation
-keybindings
-close menu' | instantmenu -bw 4 -w 200 -n -l 10 -x 0 -F)"
+CHOICE="$(echo ':b Applications
+:b Settings
+:b Terminal
+:b Info
+:g Documentation
+:b Keybindings
+:r Shutdown
+:r Close menu' | instantmenu -bw 4 -w -1 -h -1 -n -l 10 -x 0 -F -a 0)"
 
 [ -z "$CHOICE" ] && exit
 
 echo "$CHOICE"
 case "$CHOICE" in
-applications)
+*Applications)
+    sleep 0.05
     appmenu &
     ;;
-settings)
+*Settings)
     instantsettings &
     ;;
-info)
+*Info)
     st -e sh -c 'neofetch && sleep 60m' &
     ;;
-shutdown)
+*Shutdown)
     instantshutdown &
     ;;
-terminal)
+*Terminal)
     st &
     ;;
-documentation)
+*Documentation)
     firefox 'https://instantos.github.io/instantos.github.io/documentation' &
     ;;
-keybindings)
+*Keybindings)
     st -e instanthotkeys &
     ;;
-close)
+*Close)
     echo "closed menu"
     ;;
 *)
