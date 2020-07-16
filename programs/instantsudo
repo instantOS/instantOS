@@ -4,4 +4,4 @@
 SUDO_ASKPASS="$(which instantpassword)"
 export SUDO_ASKPASS
 export PASSPROMPT="sudo password for $USER"
-sudo -A "$@"
+sudo -A $@
