@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# program that prompts the user to install a package if it is not already installed
+
+if [ -z "$1" ]; then
+    echo "no package to check"
+    exit
+fi
+
+checkpackage() {
+    if command -v "$1" || pacman -Qi "$1"; then
+        echo "package $1 found"
+        exit
+    fi
+    return 1
+}
+
+checkpackage "$1"
+
+if ! checkinternet; then
+    imenu -e "internet is required"
+    exit 1
+fi
+
+if ! imenu -c "the extra package $1 is required. Download now?"; then
+    echo "package will not be installed"
+    exit 1
+fi
+
+st -e "bash" -c "sudo pacman -S --needed --noconfirm $1 && exit"
+
+checkpackage "$1" || exit 1
