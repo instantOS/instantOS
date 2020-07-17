@@ -17,21 +17,35 @@ fi
 
 cd /tmp/notifications
 
-NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -markup-rows)
+notifmenu() {
+    sed 's/^/:b /g' | instantmenu -c -l 18 -h -1 -p "notifications" -q "search notifications" -bw 4 -a 4 | grep -o '(.*'
+}
+
+NREAD=$(tac notif.txt | notifmenu)
 
 while [ -n "$NREAD" ]; do
-    CHOICE=$(echo "r: read
-x: delete" | instantmenu -c -n -w 100 -l 2 -bw 4 -h 50)
-    case "$CHOICE" in
-    r*)
-        echo "$NREAD" |
-            sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] <b>\(.*\)<\/b> | <i>\(.*\)<\/i>/time: \1\nApp:  \2\n      \3\n\n      \4/g ' |
-            sed 's/&amp;/&/g' >/tmp/instantmessage
-        st -e sh -c "less /tmp/instantmessage"
-        ;;
-    x*)
+    echo "$NREAD" | grep -o '(.*' |
+        sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] \(.*\) | \(.*\)/:g App:  \2\ntime: \1\n      \3\n      \4\n/g ' |
+        sed 's/&amp;/&/g' | sed '/^[^:]/s/^/>/g' | sed -e '$a:b Back\n:r Delete\n:y Close' |
+        instantmenu -c -l 18 -h -1 -q "notification" -bw 4 -a 4 >/tmp/notifications/selection
+    SELECTION="$(cat /tmp/notifications/selection)"
+    [ -z "$SELECTION" ] && exit
+    case "$SELECTION" in
+    *Delete)
         grep -vF "$NREAD" notif.txt >tmp.notif && mv tmp.notif notif.txt
         ;;
+    *Close)
+        exit
+        ;;
+    *Back)
+        echo "back"
+        ;;
+    *)
+        echo "app"
+        echo "$SELECTION" | sed 's/..........\(.*\)/\1/g'
+        exit
+        ;;
     esac
-    NREAD=$(tac notif.txt | rofi -dmenu -i -p notifications -markup-rows)
+
+    NREAD=$(tac notif.txt | notifmenu)
 done

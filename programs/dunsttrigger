@@ -26,5 +26,5 @@ cleanstring() {
     echo "$@" | sed 's/&/&amp;/g' | sed 's/<.*>\(.*\)<\/.*>/\1/g'
 }
 
-# add pango markup
-echo "($(date +%H:%M)) [$(cleanstring $1)] <b>$(cleanstring $2)</b> | <i>$(cleanstring $3)</i>" >>/tmp/notifications/notif.txt
+# add "markup"
+echo "($(date +%H:%M)) [$(cleanstring $1)] $(cleanstring $2) | $(cleanstring $3)" >>/tmp/notifications/notif.txt
