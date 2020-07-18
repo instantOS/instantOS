@@ -1,3 +1,9 @@
 #!/bin/sh
 
-rofi -show window
+if [ -z "$1" ]; then
+    rofi -show window
+    exit
+fi
+
+
+CLASSNUMBER="$(xdotool search --class $1)"
