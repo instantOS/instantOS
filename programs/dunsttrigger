@@ -21,10 +21,11 @@ if ! echo "$1" | grep -Eiq '(discord|spotify|thunderbird|mailspring)' && ! iconf
     mpv ~/instantos/notifications/notification.ogg
 fi
 
-# escape characters that cause problems with pango
-cleanstring() {
-    echo "$@" | sed 's/&/&amp;/g' | sed 's/<.*>\(.*\)<\/.*>/\1/g'
-}
+if echo "$3" | grep -E '.{500,}'; then
+    CONTENTS="message too long to display"
+else
+    CONTENTS="$3"
+fi
 
 # add "markup"
-echo "($(date +%H:%M)) [$(cleanstring $1)] $(cleanstring $2) | $(cleanstring $3)" >>/tmp/notifications/notif.txt
+echo "($(date +%H:%M)) [$1] $2 | $CONTENTS" >>/tmp/notifications/notif.txt
