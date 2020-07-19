@@ -24,7 +24,7 @@ notifmenu() {
 NREAD=$(tac notif.txt | notifmenu)
 
 while [ -n "$NREAD" ]; do
-    echo "$NREAD" | grep -o '(.*' |
+    echo "$NREAD" | grep -o '(.*' | sed -e "s/.\{150\}/&\n/g" |
         sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] \(.*\) | \(.*\)/:g Application :  \2\n            \1\n      \3\n      \4\n /g ' |
         sed 's/&amp;/&/g' | sed '/^[^:]/s/^/>/g' | sed -e '$a:b Back\n:r Delete\n:y Close' |
         instantmenu -c -l 18 -h -1 -q "notification" -bw 4 -a 4 >/tmp/notifications/selection
