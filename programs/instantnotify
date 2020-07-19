@@ -25,7 +25,7 @@ NREAD=$(tac notif.txt | notifmenu)
 
 while [ -n "$NREAD" ]; do
     echo "$NREAD" | grep -o '(.*' |
-        sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] \(.*\) | \(.*\)/:g App:  \2\ntime: \1\n      \3\n      \4\n/g ' |
+        sed 's/^(\([0-9]*:[0-9]*\)) \[\(.*\)\] \(.*\) | \(.*\)/:g Application :  \2\n            \1\n      \3\n      \4\n /g ' |
         sed 's/&amp;/&/g' | sed '/^[^:]/s/^/>/g' | sed -e '$a:b Back\n:r Delete\n:y Close' |
         instantmenu -c -l 18 -h -1 -q "notification" -bw 4 -a 4 >/tmp/notifications/selection
     SELECTION="$(cat /tmp/notifications/selection)"
@@ -42,7 +42,9 @@ while [ -n "$NREAD" ]; do
         ;;
     *)
         echo "app"
-        echo "$SELECTION" | sed 's/..........\(.*\)/\1/g'
+        SELECTION2="${SELECTION#:g Application :  }"
+        echo "focussing $SELECTION2"
+        wmctrl -x -a "$SELECTION2"
         exit
         ;;
     esac
