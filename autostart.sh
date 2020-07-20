@@ -258,7 +258,10 @@ fi
 
 iconf -i potato || ipicom &
 
-lxpolkit &
+while :; do
+	lxpolkit
+done &
+
 xfce4-power-manager &
 
 while iconf -i wifiapplet:; do
