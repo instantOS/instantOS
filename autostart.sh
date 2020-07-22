@@ -149,7 +149,7 @@ Disable compositing for this VM?" | imenu -C; then
 		if echo "virtual machine detected.
 Would you like to switch to a 1080p resolution?" | imenu -C; then
 			echo "applying virtual machine workaround"
-			/opt/instantos/menus/dm/tv.sh
+			/usr/share/instantassist/assists/t/v.sh
 		else
 			if ! imenu -c "ask again next session"; then
 				iconf -i novmfix 1

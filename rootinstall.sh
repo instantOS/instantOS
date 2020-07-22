@@ -166,7 +166,7 @@ else
     fi
 
     # fix brightness permissions
-    bash /opt/instantos/menus/data/backlight.sh
+    bash /usr/share/instantassist/data/backlight.sh
     # set up postinstall trigger
 
     mkdir -p /opt/instantos
