@@ -5,7 +5,7 @@
 ###################################################
 
 # multiple instances would overlap
-if pgrep instantmenu; then
+if ! pgrep instantshutdown | wc -l | grep -q '1'; then
     echo "instantmenu already running"
     exit
 fi
