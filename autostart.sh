@@ -271,6 +271,13 @@ while iconf -i wifiapplet:; do
 	sleep 6m
 done &
 
+while iconf -i bluetoothapplet:; do
+	if ! pgrep blueman-applet; then
+		blueman-applet &
+	fi
+	sleep 6m
+done &
+
 # welcome greeter app
 if iconf -b welcome; then
 	instantwelcome
