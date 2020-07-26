@@ -31,13 +31,16 @@ $(cat layouts)
     CHOICE=$(echo "$LIST" | sed 's/^$/>/g' | instantmenu -c -w -1 -l 40 -q 'search' -p 'keyboard layout manager' -bw 4)
     [ -z "$CHOICE" ] && exit
     if grep "^$CHOICE$" layouts; then
-        LAYOUTCHOICE="$(echon ">>h $CHOICE
+        LAYOUTCHOICE="$(echo ">>h $CHOICE
 :b Move up
 :b Move down
 :r Delete
 :b Back" | instantmenu -c -l 20 -h -1 -bw 4 -q "layout options: $CHOICE")"
         case "$LAYOUTCHOICE" in
-
+        *Delete)
+            echo "deleting $CHOICE"
+            sed -i "/^$CHOICE$/d" layouts
+            ;;
         *Back)
             echo "going back"
             ;;
@@ -45,7 +48,7 @@ $(cat layouts)
     fi
 
     case "$CHOICE" in
-    *close)
+    *menu)
         exit
         ;;
     *layout)

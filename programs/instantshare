@@ -1,3 +1,5 @@
 #!/bin/bash
 
+# todo
+
 if [ -n "$1" ]
