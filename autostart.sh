@@ -201,8 +201,8 @@ if ! islive; then
 	fi &
 
 	# apply keybpard layout
-	if [ -e ~/instantos/keyboard ]; then
-		setxkbmap -layout $(cat ~/instantos/keyboard)
+	if iconf layout; then
+		setxkbmap -layout "$(iconf keyboard)"
 	else
 		CURLOCALE=$(locale | grep LANG | sed 's/.*=\(.*\)\..*/\1/')
 		case "$CURLOCALE" in

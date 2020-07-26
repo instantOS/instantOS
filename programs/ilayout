@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# keyboard layout switcher
+
+if [ -z "$1" ]; then
+    echo "no options"
+    exit
+fi
+mkdir -p ~/.config/instantos/
+cd ~/.config/instantos/
+if [ -e ./layouts ] && grep -q .. ./layouts; then
+    echo "layouts found"
+else
+    ./layouts
+    echo "inititalizing layouts"
+    if ! iconf layout; then
+        iconf layout us
+    fi
+    iconf layout >layouts
+
+fi
+
+# layout list editor
+while :; do
+    LIST=">>h Keyboard layouts
+$(cat layouts)
+:gadd layout
+:rclose menu"
+    CHOICE=$(echo "$LIST" | sed 's/^$/>/g' | instantmenu -c -w -1 -l 40 -q 'search' -p 'keyboard layout manager' -bw 4)
+    [ -z "$CHOICE" ] && exit
+    if grep "^$CHOICE$" layouts; then
+        echon ">>h $CHOICE
+:b Move up
+:b Move down"
+    fi
+done
