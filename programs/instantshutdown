@@ -5,8 +5,9 @@
 ###################################################
 
 # multiple instances would overlap
-if ! pgrep instantshutdown | wc -l | grep -q '1'; then
-    echo "instantmenu already running"
+if [ "$(pgrep instantshutdown | wc -l)" -gt 2 ]; then
+    pgrep instantshutdown | wc -l
+    echo "instantshutdown already running"
     exit
 fi
 
@@ -21,7 +22,7 @@ kill wm" | instantmenu -l 10 -w 400 -c -n -F -p "do you want to shut down?")
 zconfirm() {
     if wmctrl -l | grep -q '..'; then
         echo "running applications found"
-        if zenity --question --text="there are apps running, sure you want to $1"; then
+        if imenu -c "there are apps running, sure you want to $1?"; then
             echo "yes"
             return 0
         else
