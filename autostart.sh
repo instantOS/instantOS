@@ -221,6 +221,12 @@ if ! islive; then
 		instantmouse s "$(iconf mousespeed)"
 	fi
 
+	if iconf -i reversemouse; then
+		instantmouse r 1
+	else
+		instantmouse r 0
+	fi
+
 	if ! iconf -i noconky; then
 		shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
 		conky -c /usr/share/instantwidgets/tooltips.conf &
@@ -265,6 +271,7 @@ done &
 xfce4-power-manager &
 
 while iconf -i wifiapplet:; do
+	echo "auto starting wifi applet"
 	if ! pgrep nm-applet; then
 		nm-applet &
 	fi
@@ -272,6 +279,7 @@ while iconf -i wifiapplet:; do
 done &
 
 while iconf -i bluetoothapplet:; do
+	echo "auto starting bluetooth applet"
 	if ! pgrep blueman-applet; then
 		blueman-applet &
 	fi
