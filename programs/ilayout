@@ -1,11 +1,13 @@
 #!/bin/bash
 
 # keyboard layout switcher
+# and list editor
 
 if [ -z "$1" ]; then
     echo "no options"
     exit
 fi
+
 mkdir -p ~/.config/instantos/
 cd ~/.config/instantos/
 if [ -e ./layouts ] && grep -q .. ./layouts; then
@@ -29,8 +31,30 @@ $(cat layouts)
     CHOICE=$(echo "$LIST" | sed 's/^$/>/g' | instantmenu -c -w -1 -l 40 -q 'search' -p 'keyboard layout manager' -bw 4)
     [ -z "$CHOICE" ] && exit
     if grep "^$CHOICE$" layouts; then
-        echon ">>h $CHOICE
+        LAYOUTCHOICE="$(echon ">>h $CHOICE
 :b Move up
-:b Move down"
+:b Move down
+:r Delete
+:b Back" | instantmenu -c -l 20 -h -1 -bw 4 -q "layout options: $CHOICE")"
+        case "$LAYOUTCHOICE" in
+
+        *Back)
+            echo "going back"
+            ;;
+        esac
     fi
+
+    case "$CHOICE" in
+    *close)
+        exit
+        ;;
+    *layout)
+        echo "adding layouts"
+        ADDEDLAYOUT="$(localectl list-x11-keymap-layouts | instantmenu -bw 4 -q 'add layout' -c -l 40)"
+        if [ -n "$ADDEDLAYOUT" ]; then
+            echo "adding layout"
+            echo "$ADDEDLAYOUT" >>layouts
+        fi
+        ;;
+    esac
 done
