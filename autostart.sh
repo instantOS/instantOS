@@ -16,6 +16,11 @@ if [ -z "$1" ]; then
 		export ISRASPI=true
 	fi
 
+	if iconf -i noautostart; then
+		echo "autostart disabled"
+		exit
+	fi
+
 	if [ "$(ps aux | grep bash | grep instantautostart | wc -l)" -gt 3 ]; then
 		echo "already running"
 		exit
