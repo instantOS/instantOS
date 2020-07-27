@@ -16,7 +16,7 @@ shutdown
 logout
 reboot
 lock screen
-kill wm" | instantmenu -l 10 -w 400 -c -n -F -p "do you want to shut down?")
+kill wm" | instantmenu -l 10 -w -1 -c -n -F -p "do you want to shut down?")
 
 # if there are apps open, ask for confirmation
 zconfirm() {
