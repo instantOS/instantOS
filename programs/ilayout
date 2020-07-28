@@ -9,7 +9,7 @@ if [ -z "$1" ]; then
 fi
 
 mkdir -p ~/.config/instantos/
-cd ~/.config/instantos/
+cd ~/.config/instantos/ || exit 1
 if [ -e ./layouts ] && grep -q .. ./layouts; then
     echo "layouts found"
 else

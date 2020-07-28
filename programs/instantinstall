@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/dash
 
 # program that prompts the user to install a package if it is not already installed
 

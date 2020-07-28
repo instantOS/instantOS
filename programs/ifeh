@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/dash
 
 VARTIMES="$(xrandr | grep '[^s]connected.*x' | wc -l)"
 if [ "$VARTIMES" -gt 1 ]; then
     echo "settings wallpaper for $VARTIMES monitors"
-    for i in $(seq 0 $(expr $VARTIMES - 1)); do
+    for i in $(seq 0 "$((VARTIMES - 1))"); do
         echo "i $i"
         nitrogen --set-scaled --save --head="$i" "$1"
     done
@@ -12,7 +12,7 @@ else
     nitrogen --set-scaled --save "$1"
 fi
 
-if pgrep ROX &>/dev/null; then
+if pgrep ROX >/dev/null 2>&1; then
     pkill ROX
     if ! pgrep ROX; then
         rox --pinboard Default

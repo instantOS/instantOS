@@ -6,7 +6,7 @@ if ! [ -e ~/.config/instantos/quickmenu ]; then
     mkdir -p ~/.config/instantos/quickmenu
 fi
 
-cd ~/.config/instantos/quickmenu
+cd ~/.config/instantos/quickmenu || exit 1
 
 pickscript() {
     unset CHOICE
@@ -20,10 +20,10 @@ close' | instantmenu -bw 4 -C -l 7 -w -1)"
         fi
         if [ -e "$CHOICE" ]; then
             if [ -d "$CHOICE" ]; then
-                cd "$CHOICE"
+                cd "$CHOICE" || exit 1
                 unset CHOICE
             else
-                echo "$(realpath $CHOICE)"
+                realpath "$CHOICE"
             fi
         else
             if grep -Eiq '^(close|edit)' <<<"$CHOICE"; then
@@ -81,7 +81,7 @@ enable argument dialog' | imenu -b)"
 }
 
 addmenu() {
-    cd "$(cat /tmp/quickpath)"
+    cd "$(cat /tmp/quickpath)" || exit 1
     ADDCHOICE="$(echo 'add entry
 edit entry
 remove entry

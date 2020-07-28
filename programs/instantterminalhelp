@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/dash
 
 # first time help message when opening the terminal
 
