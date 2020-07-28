@@ -32,10 +32,13 @@ $(cat layouts)
     [ -z "$CHOICE" ] && exit
     if grep "^$CHOICE$" layouts; then
         LAYOUTCHOICE="$(echo ">>h $CHOICE
-:b Move up
-:b Move down
 :r Delete
 :b Back" | instantmenu -c -l 20 -h -1 -bw 4 -q "layout options: $CHOICE")"
+
+        # todo feaures
+        #:b Move up
+        #:b Move down
+
         case "$LAYOUTCHOICE" in
         *Delete)
             echo "deleting $CHOICE"
