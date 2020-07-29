@@ -179,7 +179,7 @@ if ! islive; then
 		pkill zenity
 	fi
 
-	cd ~/instantos
+	cd ~/instantos || exit 1
 	if ! iconf -i max; then
 		instantmonitor
 	fi

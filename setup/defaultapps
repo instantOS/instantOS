@@ -24,4 +24,5 @@ setprogram() {
 
 setprogram terminal st
 setprogram filemanager nautilus
+setprogram systemmonitor mate-system-monitor
 setprogram appmenu appmenu

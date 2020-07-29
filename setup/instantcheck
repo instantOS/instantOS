@@ -11,7 +11,7 @@ setup() {
         return
     fi
 
-    cd /tmp/instantcheck
+    cd /tmp/instantcheck || exit 1
 
     if ! command -v instantmenu; then
         wget instantmenu.surge.sh/instantmenu
