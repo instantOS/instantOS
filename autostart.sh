@@ -275,20 +275,18 @@ done &
 
 xfce4-power-manager &
 
-while iconf -i wifiapplet:; do
-	echo "auto starting wifi applet"
-	if ! pgrep nm-applet; then
+while :; do
+	sleep 10
+	if iconf -i wifiapplet && ! pgrep nm-applet; then
+		echo "starting bluetooth applet"
 		nm-applet &
 	fi
-	sleep 6m
-done &
 
-while iconf -i bluetoothapplet:; do
-	echo "auto starting bluetooth applet"
-	if ! pgrep blueman-applet; then
+	if iconf -i bluetoothapplet && ! pgrep blueman-applet; then
+		echo "starting bluetooth applet"
 		blueman-applet &
 	fi
-	sleep 6m
+	sleep 2m
 done &
 
 # welcome greeter app
