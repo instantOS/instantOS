@@ -1,6 +1,7 @@
 #!/usr/bin/dash
 
 # replacement for gksudo using instantmenu
+
 SUDO_ASKPASS="$(which instantpassword)"
 export SUDO_ASKPASS
 export PASSPROMPT="sudo password for $USER"

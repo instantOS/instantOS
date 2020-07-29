@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # picom launcher that adapts to the environment
+
 if [ -e /opt/instantos/potato ] || iconf -i potato; then
     echo "no compositing for you, your pc is a potato"
     exit

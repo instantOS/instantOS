@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# update wrapper that applies changes to sudo hooks
+
 if ! checkinternet; then
     echo "internet is required to upgrade instantOS"
     exit 1

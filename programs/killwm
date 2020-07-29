@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# restart instantWM from cli
+
 if ! [ -e /tmp/wmpid ]; then
     if pgrep instantwm; then
         pkill instantwm

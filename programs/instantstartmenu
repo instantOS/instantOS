@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# basic menu activated from the top left
+
 CHOICE="$(echo ':b Applications
 :b Settings
 :b Terminal

@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# symlink default applications
+# this program reads a list of default applications from iconf
+# and then symlinks them to the home config dir to be executed from there
 
 [ -e ~/.config/instantos/default ] || mkdir -p ~/.config/instantos/default
 cd ~/.config/instantos/default || exit
 
 XDGBROWSER="$(xdg-settings get default-web-browser)"
-BROWSERLOCATION="$(grep -m 1 Exec </usr/share/applications/$XDGBROWSER | sed 's/Exec=*//g' | sed 's/[ ][^ ]*//')"
+BROWSERLOCATION="$(grep -m 1 Exec </usr/share/applications/"$XDGBROWSER" | sed 's/Exec=*//g' | sed 's/[ ][^ ]*//')"
 
 # symlink browser
 if [ -e "$BROWSERLOCATION" ]; then
@@ -15,14 +16,16 @@ if [ -e "$BROWSERLOCATION" ]; then
     ln -s "$BROWSERLOCATION" ./browser
 fi
 
+# apply the default setting for an application type, fallback to $2
 setprogram() {
     [ -e "$1" ] && rm "$1"
-    TEMPSETTING=$(iconf $1:$2)
+    TEMPSETTING=$(iconf "$1:$2")
     echo "setting $1 to $TEMPSETTING"
-    ln -s "$(which $TEMPSETTING)" ./$1
+    ln -s "$(which "$TEMPSETTING")" ./"$1"
 }
 
 setprogram terminal st
+setprogram browser firefox
 setprogram filemanager nautilus
 setprogram systemmonitor mate-system-monitor
 setprogram appmenu appmenu

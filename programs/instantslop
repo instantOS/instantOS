@@ -1,4 +1,6 @@
 #!/usr/bin/dash
+# slop wrapper that puts out a format readable by instantwm
+# looks different if you have compositing
 
 if pgrep picom; then
     slop --highlight -f x%xx%yx%wx%hx -b 3 -c 0.3203125,0.875,0.40234375,0.1

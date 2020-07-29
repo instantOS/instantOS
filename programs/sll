@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # very subtle easter egg, turn up the volume and wear headphones to experience it
+
 if ! [ -e ~/instantos/thomas.mp3 ]; then
     pushd .
-    cd ~/instantos/
+    cd ~/instantos/ || exit 1
     wget -q thomasthetankengine.surge.sh/thomas.mp3
     popd
 fi
