@@ -346,5 +346,11 @@ fi
 
 # user declared autostart
 if [ -e ~/.instantautostart ]; then
-	bash ~/.instantautostart
+	bash ~/.instantautostart &
+fi
+
+# symlink default applications
+if ! iconf terminal; then
+	echo "setting up default applications"
+	instantutils default
 fi

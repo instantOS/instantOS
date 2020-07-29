@@ -20,6 +20,9 @@ install)
 root)
     sudo /usr/share/instantutils/rootinstall.sh
     ;;
+default)
+    /usr/share/instantutils/setup/defaultapps
+    ;;
 user)
     /usr/share/instantutils/userinstall.sh
     ;;

@@ -30,6 +30,7 @@ setprogram() {
 }
 
 setprogram terminal st
+setprogram appmenu appmenu
 setprogram browser firefox
 setprogram filemanager nautilus
 setprogram systemmonitor mate-system-monitor
