@@ -27,6 +27,6 @@ if ! imenu -c "the extra package $1 is required. Download now?"; then
     exit 1
 fi
 
-st -e "bash" -c "sudo pacman -S --needed --noconfirm $1 && exit"
+st -e "bash" -c "yay -S --needed --noconfirm $1 && exit"
 
 checkpackage "$1" || exit 1
