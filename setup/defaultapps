@@ -21,7 +21,12 @@ setprogram() {
     [ -e "$1" ] && rm "$1"
     TEMPSETTING=$(iconf "$1:$2")
     echo "setting $1 to $TEMPSETTING"
-    ln -s "$(which "$TEMPSETTING")" ./"$1"
+    if command -v "$TEMPSETTING"; then
+        ln -s "$(which "$TEMPSETTING")" ./"$1"
+    else
+        echo "$TEMPSETTING" >"$1"
+        chmod +x "$1"
+    fi
 }
 
 setprogram terminal st
