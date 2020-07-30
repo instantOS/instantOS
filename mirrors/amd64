@@ -1,7 +1,7 @@
 # mirror list for isntantOS amd64
 
 # official main repo
-Server = http://repo.instantos.io
+Server = http://packages.instantos.io
 
 Server = https://instantos.file.coffee
 Server = https://instantos.netlify.app
