@@ -207,7 +207,7 @@ if ! islive; then
 
 	# apply keybpard layout
 	if iconf layout; then
-		setxkbmap -layout "$(iconf keyboard)"
+		setxkbmap -layout "$(iconf layout)"
 	else
 		CURLOCALE=$(locale | grep LANG | sed 's/.*=\(.*\)\..*/\1/')
 		case "$CURLOCALE" in
