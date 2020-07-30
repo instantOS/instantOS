@@ -3,6 +3,8 @@
 # this program reads a list of default applications from iconf
 # and then symlinks them to the home config dir to be executed from there
 
+echo "setting up default applications"
+
 [ -e ~/.config/instantos/default ] || mkdir -p ~/.config/instantos/default
 cd ~/.config/instantos/default || exit
 

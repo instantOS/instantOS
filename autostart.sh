@@ -4,10 +4,16 @@
 ## script for instantOS autostart            ##
 ###############################################
 
-# run userinstall to determine device properties
-if ! iconf -i userinstall; then
+INSTANTVERSION="$(cat /usr/share/instantutils/version)"
+if iconf version && [ "$(iconf version)" = "$INSTANTVERSION" ]; then
+	echo "version check successful"
+	echo "running version $INSTANTVERSION"
+else
+	echo "running update hooks"
 	/usr/share/instantutils/userinstall.sh
 	iconf -i userinstall 1
+	iconf version "$INSTANTVERSION"
+	instantutils default
 fi
 
 # architecture detection
@@ -345,10 +351,4 @@ fi
 # user declared autostart
 if [ -e ~/.instantautostart ]; then
 	bash ~/.instantautostart &
-fi
-
-# symlink default applications
-if ! iconf terminal; then
-	echo "setting up default applications"
-	instantutils default
 fi
