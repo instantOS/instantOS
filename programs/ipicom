@@ -53,9 +53,10 @@ if ! [ -e .config/picom/picom.conf ] ||
     genconfig
 fi
 
-if ! grep -q 'hypervisor' /proc/cpuinfo &&
+if (! grep -q 'hypervisor' /proc/cpuinfo &&
     grep -q 'instantos' .config/picom/picom.conf &&
-    iconf -i blur; then
+    iconf -i blur) || iconf -i experimentalpicom; then
+    echo "running picom with blur support"
     picom --experimental-backends &
 else
     picom "$@" &
