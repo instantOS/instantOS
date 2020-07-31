@@ -22,6 +22,38 @@ else
 
 fi
 
+# convert layout selection to applet
+if [ "$1" = "apply" ]; then
+    pgrep gxkb && RESTARTAPPLET=true
+    if [ -e ~/.config/gxkb/gxkb.cfg ] && grep '^layout' ~/.config/gxkb/gxkb.cfg; then
+        echo "gxkb config found"
+    else
+        echo "initiating gxkb config"
+        pgrep gxkb || gxkb &
+        for i in {1..15}; do
+            echo "waiting for config: $i"
+            sleep 2
+            if [ -e ~/.config/gxkb/gxkb.cfg ]; then
+                pkill gxkb
+                break
+            fi
+        done
+    fi
+
+    echo "applying layouts to gxkb"
+    LAYOUTS="$(tr '\n' ',' <~/.config/instantos/layouts | grep -o '.*[^,]')"
+    echo "setting layouts to $LAYOUTS"
+
+    if [ -n "$RESTARTAPPLET" ]; then
+        echo "restartring gxkb"
+        pkill gxkb
+        sleep 2
+        gxkb &
+    fi
+
+    exit
+fi
+
 # layout list editor
 while :; do
     LIST=">>h Keyboard layouts

@@ -4,7 +4,7 @@
 ## installs all system wide tweaks for instantOS  ##
 ####################################################
 
-if ! [ $(whoami) = "root" ]; then
+if ! [ "$(whoami)" = "root" ]; then
     echo "please run this as root"
     exit 1
 fi
