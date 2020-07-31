@@ -281,6 +281,7 @@ done &
 
 xfce4-power-manager &
 
+# start processes that need to be kept running
 while :; do
 	sleep 10
 	if iconf -i wifiapplet && ! pgrep nm-applet; then
@@ -292,7 +293,12 @@ while :; do
 		echo "starting bluetooth applet"
 		blueman-applet &
 	fi
+
+	if iconf -i alttab && ! pgrep alttab; then
+		alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
+	fi
 	sleep 2m
+
 done &
 
 # welcome greeter app
@@ -336,6 +342,11 @@ fi
 
 if iconf -i noanimations; then
 	xdotool key super+alt+shift+s
+fi
+
+# disable wm alttab for graphical alttab
+if iconf -i alttab; then
+	xdotool key super+alt+control+shift+Tab
 fi
 
 # desktop icons
