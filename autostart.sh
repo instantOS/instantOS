@@ -191,8 +191,10 @@ if ! islive; then
 	fi
 
 	if [ -e ~/instantos/monitor.sh ]; then
+		echo "restoring resolution"
 		bash ~/instantos/monitor.sh &
 	elif [ -e ~/.config/autorandr/instantos/config ]; then
+		echo "restoring autorandr resolution"
 		autorandr instantos &
 	fi
 
@@ -336,18 +338,16 @@ if ! iconf -i nohelp; then
 	fi
 fi
 
-if iconf -i highfps; then
-	xdotool key super+alt+shift+d
-fi
+confkey() {
+	[ -n "$2" ] || return
+	iconf -i "$1" || return
+	xdotool key "$2"
+}
 
-if iconf -i noanimations; then
-	xdotool key super+alt+shift+s
-fi
-
+confkey highfps "super+alt+shift+d"
+confkey noanimations "super+alt+shift+s"
 # disable wm alttab for graphical alttab
-if iconf -i alttab; then
-	xdotool key super+alt+control+shift+Tab
-fi
+confkey alttab "super+alt+control+shift+Tab"
 
 # desktop icons
 if iconf -i desktopicons; then
