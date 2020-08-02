@@ -1,0 +1,47 @@
+#!/bin/bash
+
+# menu similar to the super + p menu on windows
+# used to quickly change settings when docking a laptop
+
+mainmenu() {
+    echo '>>h PROJECT
+           Extend
+           PC screen only
+           Second screen only
+               Duplicate
+:g Set default action
+:r Close menu' | instantmenu -l 20 -h -1 -w 400 -c -w -1 -bw 4 -q search
+}
+
+defaultmenu() {
+    echo '>>h Default projection settings
+           Extend
+           PC screen only
+           Second screen only
+               Duplicate
+:r None
+:b Back' | instantmenu -l 20 -h -1 -w 400 -c -w -1 -bw 4 -q search
+}
+
+LOOPING="true"
+while [ -n "$LOOPING" ]; do
+    CHOICE="$(mainmenu)"
+    case "$CHOICE" in
+    "*Second screen only")
+        disper -S
+        ;;
+    *Extend)
+        disper -e
+        ;;
+    "*PC screen only")
+        disper -s
+        ;;
+    *Duplicate)
+        disper -c
+        ;;
+    *action)
+        echo "setting default action"
+        ;;
+    esac
+    unset LOOPING
+done
