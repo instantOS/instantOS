@@ -4,6 +4,8 @@
 ## status monitor for instantWM ##
 ##################################
 
+# will be rewritten soon
+
 INTERNET="X"
 date=""
 

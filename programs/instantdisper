@@ -15,12 +15,64 @@ mainmenu() {
 
 defaultmenu() {
     echo '>>h Default projection settings
-           Extend
-           PC screen only
-           Second screen only
-               Duplicate
+             Extend
+             PC screen only
+             Second screen only
+                Duplicate
+:b Ask
 :r None
 :b Back' | instantmenu -l 20 -h -1 -w 400 -c -w -1 -bw 4 -q search
+}
+
+setdefault() {
+    DEFAULTLOOPING="true"
+    while [ -n "$DEFAULTLOOPING" ]; do
+        DEFAULTCHOICE="$(defaultmenu)"
+
+        if [ -z "$DEFAULTCHOICE" ]; then
+            continue
+        else
+            unset DEFAULTLOOPING
+        fi
+
+        case "$DEFAULTCHOICE" in
+        "*Second screen only")
+            iconf automon S
+            ;;
+        *Extend)
+            iconf automon e
+            ;;
+        "*PC screen only")
+            iconf automon s
+            ;;
+        *Duplicate)
+            iconf automon c
+            ;;
+        *None)
+            iconf automon n
+            ;;
+        *Ask)
+            iconf -d automon
+            ;;
+        *) # Back
+            instantdisper &
+            exit
+            ;;
+        esac
+    done
+}
+
+# apply saved setting
+applydefault() {
+    if ! iconf automon; then
+        echo "error applying default monitor setting"
+    fi
+    AUTOMON="$(iconf automon)"
+    if grep '^[esSc]$' <<<"$AUTOMON"; then
+        disper -"$AUTOMON"
+    else
+        echo "none"
+    fi
 }
 
 LOOPING="true"
@@ -41,6 +93,8 @@ while [ -n "$LOOPING" ]; do
         ;;
     *action)
         echo "setting default action"
+        setdefault
+        applydefault
         ;;
     esac
     unset LOOPING
