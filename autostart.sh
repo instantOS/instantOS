@@ -303,6 +303,25 @@ while :; do
 
 done &
 
+# auto open menu when connecting/disconnecting monitor
+if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
+	DISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
+	if [ "$DISPLAYCOUNT" -eq "$DISPLAYCOUNT" ]; then
+		while :; do
+			NEWDISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
+			if ! [ "$DISPLAYCOUNT" = "$NEWDISPLAYCOUNT" ]; then
+				echo "displays changed"
+				notify-send "display changed"
+				DISPLAYCOUNT="$NEWDISPLAYCOUNT"
+				# todo: open menu
+			fi
+			sleep 10
+		done &
+	else
+		echo "error detecting display count"
+	fi
+fi
+
 # welcome greeter app
 if iconf -b welcome; then
 	instantwelcome
