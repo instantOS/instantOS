@@ -75,20 +75,45 @@ applydefault() {
     fi
 }
 
+if [ -n "$1" ]; then
+    case "$1" in
+    apply)
+        if iconf automon; then
+            applydefault
+            exit
+        fi
+        ;;
+    setdefault)
+        setdefault
+        applydefault
+        exit
+        ;;
+    settings)
+        echo "starting instantdisper"
+        ;;
+    esac
+fi
+
 LOOPING="true"
 while [ -n "$LOOPING" ]; do
     CHOICE="$(mainmenu)"
+    unset LOOPING
     case "$CHOICE" in
-    "*Second screen only")
-        disper -S
-        ;;
     *Extend)
+        echo "extend"
         disper -e
         ;;
-    "*PC screen only")
-        disper -s
+    *only)
+        if grep -q 'PC' <<<"$CHOICE"; then
+            echo "setting display to primary monitor"
+            disper -s
+        else
+            echo "setting display to secondary monitor"
+            disper -S
+        fi
         ;;
     *Duplicate)
+        echo "duplicating monitors"
         disper -c
         ;;
     *action)
@@ -96,6 +121,12 @@ while [ -n "$LOOPING" ]; do
         setdefault
         applydefault
         ;;
+    *menu)
+        exit
+        ;;
+    *)
+        echo "choice $CHOICE"
+        LOOPING="true"
+        ;;
     esac
-    unset LOOPING
 done
