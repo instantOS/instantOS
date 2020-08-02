@@ -310,14 +310,14 @@ if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
 		while :; do
 			NEWDISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
 			if ! [ "$DISPLAYCOUNT" = "$NEWDISPLAYCOUNT" ]; then
+				notify-send "display changed"
+				echo "displays changed"
 				if [ "$NEWDISPLAYCOUNT" -gt 1 ]; then
 					instantdisper
 					echo "multi monitor setup"
 				else
 					disper -e
 				fi
-				echo "displays changed"
-				notify-send "display changed"
 				DISPLAYCOUNT="$NEWDISPLAYCOUNT"
 				# todo: open menu
 			fi

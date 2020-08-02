@@ -8,7 +8,7 @@ mainmenu() {
            Extend
            PC screen only
            Second screen only
-               Duplicate
+               Duplicate
 :g Set default action
 :r Close menu' | instantmenu -l 20 -h -1 -w 400 -c -w -1 -bw 4 -q search
 }
@@ -65,8 +65,9 @@ setdefault() {
 # apply saved setting
 applydefault() {
     if ! iconf automon; then
-        echo "error applying default monitor setting"
+        echo "no default monitor setting"
     fi
+
     AUTOMON="$(iconf automon)"
     if grep '^[esSc]$' <<<"$AUTOMON"; then
         disper -"$AUTOMON"
