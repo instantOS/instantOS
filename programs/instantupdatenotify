@@ -2,6 +2,11 @@
 
 # check for updates and add a little notification to the top offering to install them
 
+if ! command -v pacman; then
+	echo "not on an arch system"
+	exit
+fi
+
 UPDATECOUNT="$(checkupdates | wc -l)"
 
 if ! [ "$UPDATECOUNT" -gt 1 ]; then

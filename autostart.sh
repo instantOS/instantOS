@@ -391,3 +391,21 @@ fi
 if [ -e ~/.instantautostart ]; then
 	bash ~/.instantautostart &
 fi
+
+# update notifier
+if ! iconf -i noupdates; then
+	sleep 2m
+	if checkinternet; then
+		instantupdatenotify
+	else
+		if command -v checkinternet; then
+			while :; do
+				sleep 5m
+				if checkinternet; then
+					instantupdatenotify
+					break
+				fi
+			done
+		fi
+	fi
+fi
