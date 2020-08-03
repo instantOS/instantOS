@@ -9,7 +9,7 @@ resetdpi() {
     sed -i '/^Xft\.dpi/d' ~/.Xresources
 }
 
-appendresources() {
+appendpi() {
     echo "setting dpi to $DPI"
     echo "Xft.dpi: $DPI" >>~/.Xresources
 }
@@ -30,10 +30,10 @@ fi
 if ! [ -e .Xresources ]; then
     echo "initializing xresources"
     touch ~/.Xresources
-    appendresources "$DPI"
+    appendpi "$DPI"
 else
     if grep -q '^Xft.dpi' ~/.Xresources; then
         resetdpi
     fi
-    appendresources "$DPI"
+    appendpi "$DPI"
 fi
