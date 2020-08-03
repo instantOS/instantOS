@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# apply instantOS dpi settings
+
+DPI="$(iconf dpi)"
+
+resetdpi() {
+    echo "resetting dpi"
+    sed -i '/^Xft\.dpi/d' ~/.Xresources
+}
+
+appendresources() {
+    echo "setting dpi to $DPI"
+    echo "Xft.dpi: $DPI" >>~/.Xresources
+}
+
+if [ -z "$DPI" ]; then
+    resetdpi
+    exit
+fi
+
+[ "$DPI" -eq "$DPI" ] || exit
+
+# resetting
+if [ "$DPI" = "96" ]; then
+    resetdpi
+    exit
+fi
+
+if ! [ -e .Xresources ]; then
+    echo "initializing xresources"
+    touch ~/.Xresources
+    appendresources "$DPI"
+else
+    if grep -q '^Xft.dpi' ~/.Xresources; then
+        resetdpi
+    fi
+    appendresources "$DPI"
+fi

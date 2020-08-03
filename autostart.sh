@@ -275,7 +275,10 @@ if ! iconf -i nostatus; then
 	source /usr/bin/instantstatus &
 fi
 
-iconf -i potato || ipicom &
+# compositing
+if iconf -i potato || iconf -i nocompositing; then
+	ipicom &
+fi
 
 while :; do
 	lxpolkit
