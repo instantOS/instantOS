@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# check for updates and add a little notification to the top offering to install them
+
+UPDATECOUNT="$(checkupdates | wc -l)"
+
+if ! [ "$UPDATECOUNT" -gt 1 ]; then
+	echo "no updates available"
+	exit
+fi
+
+echo ">>h Update Notifier
+> there are
+> $UPDATECOUNT updates available
+> ----
+:gupdate now
+:rlater" | instantmenu -G -q 'notification' -l 20 -x 10000 -y -1 -w -1 -bw 5 >/tmp/updatechoice &
+
+export TMPPID="$!"
+echo "tmpid $TMPPID"
+COUNTER='.'
+
+while ! grep -q '..................' <<<"$COUNTER":; do
+	sleep 1
+	echo "waiting for selection $COUNTER"
+	COUNTER="$COUNTER."
+	if ! kill -0 "$TMPPID" &>/dev/null; then
+		echo "menu quit"
+		break
+	fi
+done
+
+if grep -q '..' /tmp/updatechoice; then
+	if grep 'update now' /tmp/updatechoice; then
+		~/.config/instantos/default/terminal -e sh -c yay
+	fi
+else
+	kill "$TMPPID"
+fi
+
+rm /tmp/updatechoice
