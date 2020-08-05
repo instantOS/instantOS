@@ -282,6 +282,7 @@ fi
 
 while :; do
 	lxpolkit
+	sleep 10
 done &
 
 xfce4-power-manager &
