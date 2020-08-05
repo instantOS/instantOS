@@ -7,6 +7,8 @@ dlbinds() {
         curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' |
             sed 's/^\([^|#]\)/    \1/g' |
             sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md
+    else
+        cp /usr/share/instantutils/keybinds .cache/instantos/hotkeys.md
     fi
 }
 
