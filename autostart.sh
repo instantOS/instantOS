@@ -373,25 +373,30 @@ confkey() {
 	xdotool key "$2"
 }
 
+# run command if iconf option is set
+confcommand() {
+	if iconf -i "$1"; then
+		shift 1
+		"$@"
+	fi &
+}
+
 confkey highfps "super+alt+shift+d"
 confkey noanimations "super+alt+shift+s"
 # disable wm alttab for graphical alttab
 confkey alttab "super+alt+control+shift+Tab"
 
 # desktop icons
-if iconf -i desktopicons; then
-	rox --pinboard Default
-fi &
-
-# optional udiskie
-if iconf -i udiskie; then
-	command -v udiskie && udiskie -t &
-fi
+confcommand desktopicons rox --pinboard Default
+# auto mount disks
+confcommand udiskie udiskie -t
+# clipboard manager
+confcommand clipmanager clipmenud
 
 # user declared autostart
 if [ -e ~/.instantautostart ]; then
-	bash ~/.instantautostart &
-fi
+	bash ~/.instantautostart
+fi &
 
 # update notifier
 if ! iconf -i noupdates; then
