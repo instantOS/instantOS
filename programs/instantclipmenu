@@ -5,9 +5,16 @@
 : "${CM_DIR="${XDG_RUNTIME_DIR-"${TMPDIR-/tmp}"}"}"
 major_version=6
 
-if ! pgrep -f clipmenud; then
-    clipmenud
-fi &
+enableclipmenu() {
+    if ! imenu -c "enable clipboard management?"; then
+        exit
+    fi
+    iconf -i clipmanager 1
+    instantinstall clipmenu
+    pgrep -f clipmenud || clipmenud &
+    sleep 2
+    echo "test" >"$cache_file"
+}
 
 shopt -s nullglob
 
@@ -23,4 +30,6 @@ if [ "$1" = "delete" ]; then
     fi
 fi
 
+[ -e "$cache_file" ] || enableclipmenu
 CM_LAUNCHER=instantmenu clipmenu -p "    " -q 'clipboard manager' -h -1 -lc "instantclipmenu delete"
+pgrep -f clipmenud || enableclipmenu
