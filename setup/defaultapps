@@ -37,3 +37,4 @@ setprogram browser firefox
 setprogram filemanager nautilus
 setprogram systemmonitor mate-system-monitor
 setprogram appmenu appmenu
+setprogram nvim-qt editor
