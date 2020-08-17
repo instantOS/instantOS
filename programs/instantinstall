@@ -9,24 +9,36 @@ fi
 
 checkpackage() {
     if command -v "$1" || pacman -Qi "$1"; then
-        echo "package $1 found"
-        exit
+        echo "package $1 is installed"
+        return 0
+    else
+        echo "package $1 missing"
+        return 1
     fi
-    return 1
 }
 
-checkpackage "$1"
+for i in $@
+do
+    echo "processing package $i"
+    checkpackage "$i" && continue
 
-if ! checkinternet; then
-    imenu -e "internet is required"
-    exit 1
-fi
+    if ! imenu -c "the extra package $i is required. Download now?"; then
+        echo "package will not be installed"
+        exit 1
+    fi
 
-if ! imenu -c "the extra package $1 is required. Download now?"; then
-    echo "package will not be installed"
-    exit 1
-fi
+    if ! checkinternet; then
+        imenu -e "internet is required"
+        exit 1
+    fi
 
-st -e "bash" -c "yay -S --needed --noconfirm $1 && exit"
 
-checkpackage "$1" || exit 1
+done
+
+st -e "bash" -c "yay -S --needed --noconfirm $@ && sleep 2 && exit"
+
+for i in $@
+do
+    checkpackage "$i" || exit 1
+done
+
