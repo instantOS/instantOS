@@ -36,7 +36,7 @@ blur-background-fixed = true;
 blur-kern = "3x3box";
 blur-method = "dual_kawase";
 blur-strength = 5;
-blur-background-exclude = [ "class_g = 'slop'"]
+blur-background-exclude = [ "class_g = 'slop'", "class_g = 'Peek'"]
 EOT
         fi
     else
@@ -45,7 +45,7 @@ EOT
 
 }
 
-cd
+cd || exit
 
 if ! [ -e .config/picom/picom.conf ] ||
     grep -q 'instantos' .config/picom/picom.conf &&
