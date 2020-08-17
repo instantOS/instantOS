@@ -99,7 +99,10 @@ while :; do
     # date time
     date="$date^d^  $(date +'%d-%m')  ^c$DARKBACK^  $(date +'%H:%M')  "
     # volume
-    date="$date^c$LIGHTBACK^  A$(amixer -D pulse get Master | grep -Eo '[0-9]{1,3}%' | head -1)  "
+    date="$date^c$LIGHTBACK^  A$(
+      (amixer -D pulse get Master || amixer sget Master) 2>/dev/null | 
+        grep -Eo -m1 '1?[0-9]{1,2}%'
+    )  "
 
     # option to disable status text
     if [ -e ~/.instantsilent ] && [ -z "$FORCESTATUS" ]; then
