@@ -383,6 +383,10 @@ confcommand() {
     fi &
 }
 
+if iconf savebright; then
+    /usr/share/instantassist/utils/b.sh 2 "$(iconf savebright)"
+fi
+
 confkey highfps "super+alt+shift+d"
 confkey noanimations "super+alt+shift+s"
 # disable wm alttab for graphical alttab
