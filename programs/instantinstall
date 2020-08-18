@@ -21,21 +21,23 @@ for i in $@
 do
     echo "processing package $i"
     checkpackage "$i" && continue
-
     if ! imenu -c "the extra package $i is required. Download now?"; then
         echo "package will not be installed"
         exit 1
     fi
-
+    INSTALLPACKAGES="true"
     if ! checkinternet; then
         imenu -e "internet is required"
         exit 1
     fi
-
-
 done
 
-st -e "bash" -c "yay -S --needed --noconfirm $@ && sleep 2 && exit"
+if [ -n "$INSTALLPACKAGES" ]
+then
+    echo "running command: yay -S --needed --noconfirm $@; sleep 2; exit"
+    st -e "bash" -c "yay -S --needed --noconfirm $@; sleep 2; exit"
+fi
+
 
 for i in $@
 do
