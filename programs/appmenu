@@ -7,6 +7,7 @@ if ! [ -e ~/.config/instantos/israspi ]; then
 		instantmenu_path | instantmenu -bw 4 -l 10 -c "$@" | ${SHELL:-"/bin/bash"} &
 	else
 		# normal graphical menu
+        export TERMINAL=~/.config/instantos/default/terminal
 		rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary'
 	fi
 else
