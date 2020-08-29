@@ -43,6 +43,12 @@ EOT
         echo "vm detected"
     fi
 
+    if iconf -i vsync; then
+    	tee -a .config/picom/picom.conf >/dev/null <<EOT
+vsync=true
+EOT
+    fi
+
 }
 
 cd || exit
