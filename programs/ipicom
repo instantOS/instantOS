@@ -36,7 +36,8 @@ blur-background-fixed = true;
 blur-kern = "3x3box";
 blur-method = "dual_kawase";
 blur-strength = 5;
-blur-background-exclude = [ "class_g = 'slop'", "class_g = 'Peek'", "class_g = 'Rofi'"]
+blur-background-exclude = [ "class_g = 'slop'", "class_g = 'Peek'", "class_g = 'Rofi'", "class_g = 'kdeconnect.daemon'"]
+
 EOT
         fi
     else
