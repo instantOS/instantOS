@@ -1,0 +1,29 @@
+#!/bin/bash
+
+echo "cleaning app entries"
+
+cleanfile() {
+    if ! [ -e "$1" ]
+    then
+        echo "file $1 not existing"
+        return
+    fi
+
+    COMMANDLIST="$(grep -o '[^ ].*' < "$1" | grep -o '^[^ ]*' | sort -u)"
+
+    for i in $COMMANDLIST
+    do
+        if ! command -v "$i" &> /dev/null
+        then
+            echo "$i not installed anymore, removing"
+            sed -i "s:^ *$i.*::g" "$1"
+            sed -i '/^$/d' "$1"
+        fi
+    done
+
+}
+
+cleanfile ~/.cache/instantmenuhist
+cleanfile ~/.cache/instanttermmenuhist
+
+echo "done cleaning"
