@@ -311,7 +311,14 @@ done &
 
 # auto open menu when connecting/disconnecting monitor
 if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
-    DISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
+
+    if nvidia-xconfig --query-gpu-info
+    then
+        DISPLAYCOUNT="$(nvidia-xconfig --query-gpu-info | grep -oi 'number of dis.*' | grep -o '[0-9]*')"
+    else
+        DISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
+    fi
+
     if [ "$DISPLAYCOUNT" -eq "$DISPLAYCOUNT" ]; then
         while :; do
             NEWDISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
