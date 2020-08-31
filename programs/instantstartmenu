@@ -23,7 +23,7 @@ case "$CHOICE" in
     instantsettings &
     ;;
 *Info)
-    st -e sh -c 'neofetch && cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g" && sleep 60m' &
+    st -e sh -c 'neofetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
     ;;
 *Shutdown)
     instantshutdown &
