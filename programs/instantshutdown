@@ -35,16 +35,29 @@ zconfirm() {
     fi
 }
 
+prepareshutdown(){
+    # save current brightness
+    if CURBRIGHT="$(/usr/share/instantassist/utils/b.sh g)"
+    then
+        iconf savebright "$CURBRIGHT"
+    fi
+
+    rm /tmp/instantosrunning
+    # these keep causing stop jobs
+    pkill -f clipnotify
+    pkill -f clipmenud
+}
+
 case "$answer" in
 shut*)
     zconfirm "shutdown"
-    rm /tmp/instantosrunning
+    prepareshutdown
     sleep 0.4
     shutdown now
     ;;
 reb*)
     zconfirm "reboot"
-    rm /tmp/instantosrunning
+    prepareshutdown
     sleep 0.4
     reboot
     ;;
