@@ -388,8 +388,8 @@ confcommand udiskie udiskie -t
 confcommand clipmanager clipmenud
 
 # user declared autostart
-if [ -e ~/.instantautostart ]; then
-    bash ~/.instantautostart
+if [ -e ~/.config/instantos/autostart.sh ]; then
+    bash ~/.config/instantos/autostart.sh
 fi &
 
 # update notifier
