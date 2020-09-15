@@ -31,11 +31,16 @@ user)
     /usr/share/instantutils/userinstall.sh
     ;;
 open)
-    if ! [ -e ~/.config/instantos/default/"$1" ]
+    if [ -z "$2" ]
+    then
+        echo "usage: instantutils open defaultappname"
+        exit
+    fi
+    if ! [ -e ~/.config/instantos/default/"$2" ]
     then
         instantutils default
-        chmod +x ~/.config/instantos/default/"$1"
+        chmod +x ~/.config/instantos/default/"$2"
     fi
-    ~/.config/instantos/default/"$1"
+    ~/.config/instantos/default/"$2"
     ;;
 esac
