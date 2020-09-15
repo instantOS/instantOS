@@ -275,6 +275,42 @@ if ! iconf -i nostatus; then
     source /usr/bin/instantstatus &
 fi
 
+offerdpi() {
+    HEIGHT=$(iconf max | grep -o '[0-9]*$')
+    WIDTH=$(iconf max | grep -o '^[0-9]*')
+    RESOLUTION="$((HEIGHT * WIDTH))"
+    DPIMESSAGE="HiDpi settings can be found in settings->display->dpi"
+    if ! imenu -C <<<"high resolution display detected
+would you like to enable HiDpi?"; then
+        imenu -m "$DPIMESSAGE"
+        return
+    fi
+
+    DPI=$(imenu -i 'enter dpi (default is 96)')
+    while ! [ "$DPI" -eq "$DPI" ] || [ "$DPI" -gt 500 ] || [ "$DPI" -lt "20" ]; do
+        imenu -m "please enter a number between 20 and 500 (default is 96), enter q to skip hidpi"
+        DPI=$(imenu -i 'enter dpi (default is 96)')
+        if grep -q 'q' <<< "$DPI"
+        then
+            imenu -m "$DPIMESSAGE"
+            return
+        fi
+    done
+
+    iconf dpi "$DPI"
+
+    instantdpi
+    xrdb ~/.Xresources
+    imenu -m "a restart is needed to globally apply dpi"
+
+}
+
+if ! iconf -i nohidpi && iconf max; then
+    if [ "$RESOLUTION" -gt 8294000 ]; then
+        offerdpi
+    fi
+fi
+
 # compositing
 if iconf -i potato || iconf -i nocompositing; then
     echo "compositing disabled"
@@ -289,12 +325,10 @@ done &
 
 xfce4-power-manager &
 
-
 # auto open menu when connecting/disconnecting monitor
 if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
 
-    if nvidia-xconfig --query-gpu-info
-    then
+    if nvidia-xconfig --query-gpu-info; then
         DISPLAYCOUNT="$(nvidia-xconfig --query-gpu-info | grep -oi 'number of dis.*' | grep -o '[0-9]*')"
     else
         DISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
@@ -353,14 +387,12 @@ fi
 TODAY="$(date '+%d%m')"
 OTHERTODAY="$(iconf today)"
 
-if [ -z "$OTHERTODAY" ]
-then
+if [ -z "$OTHERTODAY" ]; then
     iconf today "$(date '+%d%m')"
     OTHERTODAY="$(iconf today)"
 fi
 
-if ! [ "$TODAY" = "$OTHERTODAY" ]
-then
+if ! [ "$TODAY" = "$OTHERTODAY" ]; then
     iconf today "$(date '+%d%m')"
     echo "running daily routine"
     menuclean
@@ -445,4 +477,3 @@ while :; do
     sleep 2m
 
 done
-
