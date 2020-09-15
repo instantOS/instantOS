@@ -289,25 +289,6 @@ done &
 
 xfce4-power-manager &
 
-# start processes that need to be kept running
-while :; do
-    sleep 10
-    if iconf -i wifiapplet && ! pgrep nm-applet; then
-        echo "starting bluetooth applet"
-        nm-applet &
-    fi
-
-    if iconf -i bluetoothapplet && ! pgrep blueman-applet; then
-        echo "starting bluetooth applet"
-        blueman-applet &
-    fi
-
-    if iconf -i alttab && ! pgrep alttab; then
-        alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
-    fi
-    sleep 2m
-
-done &
 
 # auto open menu when connecting/disconnecting monitor
 if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
@@ -423,8 +404,8 @@ confcommand udiskie udiskie -t
 confcommand clipmanager clipmenud
 
 # user declared autostart
-if [ -e ~/.instantautostart ]; then
-    bash ~/.instantautostart
+if [ -e ~/.config/instantos/autostart.sh ]; then
+    bash ~/.config/instantos/autostart.sh
 fi &
 
 # update notifier
@@ -443,4 +424,25 @@ if ! iconf -i noupdates; then
             done
         fi
     fi
-fi
+fi &
+
+# start processes that need to be kept running
+while :; do
+    sleep 10
+    if iconf -i wifiapplet && ! pgrep nm-applet; then
+        echo "starting bluetooth applet"
+        nm-applet &
+    fi
+
+    if iconf -i bluetoothapplet && ! pgrep blueman-applet; then
+        echo "starting bluetooth applet"
+        blueman-applet &
+    fi
+
+    if iconf -i alttab && ! pgrep alttab; then
+        alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
+    fi
+    sleep 2m
+
+done
+
