@@ -369,6 +369,22 @@ if ! iconf -i norootinstall && ! islive; then
     fi
 fi
 
+TODAY="$(date '+%d%m')"
+OTHERTODAY="$(iconf today)"
+
+if [ -z "$OTHERTODAY" ]
+then
+    iconf today "$(date '+%d%m')"
+    OTHERTODAY="$(iconf today)"
+fi
+
+if ! [ "$TODAY" = "$OTHERTODAY" ]
+then
+    iconf today "$(date '+%d%m')"
+    echo "running daily routine"
+    menuclean
+fi &
+
 # displays message user opens the terminal for the first time
 if ! iconf -i nohelp; then
     if ! grep -q 'instantterminalhelp' ~/.zshrc; then
