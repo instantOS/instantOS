@@ -32,6 +32,7 @@ setprogram() {
 }
 
 setprogram terminal st
+setprogram graphicaleditor code
 setprogram appmenu appmenu
 setprogram browser firefox
 setprogram filemanager nautilus

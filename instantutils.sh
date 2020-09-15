@@ -30,4 +30,12 @@ alttab)
 user)
     /usr/share/instantutils/userinstall.sh
     ;;
+open)
+    if ! [ -e ~/.config/instantos/default/"$1" ]
+    then
+        instantutils default
+        chmod +x ~/.config/instantos/default/"$1"
+    fi
+    ~/.config/instantos/default/"$1"
+    ;;
 esac
