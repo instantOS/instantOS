@@ -282,6 +282,10 @@ offerdpi() {
     DPIMESSAGE="HiDpi settings can be found in settings->display->dpi"
     if ! imenu -C <<<"high resolution display detected
 would you like to enable HiDpi?"; then
+        if imenu -c "ask again next time?"; then
+            return
+        fi
+        iconf -i nohidpi 1
         imenu -m "$DPIMESSAGE"
         return
     fi
@@ -290,8 +294,7 @@ would you like to enable HiDpi?"; then
     while ! [ "$DPI" -eq "$DPI" ] || [ "$DPI" -gt 500 ] || [ "$DPI" -lt "20" ]; do
         imenu -m "please enter a number between 20 and 500 (default is 96), enter q to skip hidpi"
         DPI=$(imenu -i 'enter dpi (default is 96)')
-        if grep -q 'q' <<< "$DPI"
-        then
+        if grep -q 'q' <<<"$DPI"; then
             imenu -m "$DPIMESSAGE"
             return
         fi
