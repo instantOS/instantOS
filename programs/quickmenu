@@ -124,6 +124,10 @@ new category' | instantmenu -bw 4 -C -l 7 -w -1)"
             exit
         fi
 
+        if [ -n "$SCRIPTNAME" ]
+        then
+            exit
+        fi
         touch "$SCRIPTNAME" || {
             imenu -m "invalid script name"
             exit

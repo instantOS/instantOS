@@ -444,7 +444,7 @@ if [ -e ~/.config/instantos/autostart.sh ]; then
 fi &
 
 # update notifier
-if ! iconf -i noupdates; then
+if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
     sleep 2m
     if checkinternet; then
         instantupdatenotify
