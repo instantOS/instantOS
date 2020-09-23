@@ -423,6 +423,7 @@ confcommand() {
 }
 
 if iconf savebright; then
+    export NOBRIGHTMESSAGE=true
     /usr/share/instantassist/utils/b.sh 2 "$(iconf savebright)"
 fi
 
