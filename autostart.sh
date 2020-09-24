@@ -157,14 +157,18 @@ Disable compositing for this VM?" | imenu -C; then
     fi
 
     if ! [ -e /opt/instantos/guestadditions ]; then
-        if echo "virtual machine detected.
-Would you like to switch to a 1080p resolution?" | imenu -C; then
-            echo "applying virtual machine workaround"
-            /usr/share/instantassist/assists/t/v.sh
+        if lsmod | grep -q vboxguest; then
+            echo "guestadditions detected"
         else
-            if [ -z "$ISLIVE" ]; then
-                if ! imenu -c "ask again next session"; then
-                    iconf -i novmfix 1
+            if echo "virtual machine detected.
+Would you like to switch to a 1080p resolution?" | imenu -C; then
+                echo "applying virtual machine workaround"
+                /usr/share/instantassist/assists/t/v.sh
+            else
+                if [ -z "$ISLIVE" ]; then
+                    if ! imenu -c "ask again next session"; then
+                        iconf -i novmfix 1
+                    fi
                 fi
             fi
         fi
