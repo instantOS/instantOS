@@ -162,8 +162,10 @@ Would you like to switch to a 1080p resolution?" | imenu -C; then
             echo "applying virtual machine workaround"
             /usr/share/instantassist/assists/t/v.sh
         else
-            if ! imenu -c "ask again next session"; then
-                iconf -i novmfix 1
+            if [ -z "$ISLIVE" ]; then
+                if ! imenu -c "ask again next session"; then
+                    iconf -i novmfix 1
+                fi
             fi
         fi
     fi
