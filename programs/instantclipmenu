@@ -11,6 +11,7 @@ enableclipmenu() {
     fi
     iconf -i clipmanager 1
     instantinstall clipmenu
+    sleep 0.2
     pgrep -f clipmenud || clipmenud &
     sleep 2
     echo "test" >"$cache_file"
@@ -32,4 +33,3 @@ fi
 
 [ -e "$cache_file" ] || enableclipmenu
 CM_LAUNCHER=instantmenu clipmenu -p "    " -q 'clipboard manager' -h -1 -lc "instantclipmenu delete"
-pgrep -f clipmenud || enableclipmenu

@@ -38,6 +38,13 @@ done
 if grep -q '..' /tmp/updatechoice; then
 	if grep 'update now' /tmp/updatechoice; then
 		~/.config/instantos/default/terminal -e sh -c yay
+        if imenu -c "there are updates for root owned config files, update now?"
+        then
+            if pacdiff --output | grep -q '...'
+            then
+                ~/.config/instantos/default/terminal -e sh -c "sudo pacdiff"
+            fi
+        fi
 	fi
 else
 	kill "$TMPPID"
