@@ -41,7 +41,8 @@ case "$CHOICE" in
     echo "closed menu"
     ;;
 *)
-    echo "no choice"
+    echo "other choice"
+    instantmenu_smartrun "startmenu" "$CHOICE"
     ;;
 esac
 
