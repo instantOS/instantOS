@@ -2,8 +2,7 @@
 
 # upgrade instantOS to the next version
 
-if whoami | grep -q '^root$'
-then
+if whoami | grep -q '^root$'; then
     echo "please do not run instantupdate as root"
     exit 1
 fi
@@ -24,15 +23,21 @@ sudo bash /usr/share/instantutils/rootinstall.sh
 sudo bash /usr/share/instantdotfiles/rootinstall.sh
 bash /usr/share/instantdotfiles/userinstall.sh
 
-if ! command -v pacdiff
-then
+if ! command -v pacdiff; then
     sudo pacman -S --noconfirm pacman-contrib
+fi
+
+if [ -z "$DIFFPROG" ]; then
+    if ! command -v vim; then
+        export DIFFPROG=nvim
+    fi
+elif ! command -v "$DIFFPROG"; then
+    export DIFFPROG=nvim
 fi
 
 sudo pacdiff
 
-if grep '..' /etc/pacman.d/mirrorlist | grep -v '^#' | grep -q '..'
-then
+if grep '..' /etc/pacman.d/mirrorlist | grep -v '^#' | grep -q '..'; then
     echo "mirrors found"
 else
     echo "mirrors have been cleared"
