@@ -4,7 +4,7 @@
 ## installs all instantOS tools            ##
 #############################################
 
-cd
+cd || echo "ERROR: could not go to HOME"
 echo "installing instantOS tools"
 
 # laptop specific stuff
@@ -30,4 +30,6 @@ fi
 instantmouse gen
 
 mkdir ~/instantos
+mkdir -p ~/.config/instantos
+
 iconf -i userinstall 1
