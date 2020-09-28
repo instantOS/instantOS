@@ -18,3 +18,10 @@ instantthemes a arc
 sudo bash /usr/share/instantutils/rootinstall.sh
 sudo bash /usr/share/instantdotfiles/rootinstall.sh
 bash /usr/share/instantdotfiles/userinstall.sh
+
+if ! command -v pacdiff
+then
+    sudo pacman -S --noconfirm pacman-contrib
+fi
+
+sudo pacdiff
