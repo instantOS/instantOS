@@ -24,6 +24,17 @@ defaultmenu() {
 :b Back' | instantmenu -l 20 -h -1 -w 400 -c -w -1 -bw 4 -q search
 }
 
+restartdunst() {
+    sleep 1
+    if pgrep dunst
+    then
+        echo "restarting dunst"
+        pkill dunst
+        sleep 1
+        dunst & 
+    fi
+}
+
 setdefault() {
     DEFAULTLOOPING="true"
     while [ -n "$DEFAULTLOOPING" ]; do
@@ -71,6 +82,7 @@ applydefault() {
     AUTOMON="$(iconf automon)"
     if grep '^[esSc]$' <<<"$AUTOMON"; then
         disper -"$AUTOMON"
+        restartdunst &
     else
         echo "none"
     fi
@@ -103,6 +115,7 @@ while [ -n "$LOOPING" ]; do
     *Extend)
         echo "extend"
         disper -e
+        restartdunst &
         ;;
     *only)
         if grep -q 'PC' <<<"$CHOICE"; then
@@ -112,10 +125,12 @@ while [ -n "$LOOPING" ]; do
             echo "setting display to secondary monitor"
             disper -S
         fi
+        restartdunst &
         ;;
     *Duplicate)
         echo "duplicating monitors"
         disper -c
+        restartdunst &
         ;;
     *action)
         echo "setting default action"

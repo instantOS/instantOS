@@ -41,6 +41,8 @@ open)
         instantutils default
         chmod +x ~/.config/instantos/default/"$2"
     fi
-    ~/.config/instantos/default/"$2"
+    APP="$2"
+    shift 2
+    ~/.config/instantos/default/"$APP" "$@"
     ;;
 esac
