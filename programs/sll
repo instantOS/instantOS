@@ -1,12 +1,20 @@
 #!/bin/bash
 
-# very subtle easter egg, turn up the volume and wear headphones to experience it
+# very subtle easter egg, turn up the volume and wear headphones to get the best experience
 
-if ! [ -e ~/instantos/thomas.mp3 ]; then
-    pushd .
-    cd ~/instantos/ || exit 1
-    wget -q thomasthetankengine.surge.sh/thomas.mp3
-    popd
+if iconf -i nothomas; then
+    echo "this maneuver could've cost you 51 years and your ears"
+    echo "be mindful of your spelling"
+    exit 1
+fi
+
+if ! iconf thomassound; then
+    if ! [ -e ~/instantos/thomas.mp3 ]; then
+        pushd .
+        cd ~/instantos/ || exit 1
+        wget -q thomasthetankengine.surge.sh/thomas.mp3
+        popd || echo "bruh"
+    fi
 fi
 
 if pgrep mpv; then
@@ -14,6 +22,11 @@ if pgrep mpv; then
     exit
 fi
 
-mpv ~/instantos/thomas.mp3 &>/dev/null &
+if iconf thomassound; then
+    mpv "$(iconf THOMASSOUND)" &>/dev/null &
+else
+    mpv ~/instantos/thomas.mp3 &>/dev/null &
+fi
+
 command sl "$@"
 pkill mpv
