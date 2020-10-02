@@ -24,7 +24,7 @@ ugroup() {
 ugroup video
 ugroup input
 
-RAW="https://raw.githubusercontent.com"
+export RAW="https://raw.githubusercontent.com"
 
 # adds permanent global environment variable
 addenv() {
@@ -48,7 +48,9 @@ addenv() {
 
 addenv -f "QT_QPA_PLATFORMTHEME" "qt5ct"
 addenv -f "PAGER" "less"
-addenv -f "EDITOR" "$(which nvim)"
+if which nvim; then
+    addenv -f "EDITOR" "$(which nvim)"
+fi
 addenv -f "XDG_MENU_PREFIX" "gnome-"
 
 # needed for instantLOCK
@@ -71,8 +73,10 @@ fi
 if ! grep -q '# nord colors' /etc/profile; then
     echo "applying color scheme"
 
-    echo '# nord colors' >>/etc/profile
-    echo 'if [ "$TERM" = "linux" ]; then' >>/etc/profile
+    {
+        echo '# nord colors'
+        echo 'if [ "$TERM" = "linux" ]; then'
+    } >>/etc/profile
 
     cat <<EOT >>/etc/profile
     echo -en "\e]P0383c4a" #black
