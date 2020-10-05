@@ -2,6 +2,7 @@
 
 if [ -z "$1" ] || [ "$1" = snap ]
 then
+    instantinstall firefox
     firefox --new-window https://instantos.io/share
     exit
 fi

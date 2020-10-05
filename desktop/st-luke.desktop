@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Name=st
-Comment=Luke-Smith st with instantOS bindings and colors
+Comment=st with a few patches and sensitive defaults
 Exec=st
 Icon=utilities-terminal
 Terminal=false

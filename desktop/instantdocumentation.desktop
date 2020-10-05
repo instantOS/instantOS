@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=instantOS Documentation
+Comment=Shortcut to the instantOS documentation
+Exec=instantutils documentation
+Icon=utilities-terminal
+Terminal=false
+Type=Application
+Categories=System;
