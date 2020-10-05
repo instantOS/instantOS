@@ -1,5 +1,8 @@
 #!/bin/bash
 
-# todo
+if [ -z "$1" ] || [ "$1" = snap ]
+then
+    firefox --new-window https://instantos.io/share
+    exit
+fi
 
-if [ -n "$1" ]
