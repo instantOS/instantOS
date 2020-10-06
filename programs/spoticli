@@ -4,13 +4,15 @@
 ## cli wrapper for spotify ##
 #############################
 
-if ! [ -e /opt/spotify/spotify ]; then
-    notify-send "please run 'yay -S spotify' in a terminal to use this"
-    exit
-fi
+command -v spotify || exit 1
 
+# start spotify if not started already
 if ! pgrep spotify &>/dev/null; then
-    LD_PRELOAD="/opt/instantos/spotify-adblock.so" spotify
+    if [ -e /usr/lib/spotify-adblock.so ]; then
+        LD_PRELOAD=/usr/lib/spotify-adblock.so spotify
+    else
+        spotify
+    fi
     exit
 fi
 
@@ -29,6 +31,9 @@ s)
     ;;
 b)
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Play
+    ;;
+t)
+    dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
     ;;
 *)
     dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
