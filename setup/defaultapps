@@ -39,3 +39,4 @@ setprogram filemanager nautilus
 setprogram systemmonitor mate-system-monitor
 setprogram appmenu appmenu
 setprogram editor nvim-qt
+setprogram lockscreen ilock
