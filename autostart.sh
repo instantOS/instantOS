@@ -122,7 +122,9 @@ if ! pgrep dunst; then
 fi
 
 onlinetrigger() {
-    instantwallpaper &
+    if ! iconf -i nowallpaper; then
+        instantwallpaper &
+    fi
 }
 
 # set up oh-my-zsh config if not existing already
