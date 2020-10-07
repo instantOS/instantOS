@@ -107,6 +107,7 @@ fi
 if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -iq 'manjaro' /etc/os-release; then
     # install a custom repo
     if ! grep -q '\[instant\]' /etc/pacman.conf; then
+        echo "restoring repo"
         /usr/share/instantutils/repo.sh
     else
         echo "instantOS repo found"
