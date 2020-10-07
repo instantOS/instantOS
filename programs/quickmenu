@@ -13,10 +13,10 @@ pickscript() {
     while [ -z "$CHOICE" ]; do
         if [ -z "$(ls)" ]; then
             CHOICE="$(echo 'edit menu
-close' | instantmenu -bw 4 -C -l 7 -w -1)"
+close' | instantmenu -bw 4 -C -l 15 -w -1)"
 
         else
-            CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 7 -w -1)"
+            CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 15 -w -1)"
         fi
         if [ -e "$CHOICE" ]; then
             if [ -d "$CHOICE" ]; then
