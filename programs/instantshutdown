@@ -37,6 +37,7 @@ zconfirm() {
 
 prepareshutdown(){
     # save current brightness
+    touch /tmp/shuttingdown
     if CURBRIGHT="$(/usr/share/instantassist/utils/b.sh g)"
     then
         iconf savebright "$CURBRIGHT"
