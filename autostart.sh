@@ -437,8 +437,12 @@ fi
 
 confkey highfps "super+alt+shift+d"
 confkey noanimations "super+alt+shift+s"
-# disable wm alttab for graphical alttab
-confkey alttab "super+alt+control+shift+Tab"
+
+if iconf -i alttab; then
+    instantwmctrl alttab 1
+else
+    instantwmctrl alttab 0
+fi
 
 # desktop icons
 confcommand desktopicons rox --pinboard Default
