@@ -16,6 +16,9 @@ else
     instantutils default
 fi
 
+# apply wm settings
+/usr/share/instantutils/wmautostart.sh
+
 # architecture detection
 if [ -z "$1" ]; then
     if uname -m | grep -q '^arm'; then
