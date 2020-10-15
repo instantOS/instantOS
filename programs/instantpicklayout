@@ -1,0 +1,19 @@
+#!/bin/bash
+
+LAYOUT="$(echo "tile
+grid
+float
+monocle
+tcl
+deck
+overview
+bstack
+bstackhoriz" | imenu -l "choose layout")"
+
+if [ -z "$LAYOUT" ]
+then
+    exit
+fi
+
+instantwmctrl layout "$LAYOUT"
+

@@ -1,7 +1,7 @@
 <div align="center">
     <h1>instantOS</h1>
     <p>it works. fast. powerful.</p>
-    <img width="300" height="300" src="https://media.githubusercontent.com/media/instantOS/instantLOGO/master/png/logo.png">
+    <img width="300" height="300" src="https://raw.githubusercontent.com/instantOS/instantLOGO/master/png/logo.png">
 </div>
 
 <p align="left">
