@@ -12,6 +12,19 @@ else
     nitrogen --set-scaled --save "$1"
 fi
 
+# set wallpaper for ROX
+if [ -e ~/.config/rox.sourceforge.net ]
+then
+    ROXFILE="$(realpath ~/.config/rox.sourceforge.net/ROX-Filer/pb_Default)"
+    if grep -q '<backdrop' "$ROXFILE"
+    then
+        sed -i '/<backdrop /d' "$ROXFILE"
+    fi
+
+    sed -i "/<pinboard/a<backdrop style=\"Tiled\">$(realpath $1)</backdrop>" "$ROXFILE"
+
+fi
+
 if pgrep ROX >/dev/null 2>&1; then
     pkill ROX
     if ! pgrep ROX; then
