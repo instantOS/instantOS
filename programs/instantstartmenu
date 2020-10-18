@@ -37,7 +37,7 @@ case "$CHOICE" in
 *Keybindings)
     st -e instanthotkeys &
     ;;
-*Close)
+*menu)
     echo "closed menu"
     ;;
 *)
