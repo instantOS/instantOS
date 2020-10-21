@@ -39,7 +39,10 @@ else
 fi
 
 cd
-command -v instantdotfiles && instantdotfiles
+if ! iconf -r keepdotfiles && ! iconf -i nodotfiles
+then
+    command -v instantdotfiles && instantdotfiles
+fi
 
 if ! iconf -i rangerplugins && command -v rangerplugins; then
     mkdir instantos
