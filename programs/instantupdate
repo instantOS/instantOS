@@ -17,7 +17,10 @@ instantshell
 sudo pacman -Syuu --noconfirm
 command -v yay && yay
 instantdotfiles
-instantthemes a arc
+
+if ! iconf -i notheming; then
+    instantthemes a arc
+fi
 
 sudo bash /usr/share/instantutils/rootinstall.sh
 sudo bash /usr/share/instantdotfiles/rootinstall.sh
