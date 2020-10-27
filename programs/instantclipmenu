@@ -13,8 +13,10 @@ enableclipmenu() {
     instantinstall clipmenu
     sleep 0.2
     pgrep -f clipmenud || clipmenud &
+    notify-send "enabling clipboard management, loading..."
     sleep 2
-    echo "test" >"$cache_file"
+    echo "this menu will show recent clipboard entries" >"$cache_file"
+    echo "click on an entry to restore its contents" >>"$cache_file"
 }
 
 shopt -s nullglob
