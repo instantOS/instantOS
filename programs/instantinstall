@@ -1,6 +1,23 @@
-#!/usr/bin/dash
+#!/bin/bash
 
 # program that prompts the user to install a package if it is not already installed
+
+if [ "$1" == -i ]
+then
+	if ! [ -e /tmp/instantinstalllist ]
+	then
+		echo "no install list found"
+		exit
+	fi
+
+	while read p; do
+		echo "installing $p"
+		yay -S --needed --noconfirm "$p"
+	done </tmp/instantinstalllist
+
+	rm /tmp/instantinstalllist
+	exit
+fi
 
 if [ -z "$1" ]; then
     echo "no package to check"
@@ -17,27 +34,31 @@ checkpackage() {
     fi
 }
 
+[ -e /tmp/instantinstalllist ] && rm /tmp/instantinstalllist
+
 for i in $@
 do
     echo "processing package $i"
+    # skip already installed packages
     checkpackage "$i" && continue
     if ! imenu -c "the extra package $i is required. Download now?"; then
         echo "package will not be installed"
         exit 1
     fi
+    echo "$i" >> /tmp/instantinstalllist
     INSTALLPACKAGES="true"
     if ! checkinternet; then
-        imenu -e "internet is required"
+        imenu -e "internet is required to install packages"
         exit 1
     fi
 done
 
 if [ -n "$INSTALLPACKAGES" ]
 then
-    echo "running command: yay -S --needed --noconfirm $@; sleep 2; exit"
-    st -e "bash" -c "yay -S --needed --noconfirm $@; sleep 2; exit"
+    echo "running terminal emulator"
+    # install packages in a terminal emulator
+    st -e "bash" -c "instantinstall -i"
 fi
-
 
 for i in $@
 do

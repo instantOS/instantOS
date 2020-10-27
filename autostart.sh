@@ -484,7 +484,7 @@ fi &
 while :; do
     sleep 10
     if iconf -i wifiapplet && ! pgrep nm-applet; then
-        echo "starting bluetooth applet"
+        echo "starting wifi applet"
         nm-applet &
     fi
 
