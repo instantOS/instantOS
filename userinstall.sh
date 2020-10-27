@@ -27,6 +27,13 @@ if lsusb | grep -iq 'bluetooth'; then
     iconf -i hasbluetooth 1
 fi
 
+# change some behaviour like light for setting brightness
+if iconf -r hasnvidia
+then
+    iconf -i hasnvidia 1
+    iconf -i uselight 1
+fi
+
 instantmouse gen
 
 mkdir ~/instantos
