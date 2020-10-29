@@ -490,6 +490,7 @@ while :; do
     XINPUTSUM="$(xinput | md5sum)"
     if ! [ "$OLDXSUM" = "$XINPUTSUM" ]; then
         OLDXSUM="$XINPUTSUM"
+        instantmouse gen
         applymouse
     fi
     sleep 2
