@@ -39,8 +39,7 @@ else
 fi
 
 cd
-if ! iconf -r keepdotfiles && ! iconf -i nodotfiles
-then
+if ! iconf -r keepdotfiles && ! iconf -i nodotfiles; then
     command -v instantdotfiles && instantdotfiles
 fi
 
@@ -70,6 +69,20 @@ islive() {
         return 0
     else
         return 1
+    fi
+}
+
+applymouse() {
+    # read cursor speed
+    if iconf mousespeed; then
+        echo "setting mousespeed"
+        instantmouse s "$(iconf mousespeed)"
+    fi
+
+    if iconf -i reversemouse; then
+        instantmouse r 1
+    else
+        instantmouse r 0
     fi
 }
 
@@ -242,18 +255,6 @@ if ! islive; then
         esac
     fi
 
-    # read cursor speed
-    if iconf mousespeed; then
-        echo "setting mousespeed"
-        instantmouse s "$(iconf mousespeed)"
-    fi
-
-    if iconf -i reversemouse; then
-        instantmouse r 1
-    else
-        instantmouse r 0
-    fi
-
     if ! iconf -i noconky; then
         shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
         conky -c /usr/share/instantwidgets/tooltips.conf &
@@ -334,11 +335,6 @@ if iconf -i potato || iconf -i nocompositing; then
 else
     ipicom &
 fi
-
-while :; do
-    lxpolkit
-    sleep 10
-done &
 
 xfce4-power-manager &
 
@@ -480,22 +476,37 @@ if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
     fi
 fi &
 
+# needed for things like the pamac auth prompt
+while :
+do
+    lxpolkit
+    sleep 2
+done &
+
 # start processes that need to be kept running
 while :; do
-    sleep 10
+    sleep 2
+    # check if new device has been plugged in
+    XINPUTSUM="$(xinput | md5sum)"
+    if ! [ "$OLDXSUM" = "$XINPUTSUM" ]; then
+        OLDXSUM="$XINPUTSUM"
+        applymouse
+    fi
+    sleep 2
     if iconf -i wifiapplet && ! pgrep nm-applet; then
         echo "starting wifi applet"
         nm-applet &
     fi
-
+    sleep 2
     if iconf -i bluetoothapplet && ! pgrep blueman-applet; then
         echo "starting bluetooth applet"
         blueman-applet &
     fi
 
+
     if iconf -i alttab && ! pgrep alttab; then
         alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
     fi
-    sleep 2m
 
+    sleep 1m
 done
