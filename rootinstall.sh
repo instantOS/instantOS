@@ -123,9 +123,12 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         echo "installing boot splash screen"
         plymouth-set-default-theme instantos
 
-        if ! grep -q 'instantos boot animation' /etc/default/grub; then
-            sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
-                /etc/default/grub
+        if [ -e /etc/default/grub ]
+        then
+            if ! grep -q 'instantos boot animation' /etc/default/grub; then
+                sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
+                    /etc/default/grub
+            fi
         fi
 
         if ! grep -q '.*plymouth.* # boot screen' /etc/mkinitcpio.conf; then
@@ -136,7 +139,10 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         systemctl enable lightdm-plymouth
 
         /etc/mkinitcpio.conf
-        update-grub
+        if [ -e /etc/default/grub ]
+        then
+            update-grub
+        fi
         mkinitcpio -P
         touch /opt/instantos/bootscreen
     fi
