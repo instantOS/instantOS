@@ -441,9 +441,9 @@ confkey highfps "super+alt+shift+d"
 confkey noanimations "super+alt+shift+s"
 
 if iconf -i alttab; then
-    instantwmctrl alttab 1
+    instantwmctrl alttab 3
 else
-    instantwmctrl alttab 0
+    instantwmctrl alttab 1
 fi
 
 # desktop icons
