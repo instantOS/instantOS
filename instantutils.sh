@@ -2,7 +2,7 @@
 
 # wrapper script for other installation scripts
 
-USAGE="usage: instantutils install
+USAGE="usage:
 instantutils root
 instantutils user
 instantutils repo
@@ -15,9 +15,6 @@ if [ -z "$1" ]; then
 fi
 
 case "$1" in
-install)
-    sudo /usr/share/instantutils/install.sh
-    ;;
 root)
     sudo /usr/share/instantutils/rootinstall.sh
     ;;
