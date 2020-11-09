@@ -241,19 +241,14 @@ if ! islive; then
     fi &
 
     # apply keybpard layout
-    if iconf layout; then
-        setxkbmap -layout "$(iconf layout)"
-    else
-        CURLOCALE=$(locale | grep LANG | sed 's/.*=\(.*\)\..*/\1/')
-        case "$CURLOCALE" in
-        de_DE)
-            setxkbmap -layout de
-            ;;
-        *)
-            echo "no keyboard layout found for your locale"
-            ;;
-        esac
+    if ! iconf layout; then
+        if iconf -r layout; then
+            iconf layout "$(iconf -r layout)"
+        fi
     fi
+
+    KEYLAYOUT="$(iconf layout:us)"
+    setxkbmap -layout "$KEYLAYOUT"
 
     if ! iconf -i noconky; then
         shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
@@ -477,8 +472,7 @@ if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
 fi &
 
 # needed for things like the pamac auth prompt
-while :
-do
+while :; do
     lxpolkit
     sleep 2
 done &
@@ -503,7 +497,6 @@ while :; do
         echo "starting bluetooth applet"
         blueman-applet &
     fi
-
 
     if iconf -i alttab && ! pgrep alttab; then
         alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
