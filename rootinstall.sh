@@ -54,9 +54,8 @@ fi
 addenv -f "XDG_MENU_PREFIX" "gnome-"
 
 # needed for instantLOCK
-if grep -q 'nobody' </etc/groups &>/dev/null || grep -q 'nobody' </etc/group &>/dev/null; then
-    echo "nobody workaround not required"
-else
+if ! grep -q 'nobody' /etc/groups &>/dev/null && ! grep -q 'nobody' </etc/group &>/dev/null; then
+    echo "created group nobody"
     sudo groupadd nobody
 fi
 
@@ -113,7 +112,7 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         echo "instantOS repo found"
     fi
 
-    # deactivate root password, will be reenabled on postinstall
+    # give everybode free root, will be disabled on postinstall
     if ! grep -iq manjaro /etc/os-release; then
         echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
         echo "" >>/etc/sudoers
@@ -123,8 +122,7 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         echo "installing boot splash screen"
         plymouth-set-default-theme instantos
 
-        if [ -e /etc/default/grub ]
-        then
+        if [ -e /etc/default/grub ]; then
             if ! grep -q 'instantos boot animation' /etc/default/grub; then
                 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
                     /etc/default/grub
@@ -139,8 +137,7 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         systemctl enable lightdm-plymouth
 
         /etc/mkinitcpio.conf
-        if [ -e /etc/default/grub ]
-        then
+        if [ -e /etc/default/grub ]; then
             update-grub
         fi
         mkinitcpio -P
