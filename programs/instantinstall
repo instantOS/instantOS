@@ -2,21 +2,19 @@
 
 # program that prompts the user to install a package if it is not already installed
 
-if [ "$1" == -i ]
-then
-	if ! [ -e /tmp/instantinstalllist ]
-	then
-		echo "no install list found"
-		exit
-	fi
+if [ "$1" == -i ]; then
+    if ! [ -e /tmp/instantinstalllist ]; then
+        echo "no install list found"
+        exit
+    fi
 
-	while read p; do
-		echo "installing $p"
-		yay -S --needed --noconfirm "$p"
-	done </tmp/instantinstalllist
+    while read p; do
+        echo "installing $p"
+        yay -S --needed --noconfirm "$p"
+    done </tmp/instantinstalllist
 
-	rm /tmp/instantinstalllist
-	exit
+    rm /tmp/instantinstalllist
+    exit
 fi
 
 if [ -z "$1" ]; then
@@ -36,8 +34,22 @@ checkpackage() {
 
 [ -e /tmp/instantinstalllist ] && rm /tmp/instantinstalllist
 
-for i in $@
-do
+if ! [ -e /usr/bin/pacman ]; then
+    # pacman not detected
+    if ! command -v pacman; then
+        {
+            echo "please install the following packages with your package manager"
+            for i in $@; do
+                if ! command -v "$i"; then
+                    echo "$i"
+                fi
+            done
+        } | imenu -M
+        exit 1
+    fi
+fi
+
+for i in $@; do
     echo "processing package $i"
     # skip already installed packages
     checkpackage "$i" && continue
@@ -45,7 +57,7 @@ do
         echo "package will not be installed"
         exit 1
     fi
-    echo "$i" >> /tmp/instantinstalllist
+    echo "$i" >>/tmp/instantinstalllist
     INSTALLPACKAGES="true"
     if ! checkinternet; then
         imenu -e "internet is required to install packages"
@@ -53,15 +65,12 @@ do
     fi
 done
 
-if [ -n "$INSTALLPACKAGES" ]
-then
+if [ -n "$INSTALLPACKAGES" ]; then
     echo "running terminal emulator"
     # install packages in a terminal emulator
     st -e "bash" -c "instantinstall -i"
 fi
 
-for i in $@
-do
+for i in $@; do
     checkpackage "$i" || exit 1
 done
-
