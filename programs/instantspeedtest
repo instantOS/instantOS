@@ -1,0 +1,53 @@
+#!/bin/bash
+
+instantinstall speedtest-cli || exit 1
+
+imenu -w "running speedtest, please wait" &
+SPEEDOUT="$(speedtest-cli --simple)"
+pkill instantmenu
+
+if [ -z "$SPEEDOUT" ]; then
+    echo 'running the speedtest failed
+are you connected to the internet?' | imenu -M
+    exit 1
+fi
+
+
+PING="$(sed -n '1p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
+DOWNLOAD="$(sed -n '2p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
+UPLOAD="$(sed -n '3p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
+
+echo "$(date '+%Y.%m.%d.%H.%M'):$PING:$DOWNLOAD:$UPLOAD" >> ~/.cache/instantos/speedtest
+
+while :; do
+    CHOICE="$(
+        {
+            echo ":b ﴽ$PING"
+            echo ":b $DOWNLOAD"
+            echo ":b $UPLOAD"
+            echo ":b Copy all"
+            echo "OK"
+        } | instantmenu -l 20 -c -h -1 -wm -w -1 -q 'speedtest'
+    )"
+
+    [ -z "$CHOICE" ] && exit 1
+
+    if [ "$CHOICE" = "OK" ]; then
+        exit
+    fi
+
+    if grep -q 'ﴽ' <<<"$CHOICE"; then
+        COPIER="$PING"
+    elif grep -q '' <<<"$CHOICE"; then
+        COPIER="$DOWNLOAD"
+    elif grep -q '' <<<"$CHOICE"; then
+        COPIER="$UPLOAD"
+    elif grep -q '' <<<"$CHOICE"; then
+        COPIER="$PING
+Download: $DOWNLOAD
+Upload: $UPLOAD"
+    fi
+
+    [ -n "$COPIER" ] && echo "$COPIER" | xclip -selection c && notify-send "copied $COPIER to clipboard"
+
+done
