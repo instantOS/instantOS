@@ -17,6 +17,7 @@ PING="$(sed -n '1p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
 DOWNLOAD="$(sed -n '2p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
 UPLOAD="$(sed -n '3p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
 
+[ -e ~/.cache/instantos/speedtest ] || touch ~/.cache/instantos/speedtest
 sed -i "1i$(date '+%Y.%m.%d.%H.%M'):$PING:$DOWNLOAD:$UPLOAD" ~/.cache/instantos/speedtest
 sed -i '400,$d' ~/.cache/instantos/speedtest
 

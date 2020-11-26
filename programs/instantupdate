@@ -30,16 +30,6 @@ if ! command -v pacdiff; then
     sudo pacman -S --noconfirm pacman-contrib
 fi
 
-if [ -z "$DIFFPROG" ]; then
-    if ! command -v vim; then
-        export DIFFPROG=nvim
-    fi
-elif ! command -v "$DIFFPROG"; then
-    export DIFFPROG=nvim
-fi
-
-sudo pacdiff
-
 if grep '..' /etc/pacman.d/mirrorlist | grep -v '^#' | grep -q '..'; then
     echo "mirrors found"
 else
