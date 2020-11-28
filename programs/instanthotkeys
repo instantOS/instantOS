@@ -1,19 +1,16 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 # Show a list of available key bindings
 
 dlbinds() {
-    if checkinternet; then
-        curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' |
-            sed 's/^\([^|#]\)/    \1/g' |
-            sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md
-    else
-        cp /usr/share/instantutils/keybinds .cache/instantos/hotkeys.md
-    fi
+    curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' 2>/dev/null |
+        sed 's/^\([^|#]\)/    \1/g' |
+        sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md \
+    || \
+    cp /usr/share/instantutils/keybinds .cache/instantos/hotkeys.md
 }
 
 if ! [ -e ~/.cache/instantos/hotkeys.md ]; then
-    mkdir -p ~/.cache/instantos
+    mkdir -p ~/.cache/instantos 2>&1 >/dev/null
     dlbinds
 fi
 
@@ -21,8 +18,7 @@ cat ~/.cache/instantos/hotkeys.md >/tmp/hotkeys
 
 # allow user to add to the list
 if [ -e ~/.config/instantos/hotkeys ]; then
-    echo "user generated notes: 
-" >>/tmp/hotkeys
+    echo -e "user generated notes:\n" >>/tmp/hotkeys
     cat ~/.config/instantos/hotkeys >>/tmp/hotkeys
 fi
 
@@ -32,5 +28,6 @@ dlbinds &
 if [ -z "$1" ]; then
     less --mouse --wheel-lines=3 /tmp/hotkeys
 else
-    sed 's/^/>/g' </tmp/hotkeys | instantmenu -c -l 35 -fn "Fira Code Nerd Font:pixelsize=13" -bw 3
+    sed 's/^/>/g' /tmp/hotkeys | 
+      instantmenu -i -c -l 35 -fn "Fira Code Nerd Font:pixelsize=13" -bw 3
 fi
