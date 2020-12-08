@@ -10,7 +10,7 @@ mainmenu() {
            Second screen only
                Duplicate
 :g Set default action
-:r Close menu' | instantmenu -l 20 -h -1 -w 400 -c -w -1 -bw 4 -q search
+:r Close menu' | instantmenu -l 20 -h -1 -c -w -1 -bw 4 -q search
 }
 
 defaultmenu() {
@@ -21,7 +21,7 @@ defaultmenu() {
                 Duplicate
 :b Ask
 :r None
-:b Back' | instantmenu -l 20 -h -1 -w 400 -c -w -1 -bw 4 -q search
+:b Back' | instantmenu -l 20 -h -1 -c -w -1 -bw 4 -q search
 }
 
 restartdunst() {
