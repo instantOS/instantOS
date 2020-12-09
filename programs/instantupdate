@@ -11,6 +11,14 @@ if ! checkinternet; then
     exit 1
 fi
 
+if ! grep -q '^[^#]' /etc/pacman.d/mirrorlist; then
+    if echo 'your mirrorlist seems to be broken
+yould you like to repair it?
+leaving it in this state might leave you unable to update' | imenu -C; then
+        sudo tee /etc/pacman.d/mirrorlist </usr/share/instantdotfiles/examplemirrors
+    fi
+fi
+
 sudo pacman -Sy --noconfirm
 
 instantshell
