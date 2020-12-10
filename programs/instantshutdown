@@ -11,13 +11,17 @@ if [ "$(pgrep instantshutdown | wc -l)" -gt 2 ]; then
     exit
 fi
 
-answer="$(echo 'cancel
+if [ -z "$1" ]; then
+    answer="$1"
+else
+    answer="$(echo 'cancel
 shutdown
 logout
 reboot
 lock screen
 suspend
 restart wm' | instantmenu -l 10 -w -1 -c -n -F -p 'shutdown menu' -q 'select')"
+fi
 
 # if there are apps open, ask for confirmation
 zconfirm() {
@@ -35,11 +39,10 @@ zconfirm() {
     fi
 }
 
-prepareshutdown(){
+prepareshutdown() {
     # save current brightness
     touch /tmp/shuttingdown
-    if CURBRIGHT="$(/usr/share/instantassist/utils/b.sh g)"
-    then
+    if CURBRIGHT="$(/usr/share/instantassist/utils/b.sh g)"; then
         iconf savebright "$CURBRIGHT"
     fi
 

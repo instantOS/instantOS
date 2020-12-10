@@ -210,6 +210,9 @@ if ! islive; then
         fi
 
         pkill zenity
+        if imenu -c 'some settings need a reboot to be applied. reboot now?'; then
+            instantshutdown reboot
+        fi
     fi
 
     cd ~/instantos || exit 1
