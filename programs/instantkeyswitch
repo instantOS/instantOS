@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# quickly switch between a list of keyboard layouts
+
+KEYCONF="$HOME/.config/instantos/keylayoutlist"
+TMPPATH=/tmp/instantos/"$(whoami)"/keyindex
+
+if ! [ -e "$KEYCONF" ]; then
+    notify-send 'no keyboard list defined'
+    exit 1
+fi
+
+if ! [ -e "$TMPPATH" ]; then
+    mkdir -p /tmp/instantos/"$(whoami)" &>/dev/null
+    echo "1" >"$TMPPATH"
+fi
+
+TMPINDEX="$(cat "$TMPPATH")"
+
+if ! [ "$TMPINDEX" -eq "$TMPINDEX" ]; then
+    TMPINDEX=0
+fi
+
+LAYOUTCOUNT="$(wc -l <"$KEYCONF")"
+
+if [ "$LAYOUTCOUNT" -eq 1 ]; then
+    notify-send 'only one layout'
+    exit
+fi
+
+TMPINDEX="$((TMPINDEX + 1))"
+
+if [ "$TMPINDEX" -gt "$LAYOUTCOUNT" ]; then
+    TMPINDEX=1
+fi
+
+setxkbmap -layout "$(sed -n "${TMPINDEX}p" "$KEYCONF")"
+
+# save index 
+echo "$TMPINDEX" >"$TMPPATH"
