@@ -250,8 +250,10 @@ if ! islive; then
         fi
     fi
 
-    KEYLAYOUT="$(iconf layout:us)"
-    setxkbmap -layout "$KEYLAYOUT"
+    if ! iconf nokeylayout; then
+        KEYLAYOUT="$(iconf layout:us)"
+        setxkbmap -layout "$KEYLAYOUT"
+    fi
 
     if ! iconf -i noconky; then
         shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
