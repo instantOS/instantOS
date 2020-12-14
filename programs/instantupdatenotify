@@ -19,7 +19,7 @@ echo ">>h Update Notifier
 > $UPDATECOUNT updates available
 > ----
 :gupdate now
-:rlater" | instantmenu -G -q 'notification' -l 20 -x 10000 -y -1 -w -1 -bw 5 >/tmp/updatechoice &
+:rlater" | instantmenu -G -q 'notification' -l 20 -x 10000 -y -10 -w -1 -bw 5 >/tmp/updatechoice &
 
 export TMPPID="$!"
 echo "tmpid $TMPPID"
