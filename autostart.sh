@@ -282,7 +282,9 @@ else
         fi &
         sleep 6m
     done &
+    sudo liveautostart &
     sleep 1
+
 fi
 
 # make built in status optional
