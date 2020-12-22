@@ -252,7 +252,11 @@ if ! islive; then
 
     if ! iconf nokeylayout; then
         KEYLAYOUT="$(iconf layout:us)"
-        setxkbmap -layout "$KEYLAYOUT"
+        if iconf keyvariant; then
+            setxkbmap -layout "$KEYLAYOUT" -layout "$(iconf keyvariant)"
+        else
+            setxkbmap -layout "$KEYLAYOUT"
+        fi
     fi
 
     if ! iconf -i noconky; then
