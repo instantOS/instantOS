@@ -2,8 +2,8 @@
 
 if [ -z "$1" ] || [ "$1" = snap ]
 then
-    instantinstall chromium
-    chromium --app='https://instantos.io/share'
+    instantinstall surf
+    surf 'https://instantos.io/share'
     exit
 fi
 
