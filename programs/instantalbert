@@ -5,6 +5,7 @@ then
     if [ -e ~/.config/albert/albert.conf ]
     then
         sed -i 's/^theme=.*/theme=Arc Dark Blue/g' ~/.config/albert/albert.conf
+        sed -i '/^hotkey/d' ~/.config/albert/albert.conf
     fi
     notify-send 'starting albert'
     albert &
