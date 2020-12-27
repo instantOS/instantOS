@@ -46,7 +46,7 @@ prepareshutdown() {
         iconf savebright "$CURBRIGHT"
     fi
 
-    rm /tmp/instantosrunning
+    rm "$(instantruntimedir)"/instantosrunning
     # these keep causing stop jobs
     pkill -f clipnotify
     pkill -f clipmenud
@@ -67,7 +67,7 @@ reb*)
     ;;
 log*)
     zconfirm "sign out"
-    rm /tmp/instantosrunning
+    rm "$(instantruntimedir)"/instantosrunning
     sleep 0.4
     kill -9 -1
     ;;
