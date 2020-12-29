@@ -10,7 +10,7 @@ dlbinds() {
 }
 
 if ! [ -e ~/.cache/instantos/hotkeys.md ]; then
-    mkdir -p ~/.cache/instantos 2>&1 >/dev/null
+    mkdir -p ~/.cache/instantos 2>&1 /dev/null
     dlbinds
 fi
 

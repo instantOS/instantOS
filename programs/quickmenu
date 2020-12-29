@@ -124,8 +124,7 @@ new category' | instantmenu -bw 4 -C -l 7 -w -1)"
             exit
         fi
 
-        if [ -z "$SCRIPTNAME" ]
-        then
+        if [ -z "$SCRIPTNAME" ]; then
             exit
         fi
 

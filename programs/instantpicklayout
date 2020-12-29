@@ -10,10 +10,8 @@ overview
 bstack
 bstackhoriz" | imenu -l "choose layout")"
 
-if [ -z "$LAYOUT" ]
-then
+if [ -z "$LAYOUT" ]; then
     exit
 fi
 
 instantwmctrl layout "$LAYOUT"
-

@@ -45,7 +45,7 @@ EOT
     fi
 
     if iconf -i vsync; then
-        echo "vsync=true" >> .config/picom/picom.conf
+        echo "vsync=true" >>.config/picom/picom.conf
     fi
 
 }

@@ -12,11 +12,11 @@ if ! checkinternet; then
     exit
 fi
 
-cd
-cd ${WINEPREFIX:-.wine}
-cd drive_c/windows/Resources/Themes
+cd || exit 1
+cd "${WINEPREFIX:-.wine}" || exit 1
+cd drive_c/windows/Resources/Themes || exit 1
 mkdir Windows\ 10
-cd Windows*
+cd Windows* || exit 1
 wget -O 'Windows 10.msstyles' http://winetheme.surge.sh/wine.msstyles
 
 # font smoothing
