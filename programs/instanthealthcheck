@@ -35,12 +35,12 @@ Would you like to clean it now?" | imenu -C 'cache warning'; then
     fi
 fi
 
-# TODO: check locale, check mirrorlist
-
 if locale 2>&1 | grep -iq 'cannot set'; then
     echo "locale seems to be broken"
     if echo 'empty locale has been detected
 would you like to apply a fix?' | imenu -C 'locale issue'; then
         echo "repairing locale"
+        # TODO
+
     fi
 fi
