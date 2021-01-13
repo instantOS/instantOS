@@ -4,11 +4,9 @@
 ## add repo containing instantOS programs and required prebuilt aur programs ##
 ###############################################################################
 
+whoami | grep -q 'root' || { echo "please run this as root" && exit 1; }
 
-whoami | grep -q 'root' || { echo "please run this as root" && exit 1
-}
-
-echo "adding instantOS repos"
+echo "adding instantOS repository list"
 
 addrepo() {
 
@@ -22,7 +20,7 @@ addrepo() {
         echo "[instant]"
         echo "SigLevel = Optional TrustAll"
         echo "Include = /etc/pacman.d/instantmirrorlist"
-    }>>/etc/pacman.conf
+    } >>/etc/pacman.conf
 
     if [ -e /usr/share/instantutils/mirrors/"$1" ]; then
         cat /usr/share/instantutils/mirrors/"$1" >/etc/pacman.d/instantmirrorlist
@@ -47,5 +45,8 @@ else
     echo "no suitable repo for architecture found"
 fi
 
-echo "done adding the instantos repository"
-
+echo "the instantOS pacman repository has been added to your system"
+echo "run the following to install all instantOS packages"
+echo "sudo pacman -Syu && sudo pacman -S instantos instantdepend"
+echo "installing on non-instantOS systems only has inofficial support"
+echo ""
