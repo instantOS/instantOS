@@ -12,7 +12,6 @@ are you connected to the internet?' | imenu -M
     exit 1
 fi
 
-
 PING="$(sed -n '1p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
 DOWNLOAD="$(sed -n '2p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"
 UPLOAD="$(sed -n '3p' <<<"$SPEEDOUT" | grep -o '[0-9].*')"

@@ -3,15 +3,15 @@
 # check for updates and add a little notification to the top offering to install them
 
 if ! command -v pacman; then
-	echo "not on an arch system"
-	exit
+    echo "not on an arch system"
+    exit
 fi
 
 UPDATECOUNT="$(checkupdates | wc -l)"
 
 if ! [ "$UPDATECOUNT" -gt 1 ]; then
-	echo "no updates available"
-	exit
+    echo "no updates available"
+    exit
 fi
 
 echo ">>h Update Notifier
@@ -26,21 +26,21 @@ echo "tmpid $TMPPID"
 COUNTER='.'
 
 while ! grep -q '..................' <<<"$COUNTER":; do
-	sleep 1
-	echo "waiting for selection $COUNTER"
-	COUNTER="$COUNTER."
-	if ! kill -0 "$TMPPID" &>/dev/null; then
-		echo "menu quit"
-		break
-	fi
+    sleep 1
+    echo "waiting for selection $COUNTER"
+    COUNTER="$COUNTER."
+    if ! kill -0 "$TMPPID" &>/dev/null; then
+        echo "menu quit"
+        break
+    fi
 done
 
 if grep -q '..' /tmp/updatechoice; then
-	if grep 'update now' /tmp/updatechoice; then
-		instantutils open terminal -e bash -c yay
-	fi
+    if grep 'update now' /tmp/updatechoice; then
+        instantutils open terminal -e bash -c yay
+    fi
 else
-	kill "$TMPPID"
+    kill "$TMPPID"
 fi
 
 rm /tmp/updatechoice

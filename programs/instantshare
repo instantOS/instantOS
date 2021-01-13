@@ -1,9 +1,7 @@
 #!/bin/bash
 
-if [ -z "$1" ] || [ "$1" = snap ]
-then
+if [ -z "$1" ] || [ "$1" = snap ]; then
     instantinstall surf
     surf 'https://instantos.io/share'
     exit
 fi
-
