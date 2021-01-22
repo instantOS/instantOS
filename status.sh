@@ -34,7 +34,7 @@ while :; do
 
     # battery indicator on laptop
     if [ -n "$ISLAPTOP" ]; then
-        TMPBAT=$(acpi | head -1)
+        TMPBAT=$(acpi | grep -iv Unknown |head -1)
         if [[ $TMPBAT =~ "Charging" ]]; then
             BATTERY="^c$GREEN^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
         else
