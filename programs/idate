@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# utility for checking if something has already been done this month/year/stuff
+
+if [ -z "$2" ]
+then
+    echo "usage: idate y/m/d/w/h/m timername"
+    exit 1
+fi
+
+[ -e ~/.cache/idate ] || mkdir -p ~/.cache/idate
+
+if ! [ -e "$HOME/.cache/$2" ]
+then
+    echo "$2 has not been run yet"
+    exit 0
+fi
+
+CACHEFILE="$HOME/.cache/idate/$2"
+
+OLDCHECK="$(cat "$CACHEFILE")"
+if ! [ "$OLDCHECK" -eq "$OLDCHECK" ]
+then
+    rm "$CACHEFILE"
+    exit 0
+fi
+
+case "$1" in
+    h)
+        CHECKNUMBER="$(date +%Y%m%d%H)"
+        ;;
+    d)
+        CHECKNUMBER="$(date +%Y%m%d)"
+        ;;
+    w)
+        CHECKNUMBER="$(date +%Y%m%U)"
+        ;;
+    m)
+        CHECKNUMBER="$(date +%Y%d)"
+        ;;
+    y)
+        CHECKNUMBER="$(date +%Y)"
+        ;;
+esac
+
+if [ "$CHECKNUMBER" -gt "$OLDCHECK" ]
+then
+    echo "has not been run"
+    echo "$CHECKNUMBER" > "$CACHEFILE"
+    exit 0
+else
+    echo "$2 has already been run"
+    exit 1
+fi
