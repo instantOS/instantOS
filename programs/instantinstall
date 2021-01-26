@@ -23,7 +23,9 @@ if [ -z "$1" ]; then
 fi
 
 checkpackage() {
-    if command -v "$1" || pacman -Qi "$1"; then
+    if {
+        command -v "$1" || pacman -Qi "$1"
+    } &>/dev/null; then
         echo "package $1 is installed"
         return 0
     else

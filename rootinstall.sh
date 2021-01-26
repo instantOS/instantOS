@@ -181,6 +181,7 @@ else
     # set up postinstall trigger
 
     mkdir -p /opt/instantos
+    # TODO this is a mess, come up with something else. Sincerely, me
     touch /opt/instantos/installtrigger
 fi
 
