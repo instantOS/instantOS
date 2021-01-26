@@ -27,6 +27,9 @@ alttab)
 user)
     /usr/share/instantutils/userinstall.sh
     ;;
+repo)
+    /usr/share/instantutils/repo.sh
+    ;;
 open)
     if [ -z "$2" ]
     then
