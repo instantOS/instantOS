@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # Show a list of available key bindings
 
+# Changelog:
+# 2021-01-30: ppenguin: removed hard coded font name and size
+
 dlbinds() {
     curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' 2>/dev/null |
         sed 's/^\([^|#]\)/    \1/g' |
@@ -28,6 +31,5 @@ dlbinds &
 if [ -z "$1" ]; then
     less --mouse --wheel-lines=3 /tmp/hotkeys
 else
-    sed 's/^/>/g' /tmp/hotkeys | 
-      instantmenu -i -c -l 35 -fn "Fira Code Nerd Font:pixelsize=13" -bw 3
+    sed 's/^/>/g' /tmp/hotkeys | instantmenu -i -c -l 35 -bw 3
 fi
