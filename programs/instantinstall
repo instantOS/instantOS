@@ -1,65 +1,72 @@
-#!/bin/bash
-
+#!/usr/bin/env bash
 # program that prompts the user to install a package if it is not already installed
 
-if [ "$1" == -i ]; then
-    if ! [ -e /tmp/instantinstalllist ]; then
-        echo "no install list found"
-        exit
-    fi
+err() { echo "${0##*/}:" "$@" 1>&2; if [[ $1 =~ ^[0-9]+$ ]] && [ $1 -ge 0 ] && [ $1 -lt 255 ]; then exit $1; fi; }
+has_cmd() { command -v "$1" &>/dev/null; }
+
+if [ -z "$1" ]; then err 1 "no package or list to check"; fi
+
+install_from_list() {
+    list=${1:-/tmp/instantinstalllist}
+
+    [ -e "$list" ] || err 0 "no install list at '$list'"
+    has_cmd yay || err 1 "yay not found, exiting..."
 
     while read p; do
         echo "installing $p"
         yay -S --needed --noconfirm "$p"
-    done </tmp/instantinstalllist
+    done < "$list"
 
-    rm /tmp/instantinstalllist
+    rm "$list"
     exit
-fi
-
-if [ -z "$1" ]; then
-    echo "no package to check"
-    exit
-fi
-
-checkpackage() {
-    if {
-        command -v "$1" || pacman -Qi "$1"
-    } &>/dev/null; then
-        echo "package $1 is installed"
-        return 0
-    else
-        echo "package $1 missing"
-        return 1
-    fi
 }
 
-[ -e /tmp/instantinstalllist ] && rm /tmp/instantinstalllist
+if [ "$1" == -i ]; then install_from_list; fi
+if [ -e /tmp/instantinstalllist ]; then rm /tmp/instantinstalllist; fi
 
-if ! [ -e /usr/bin/pacman ]; then
-    # pacman not detected
-    if ! command -v pacman; then
-        {
-            echo "please install the following packages with your package manager"
-            for i in $@; do
-                if ! command -v "$i"; then
-                    echo "$i"
-                fi
-            done
-        } | imenu -M
-        exit 1
+checkpackage() {
+    if
+      has_cmd "$1" || 
+      pacman -Qi "$1" &>/dev/null || 
+      instantos-pacman-adapter --query "$1" &>/dev/null || false
+    then
+        echo "package $1 is installed"
+        return 0
     fi
-fi
+    echo "package $1 missing"
+    return 1
+}
 
-for i in $@; do
-    echo "processing package $i"
-    # skip already installed packages
-    checkpackage "$i" && continue
-    if ! imenu -c "the extra package $i is required. Download now?"; then
-        echo "package will not be installed"
-        exit 1
+custom_pacman() {
+    pkgs="$( for pkg in "$@"; do has_cmd "$pkg" || echo "$pkg"; done)"
+    if [ -z "$pkgs" ]; then err 0 "custom package manger: everything already installed"; fi
+    if has_cmd instantos-pacman-adapter; then
+        # hook for a custom package manager:
+        # if --query is the first argument, the adapter is expected
+        # to return 0 if a package of the same name as the second argument
+        # is installed.
+        # otherwise arguments should be treated as package names to install
+        # that the adapter might need to translate into package names
+        # the packend package manager understands.
+        instantos-pacman-adapter "$@"
+        exit $?
     fi
-    echo "$i" >>/tmp/instantinstalllist
+    {
+        echo "Please install the following packages your package manager, automatic installation failed."
+        echo "$pkgs"
+    } | imenu -M
+    exit 1
+}
+
+has_cmd pacman || [ -e /usr/bin/pacman ] || custom_pacman "$@"
+
+for pkg in "$@"; do
+    echo "processing package $pkg"
+    checkpackage "$pkg" && continue  # skip already installed packages
+    if ! imenu -c "the extra package $pkg is required. Download now?"; then
+        err 1 "package will not be installed"
+    fi
+    echo "$pkg" >>/tmp/instantinstalllist
     INSTALLPACKAGES="true"
     if ! checkinternet; then
         imenu -e "internet is required to install packages"
@@ -69,10 +76,10 @@ done
 
 if [ -n "$INSTALLPACKAGES" ]; then
     echo "running terminal emulator"
-    # install packages in a terminal emulator
     st -e "bash" -c "instantinstall -i"
 fi
 
-for i in $@; do
-    checkpackage "$i" || exit 1
+for pkg in $@; do
+    checkpackage "$pkg" || exit 1
 done
+
