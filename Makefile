@@ -14,7 +14,7 @@ install:
 	cp -r setup ${DESTDIR}${PREFIX}/share/instantutils/
 	find -regex './desktop/.*desktop' -exec install -Dm 644 "{}" ${DESTDIR}${PREFIX}/share/applications \;
 	find -regex './programs/.*' -exec install -Dm 755 "{}" ${DESTDIR}${PREFIX}/bin/ \;
-	find -regex './xorg/.*' -exec install -Dm 755 "{}" ${DESTDIR}etc/X11/xorg.conf.d \;
+	find -regex './xorg/.*' -exec install -Dm 755 "{}" ${DESTDIR}/etc/X11/xorg.conf.d \;
 	curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' | \
 		sed 's/^\([^|#]\)/    \1/g' | \
 		sed 's/^##*[ ]*/ /g' >${DESTDIR}${PREFIX}/share/instantutils/keybinds
