@@ -368,7 +368,8 @@ if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
                 DISPLAYCOUNT="$NEWDISPLAYCOUNT"
                 # todo: open menu
             fi
-            sleep 10
+            sleep 6
+            command -v udevwait && udevwait
         done &
     else
         echo "error detecting display count"
