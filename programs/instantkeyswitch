@@ -36,11 +36,13 @@ fi
 
 NEWLAYOUT="$(sed -n "${TMPINDEX}p" "$KEYCONF")"
 
+SL=(${NEWLAYOUT//:/ })
 {
-    setxkbmap -layout "$NEWLAYOUT" || notify-send 'failed setting the layout'
+    setxkbmap -layout "${SL[0]}" -variant "${SL[1]}" || notify-send 'failed setting the layout'
 } &
 
-imenu -t "Keyboard layout: $NEWLAYOUT"
+imenu -t "Keyboard layout:  
+$NEWLAYOUT"
 
 # save index
 echo "$TMPINDEX" >"$TMPPATH"
