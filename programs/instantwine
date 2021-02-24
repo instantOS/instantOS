@@ -1,21 +1,27 @@
 #!/bin/bash
 
-if command -v winetricks && pacman -Qi wine &>/dev/null && [ -e ~/.wine ]; then
-    echo "dependency check successful"
-else
-    echo "please install wine, winetricks and create a wineprefix"
-    exit
-fi
+# Quick way to set up a wine prefix with modern theming and better font rendering
 
 if ! checkinternet; then
     echo "internet is required"
     exit
 fi
 
+instantinstall wine winetricks || exit 1
+if [ -z "$WINEPREFIX" ]; then
+    echo "defaulting to home wine prefix"
+    WINEPREFIX="$HOME/.wine"
+fi
+
+[ -e "$WINEPREFIX" ] || winepath
+
 cd || exit 1
-cd "${WINEPREFIX:-.wine}" || exit 1
+cd "$WINEPREFIX" || exit 1
+
+[ -e drive_c/windows/Resources/Themes ] || mkdir -p drive_c/windows/Resources/Themes
 cd drive_c/windows/Resources/Themes || exit 1
-mkdir Windows\ 10
+
+mkdir "Windows 10"
 cd Windows* || exit 1
 wget -O 'Windows 10.msstyles' http://winetheme.surge.sh/wine.msstyles
 
@@ -23,12 +29,22 @@ wget -O 'Windows 10.msstyles' http://winetheme.surge.sh/wine.msstyles
 winetricks settings fontsmooth=rgb
 
 # user has to manually set that up in the gui
-zenity --info --text "when the next window pops up, click on Desktop-integration and select windows 10 as a theme, then click ok"
+zenity --info --text "when the next window pops up, click on Desktop-integration, select Windows 10 as a theme, then click ok"
 winecfg
 
+while pgrep winecfg; do
+    sleep 2
+    echo "if you have any other wine applications open please close them"
+done
+
+rg -l 'Windows 10' "$HOME"/.wine/ | grep -q reg || sleep 10
+
 # did the user apply the theme?
-if ! grep -q 'Windows 10' ~/.wine/user.reg; then
+if rg -l 'Windows 10' "$HOME"/.wine/ | grep -q reg; then
+    zenity --info --text "good job :)"
+else
     zenity --info --text "you didn't do it, did you? Try again, last chance"
+    zenity --info --text "when the next window pops up, click on Desktop-integration, select Windows 10 as a theme, then click ok"
     winecfg
     zenity --info --text "Well I told you what to do, I'll leave you alone now"
 fi
