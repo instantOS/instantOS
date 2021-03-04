@@ -28,6 +28,11 @@ addrepo() {
         curl -s https://raw.githubusercontent.com/instantOS/instantOS/master/mirrors/"$1" >/etc/pacman.d/instantmirrorlist
     fi
 
+    # allow choosing subdirectory for testing purposes
+    if [ -n "$CUSTOMINSTANTREPO" ]; then
+        sed -i 's/.*packages.instantos.io.*/Server = https:\/\/packages.instantos.io\/'"$CUSTOMINSTANTREPO"'/g' /etc/pacman.d/instantmirrorlist
+    fi
+
 }
 
 if uname -m | grep -q '^x'; then
