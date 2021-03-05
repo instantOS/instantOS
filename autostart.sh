@@ -198,22 +198,6 @@ fi
 
 if ! islive; then
     echo "not a live session"
-    if [ -e /opt/instantos/installtrigger ]; then
-        zenity --info --text "finishing installation in background" &
-
-        # ask for password if postinstall already ran
-        if ! timeout 2 sudo echo test; then
-            instantsudo instantpostinstall
-            sudo rm /opt/instantos/installtrigger
-        else
-            sudo instantpostinstall
-        fi
-
-        pkill zenity
-        if imenu -c 'some settings need a reboot to be applied. reboot now?'; then
-            instantshutdown reboot
-        fi
-    fi
 
     cd ~/instantos || exit 1
     if ! iconf -i max; then

@@ -1,13 +1,17 @@
 #!/bin/bash
 
+# post installation steps
+
 echo "finishing up installation"
 bash /root/instantARCH/postinstall.sh
 bash /usr/share/instantdotfiles/rootinstall.sh
 
-# require password for root account
-sed -i '/.*NOPASSWD/d' /etc/sudoers
-rm /opt/instantos/installtrigger
-
 # delete credentials
 rm /root/instantARCH/config/user
 rm /root/instantARCH/config/password
+
+systemctl disable instantpostinstall
+
+while :; do
+    sleep 10000m
+done

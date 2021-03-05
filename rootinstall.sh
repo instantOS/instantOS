@@ -112,12 +112,6 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         echo "instantOS repo found"
     fi
 
-    # give everybode free root, will be disabled on postinstall
-    if ! grep -iq manjaro /etc/os-release; then
-        echo "root ALL=(ALL) NOPASSWD:ALL #instantosroot" >>/etc/sudoers
-        echo "" >>/etc/sudoers
-    fi
-
     if ! [ -e /opt/instantos/bootscreen ] && [ -e /opt/instantos/realinstall ] && ! [ -e /opt/instantos/noplymouth ]; then
         echo "installing boot splash screen"
         plymouth-set-default-theme instantos
@@ -178,11 +172,7 @@ else
 
     # fix brightness permissions
     bash /usr/share/instantassist/data/backlight.sh
-    # set up postinstall trigger
-
     mkdir -p /opt/instantos
-    # TODO this is a mess, come up with something else. Sincerely, me
-    touch /opt/instantos/installtrigger
 fi
 
 # indicator file
