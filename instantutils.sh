@@ -31,18 +31,23 @@ repo)
     /usr/share/instantutils/repo.sh
     ;;
 open)
-    if [ -z "$2" ]
-    then
+    if [ -z "$2" ]; then
         echo "usage: instantutils open defaultappname"
         exit
     fi
-    if ! [ -e ~/.config/instantos/default/"$2" ]
-    then
+    if ! [ -e ~/.config/instantos/default/"$2" ]; then
         instantutils default
         chmod +x ~/.config/instantos/default/"$2"
     fi
     APP="$2"
     shift 2
     ~/.config/instantos/default/"$APP" "$@"
+    ;;
+rangerplugins)
+    cd || exit 1
+    mkdir instantos
+    echo "installing ranger plugins"
+    mkdir -p ~/.config/ranger/plugins
+    cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
     ;;
 esac

@@ -43,12 +43,9 @@ if ! iconf -r keepdotfiles && ! iconf -i nodotfiles; then
     command -v instantdotfiles && instantdotfiles
 fi
 
-if ! iconf -i rangerplugins && command -v rangerplugins; then
+if ! iconf -i rangerplugins; then
     mkdir instantos
-    echo "installing ranger plugins"
-    mkdir -p ~/.config/ranger/plugins
-    cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
-    iconf -i rangerplugins 1
+    instantutils rangerplugins && iconf -i rangerplugins 1
 fi
 
 # find out if it's a live session
