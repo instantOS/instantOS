@@ -23,6 +23,7 @@ install_local:
 	install -Dm 755 monitor.sh ${DESTDIR}${PREFIX}/bin/instantmonitor
 	install -Dm 755 instantutils.sh ${DESTDIR}${PREFIX}/bin/instantutils
 	install -Dm 755 installinstantos.sh ${DESTDIR}${PREFIX}/bin/installinstantos
+	install -Dm 644 systemd/instantpostinstall.service ${DESTDIR}/etc/systemd/system/instantpostinstall.service
 	mkdir -p ${DESTDIR}${PREFIX}/share/{instantutils,applications}/
 	cp -r mirrors ${DESTDIR}${PREFIX}/share/instantutils/
 	cp -r setup ${DESTDIR}${PREFIX}/share/instantutils/
