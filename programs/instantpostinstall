@@ -1,6 +1,11 @@
 #!/bin/bash
 
-# post installation steps
+# post installation steps for instantOS on first boot or upgrade
+
+if ! whoami | grep -q root; then
+    echo "please run this as root, thank you"
+    exit 1
+fi
 
 echo "finishing up installation"
 bash /root/instantARCH/postinstall.sh
@@ -10,8 +15,9 @@ bash /usr/share/instantdotfiles/rootinstall.sh
 rm /root/instantARCH/config/user
 rm /root/instantARCH/config/password
 
-systemctl disable instantpostinstall
-
-while :; do
-    sleep 10000m
-done
+if command -v systemctl; then
+    systemctl disable instantpostinstall
+    while :; do
+        sleep 10000m
+    done
+fi
