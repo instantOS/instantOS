@@ -248,6 +248,14 @@ if ! islive; then
         conky -c /usr/share/instantwidgets/tooltips.conf &
     fi
 
+    if id instantsupport &>/dev/null; then
+        if echo 'your computer might have been restarted or crashed during an instantSUPPORT session
+This caused some leftover configuration that can pose a security risk. Clean that up now?' | imenu -C; then
+            instantsudo instantsupport -c
+            notify-send 'cleaned up instantsupport leftovers'
+        fi
+    fi
+
 else
     echo "live session detected"
     instantmonitor
