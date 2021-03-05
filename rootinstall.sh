@@ -122,7 +122,7 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
                 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
                     /etc/default/grub
                 # set grub entry name
-                sed -i 's/^GRUB_DISTRIBUTOR=/GRUB_DISTRIBUTOR="instantOS"/g' /etc/default/grub
+                sed -i 's/^GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="instantOS"/g' /etc/default/grub
             fi
         fi
 
