@@ -11,6 +11,7 @@ install: install_external  install_local
 # - It makes things harder in Nix and with updating
 .PHONY: install_external
 install_external:
+	mkdir -p ${DESTDIR}${PREFIX}/share/instantutils
 	curl -s 'https://raw.githubusercontent.com/instantOS/instantLOGO/master/description/thanks.txt'> ${DESTDIR}${PREFIX}/share/instantutils/thanks.txt
 	curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' | \
 		sed 's/^\([^|#]\)/    \1/g' | \
