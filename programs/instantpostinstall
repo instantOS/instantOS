@@ -12,11 +12,12 @@ bash /root/instantARCH/postinstall.sh
 bash /usr/share/instantdotfiles/rootinstall.sh
 
 # delete credentials
-rm /root/instantARCH/config/user
-rm /root/instantARCH/config/password
+[ -e /root/instantARCH/config/user ] && rm /root/instantARCH/config/user
+[ -e /root/instantARCH/config/password ] && rm /root/instantARCH/config/password
 
 if command -v systemctl; then
     systemctl disable instantpostinstall
+    echo "entering sleep cycle, press ctrl + c to cancel"
     while :; do
         sleep 10000m
     done
