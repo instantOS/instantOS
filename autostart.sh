@@ -334,7 +334,13 @@ fi
 xfce4-power-manager &
 
 # auto open menu when connecting/disconnecting monitor
-if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
+checkautoswitch() {
+    {
+        iconf -i islaptop && ! iconf -i noautoswitch
+    } || iconf -i autoswitch || return 1
+}
+
+if checkautoswitch; then
 
     if nvidia-xconfig --query-gpu-info; then
         DISPLAYCOUNT="$(nvidia-xconfig --query-gpu-info | grep -oi 'number of dis.*' | grep -o '[0-9]*')"
@@ -344,6 +350,11 @@ if ! (iconf -i noautoswitch && iconf -i islaptop) || iconf -i autoswitch; then
 
     if [ "$DISPLAYCOUNT" -eq "$DISPLAYCOUNT" ]; then
         while :; do
+            if ! checkautoswitch; then
+                # autoswitch was disabled this boot
+                sleep 30
+                continue
+            fi
             NEWDISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
             if ! [ "$DISPLAYCOUNT" = "$NEWDISPLAYCOUNT" ]; then
                 notify-send "display changed"
