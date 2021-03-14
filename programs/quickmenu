@@ -13,10 +13,10 @@ pickscript() {
     while [ -z "$CHOICE" ]; do
         if [ -z "$(ls)" ]; then
             CHOICE="$(echo 'edit menu
-close' | instantmenu -bw 4 -C -l 15 -w -1)"
+close' | instantmenu -bw 4 -C -l 15 -w -1 -i)"
 
         else
-            CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 15 -w -1)"
+            CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu -bw 4 -C -l 15 -w -1 -i)"
         fi
         if [ -e "$CHOICE" ]; then
             if [ -d "$CHOICE" ]; then
@@ -86,7 +86,7 @@ addmenu() {
 edit entry
 remove entry
 rename entry
-new category' | instantmenu -bw 4 -C -l 7 -w -1)"
+new category' | instantmenu -bw 4 -C -l 7 -w -1 -i)"
     if [ -z "$ADDCHOICE" ]; then
         echo "no addchoice"
         exit
@@ -94,7 +94,7 @@ new category' | instantmenu -bw 4 -C -l 7 -w -1)"
     case "$ADDCHOICE" in
     remove*)
         echo "removing entry"
-        REMOVECHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1)"
+        REMOVECHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
         if [ -d "$REMOVECHOICE" ] && [ -n "$(ls "$REMOVECHOICE/")" ]; then
             imenu -m "category is not empty"
             exit
@@ -136,7 +136,7 @@ new category' | instantmenu -bw 4 -C -l 7 -w -1)"
         ;;
     edit*)
         echo "editing existing entry"
-        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1)"
+        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
         [ -z "$EDITCHOICE" ] && exit
         if [ -d "$EDITCHOICE" ]; then
             imenu -m "selection is not a script"
@@ -149,7 +149,7 @@ new category' | instantmenu -bw 4 -C -l 7 -w -1)"
         ;;
     rename*)
         echo "renaming entry"
-        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1)"
+        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
         [ -z "$EDITCHOICE" ] && exit
 
         if ! [ -e "$EDITCHOICE" ]; then
