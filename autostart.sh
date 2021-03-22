@@ -489,6 +489,10 @@ while :; do
     sleep 2
 done &
 
+if ! [ -e ~/.config/instantos/default/browser ]; then
+    instantutils default
+fi
+
 # start processes that need to be kept running
 while :; do
     sleep 2
