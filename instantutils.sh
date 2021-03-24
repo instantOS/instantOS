@@ -50,4 +50,8 @@ rangerplugins)
     mkdir -p ~/.config/ranger/plugins
     cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
     ;;
+conky)
+    shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
+    conky -c /usr/share/instantwidgets/tooltips.conf &
+    ;;
 esac

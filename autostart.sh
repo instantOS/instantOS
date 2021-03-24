@@ -244,8 +244,7 @@ if ! islive; then
     fi
 
     if ! iconf -i noconky; then
-        shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
-        conky -c /usr/share/instantwidgets/tooltips.conf &
+        instantutils conky
     fi
 
     if id instantsupport &>/dev/null; then
@@ -370,6 +369,10 @@ if checkautoswitch; then
                 fi
                 DISPLAYCOUNT="$NEWDISPLAYCOUNT"
                 # todo: open menu
+                if pgrep conky; then
+                    pkill conky
+                    instantutils conky
+                fi
             fi
             sleep 6
             command -v udevwait && udevwait
