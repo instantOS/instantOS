@@ -70,6 +70,9 @@ islive() {
 }
 
 applymouse() {
+    if iconf -i nomousesetting; then
+        return
+    fi
     # read cursor speed
     if iconf mousespeed; then
         echo "setting mousespeed"
