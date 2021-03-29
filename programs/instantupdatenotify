@@ -37,7 +37,7 @@ done
 
 if grep -q '..' /tmp/updatechoice; then
     if grep 'update now' /tmp/updatechoice; then
-        instantutils open terminal -e bash -c yay
+        instantutils open terminal -e bash -c 'yay && notify-send "Updates installed"'
     fi
 else
     kill "$TMPPID"
