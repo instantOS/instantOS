@@ -36,8 +36,8 @@ m*)
         xinput set-prop "$line" "libinput Accel Speed" "$SENSITIVITY"
     done <<<"$(iconf mouse)"
     ;;
-z)
-    # toggle mouse on/off
+z) # toggle mouse on/off
+
     if ! iconf mousespeed &>/dev/null; then
         iconf mousespeed -.4
     fi
@@ -55,7 +55,7 @@ z)
     fi
 
     ;;
-r*)
+r*) # reverse scrolling direction
     if [ -n "$2" ]; then
         if [ "$2" = "0" ]; then
             iconf -i reversemouse 1
@@ -78,6 +78,33 @@ r*)
         done <<<"$(iconf mouse)"
     fi
     ;;
+p*)
+    if [ -z "$2" ]; then
+        if iconf -i leftprimary; then
+            export LEFTPRIMARY="true"
+        fi
+    else
+        if [ "$2" = 0 ]; then
+            iconf -i leftprimary 0
+        else
+            export LEFTPRIMARY="true"
+            iconf -i leftprimary 1
+        fi
+    fi
+    if [ -z "$LEFTPRIMARY" ]; then
+        echo "setting left button as primary"
+        while read -r id; do
+            xinput set-button-map "$id" 1 2 3
+        done <<<"$(iconf mouse)"
+    else
+        iconf -i leftprimary 1
+        echo "setting right button as primary"
+        while read -r id; do
+            xinput set-button-map "$id" 3 2 1
+        done <<<"$(iconf mouse)"
+    fi
+    ;;
+
 l*)
     # get current sensitivity
     xinput list-props "$(iconf mouse | head -1)" | grep 'libinput Accel Speed' | head -1 | grep -o '[-.0-9]*$'

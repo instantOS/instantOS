@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # program that prompts the user to install a package if it is not already installed
 
-err() { echo "${0##*/}:" "$@" 1>&2; if [[ $1 =~ ^[0-9]+$ ]] && [ $1 -ge 0 ] && [ $1 -lt 255 ]; then exit $1; fi; }
+err() {
+    echo "${0##*/}:" "$@" 1>&2
+    if [[ $1 =~ ^[0-9]+$ ]] && [ $1 -ge 0 ] && [ $1 -lt 255 ]; then exit $1; fi
+}
 has_cmd() { command -v "$1" &>/dev/null; }
 
 if [ -z "$1" ]; then err 1 "no package or list to check"; fi
@@ -15,7 +18,7 @@ install_from_list() {
     while read p; do
         echo "installing $p"
         yay -S --needed --noconfirm "$p"
-    done < "$list"
+    done <"$list"
 
     rm "$list"
     exit
@@ -26,9 +29,9 @@ if [ -e /tmp/instantinstalllist ]; then rm /tmp/instantinstalllist; fi
 
 checkpackage() {
     if
-      has_cmd "$1" || 
-      pacman -Qi "$1" &>/dev/null || 
-      instantos-pacman-adapter --query "$1" &>/dev/null || false
+        has_cmd "$1" ||
+            pacman -Qi "$1" &>/dev/null ||
+            instantos-pacman-adapter --query "$1" &>/dev/null || false
     then
         echo "package $1 is installed"
         return 0
@@ -38,7 +41,7 @@ checkpackage() {
 }
 
 custom_pacman() {
-    pkgs="$( for pkg in "$@"; do has_cmd "$pkg" || echo "$pkg"; done)"
+    pkgs="$(for pkg in "$@"; do has_cmd "$pkg" || echo "$pkg"; done)"
     if [ -z "$pkgs" ]; then err 0 "custom package manger: everything already installed"; fi
     if has_cmd instantos-pacman-adapter; then
         # hook for a custom package manager:
@@ -62,7 +65,7 @@ has_cmd pacman || [ -e /usr/bin/pacman ] || custom_pacman "$@"
 
 for pkg in "$@"; do
     echo "processing package $pkg"
-    checkpackage "$pkg" && continue  # skip already installed packages
+    checkpackage "$pkg" && continue # skip already installed packages
     if ! imenu -c "the extra package $pkg is required. Download now?"; then
         err 1 "package will not be installed"
     fi
@@ -82,4 +85,3 @@ fi
 for pkg in $@; do
     checkpackage "$pkg" || exit 1
 done
-
