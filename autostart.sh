@@ -84,6 +84,7 @@ applymouse() {
     else
         instantmouse r 0
     fi
+    instantmouse p
 }
 
 # optionally disable status bar
