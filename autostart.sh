@@ -473,9 +473,9 @@ if [ -e ~/.config/instantos/autostart.sh ]; then
 fi &
 
 # start all .desktop programs from ~/.config/autostart
-for f in $(ls ~/.config/autostart | grep ".*\.desktop$")
-do
-    gio launch ~/.config/autostart/$f &
+for f in ~/.config/autostart/*.desktop; do  
+    [ -f "$f" ] || break
+    gio launch "$f" &
 done
 
 # update notifier
