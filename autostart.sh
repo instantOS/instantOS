@@ -472,6 +472,12 @@ if [ -e ~/.config/instantos/autostart.sh ]; then
     bash ~/.config/instantos/autostart.sh
 fi &
 
+# start all .desktop programs from ~/.config/autostart
+for f in $(ls ~/.config/autostart | grep ".*\.desktop$")
+do
+    gio launch ~/.config/autostart/$f &
+done
+
 # update notifier
 if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
     sleep 2m
