@@ -472,11 +472,13 @@ if [ -e ~/.config/instantos/autostart.sh ]; then
     bash ~/.config/instantos/autostart.sh
 fi &
 
-# start all .desktop programs from ~/.config/autostart
-for f in ~/.config/autostart/*.desktop; do  
-    [ -f "$f" ] || break
-    gio launch "$f" &
-done
+if ! iconf -i nodesktopautostart; then
+    # start all .desktop programs from ~/.config/autostart
+    for f in ~/.config/autostart/*.desktop; do
+        [ -f "$f" ] || break
+        gio launch "$f" &
+    done
+fi
 
 # update notifier
 if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
