@@ -2,12 +2,16 @@
 
 # wrapper script for other installation scripts
 
-USAGE="usage:
-instantutils root
-instantutils user
-instantutils repo
-instantutils alttab
-instantutils refresh"
+USAGE="usage: instantutils [action]
+    root              execute postinstall steps for root owned files
+    root              execute postinstall steps for user owned files
+    repo              add instantOS repos to the system
+    alttab            launch alttab with instantOS theming
+    default           create symlinks for default applications
+    open              open default application \$2
+    conky             launch conky with instantOS tooltips
+    rangerplugins     install instantOS ranger plugins
+    help              show this message"
 
 if [ -z "$1" ]; then
     echo "$USAGE"
@@ -45,7 +49,7 @@ open)
     ;;
 rangerplugins)
     cd || exit 1
-    mkdir instantos
+    mkdir instantos &>/dev/null
     echo "installing ranger plugins"
     mkdir -p ~/.config/ranger/plugins
     cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
@@ -53,5 +57,8 @@ rangerplugins)
 conky)
     shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
     conky -c /usr/share/instantwidgets/tooltips.conf &
+    ;;
+*)
+    echo "$USAGE"
     ;;
 esac
