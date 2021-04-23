@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# really simple file picker using fd, st and fzf
+
+if [ -z "$INSTANTFILECOMMAND" ]; then
+    export FZF_DEFAULT_COMMAND='fd --type file'
+else
+    export FZF_DEFAULT_COMMAND="$INSTANTFILECOMMAND"
+fi
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+st -c instantfloat -e bash -c 'fzf > /tmp/instantfilepickchoice' &>/dev/null
+
+CHOICE="$(cat /tmp/instantfilepickchoice)"
+
+rm /tmp/instantfilepickchoice
+
+if [ -n "$CHOICE" ] && [ -e "$CHOICE" ]; then
+    echo "$CHOICE"
+else
+    exit 1
+fi
