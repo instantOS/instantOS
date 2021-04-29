@@ -5,9 +5,19 @@ err() {
     echo "${0##*/}:" "$@" 1>&2
     if [[ $1 =~ ^[0-9]+$ ]] && [ $1 -ge 0 ] && [ $1 -lt 255 ]; then exit $1; fi
 }
+
 has_cmd() { command -v "$1" &>/dev/null; }
 
 if [ -z "$1" ]; then err 1 "no package or list to check"; fi
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+    echo 'instantinstall
+check if packages are installed and prompt user to install them if not
+    operations:
+    instantinstall [package(s)]
+    instantinstall -i'
+    exit
+fi
 
 install_from_list() {
     list=${1:-/tmp/instantinstalllist}
