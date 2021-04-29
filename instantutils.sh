@@ -53,6 +53,11 @@ rangerplugins)
     echo "installing ranger plugins"
     mkdir -p ~/.config/ranger/plugins
     cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
+    if [ "$2" = '-f' ]
+    then
+        cat /usr/share/instantdotfiles/ranger/commands.py > ~/.config/ranger/commands.py
+        cat /usr/share/instantdotfiles/ranger/rc.conf > ~/.config/ranger/rc.conf
+    fi
     ;;
 conky)
     shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip

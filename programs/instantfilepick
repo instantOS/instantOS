@@ -10,7 +10,11 @@ fi
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
-st -c instantfloat -e bash -c 'fzf > /tmp/instantfilepickchoice' &>/dev/null
+if [ -z "$INSTANTFILECLI" ]; then
+    st -c instantfloat -e bash -c 'fzf > /tmp/instantfilepickchoice' &>/dev/null
+else
+    fzf >/tmp/instantfilepickchoice
+fi
 
 CHOICE="$(cat /tmp/instantfilepickchoice)"
 
