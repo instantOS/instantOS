@@ -3,7 +3,7 @@
 # looks different if you have compositing
 
 if pgrep picom > /dev/null; then
-    slop --highlight -f x%xx%yx%wx%hx -b 3 -c 0.3203125,0.875,0.40234375,0.1
+    slop --highlight -b 3 -c 0.3203125,0.875,0.40234375,0.1 $@
 else
-    slop -f x%xx%yx%wx%hx -b 3 -c 0.3203125,0.875,0.40234375
+    slop -b 3 -c 0.3203125,0.875,0.40234375 $@
 fi
