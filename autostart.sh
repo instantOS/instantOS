@@ -476,7 +476,9 @@ if ! iconf -i nodesktopautostart; then
     # start all .desktop programs from ~/.config/autostart
     for f in ~/.config/autostart/*.desktop; do
         [ -f "$f" ] || break
-        gio launch "$f" &
+        if ! grep -q -E "NotShowIn=.*(;|)default" < "$f"; then
+            gio launch "$f" &
+        fi
     done
 fi
 
