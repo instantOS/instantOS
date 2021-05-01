@@ -2,8 +2,28 @@
 # slop wrapper that puts out a format readable by instantwm
 # looks different if you have compositing
 
+SLOPCOLOR="${SLOPCOLOR:-green}"
+
+case "$SLOPCOLOR" in
+red)
+    SLOPCOLOR="0.8784313725490196,0.32156862745098036,0.49411764705882355"
+;;
+
+green)
+    SLOPCOLOR="0.3203125,0.875,0.40234375"
+;;
+
+blue)
+    SLOPCOLOR="0.32156862745098036,0.5764705882352941,0.8823529411764706"
+;;
+
+yellow)
+    SLOPCOLOR="0.984313725490196,0.7450980392156863,0"
+;;
+esac
+
 if pgrep picom > /dev/null; then
-    slop --highlight -b 3 -c 0.3203125,0.875,0.40234375,0.1 $@
+    slop --highlight -b 3 -c "$SLOPCOLOR",0.1 $@
 else
-    slop -b 3 -c 0.3203125,0.875,0.40234375 $@
+    slop -b 3 -c "$SLOPCOLOR" $@
 fi
