@@ -432,12 +432,6 @@ if ! iconf -i nohelp; then
     fi
 fi
 
-confkey() {
-    [ -n "$2" ] || return
-    iconf -i "$1" || return
-    xdotool key "$2"
-}
-
 # run command if iconf option is set
 confcommand() {
     if iconf -i "$1"; then
@@ -450,9 +444,6 @@ if iconf savebright; then
     export NOBRIGHTMESSAGE=true
     /usr/share/instantassist/utils/b.sh 2 "$(iconf savebright)"
 fi
-
-confkey highfps "super+alt+shift+d"
-confkey noanimations "super+alt+shift+s"
 
 if iconf -i alttab; then
     instantwmctrl alttab 3
@@ -476,7 +467,7 @@ if ! iconf -i nodesktopautostart; then
     # start all .desktop programs from ~/.config/autostart
     for f in ~/.config/autostart/*.desktop; do
         [ -f "$f" ] || break
-        if ! grep -q -E "NotShowIn=.*(;|)default" < "$f"; then
+        if ! grep -q -E "NotShowIn=.*(;|)default" <"$f"; then
             gio launch "$f" &
         fi
     done
