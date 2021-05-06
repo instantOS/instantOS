@@ -28,6 +28,7 @@ install_local:
 	mkdir -p ${DESTDIR}${PREFIX}/share/{instantutils,applications}/
 	install -Dm 755 wmautostart.sh ${DESTDIR}${PREFIX}/share/instantutils/wmautostart.sh
 	install -Dm 755 userinstall.sh ${DESTDIR}${PREFIX}/share/instantutils/userinstall.sh
+	install -Dm 755 rootinstall.sh ${DESTDIR}${PREFIX}/share/instantutils/rootinstall.sh
 	find -regex './setup/.*' -exec chmod 755 "{}" \;
 	cp -r mirrors ${DESTDIR}${PREFIX}/share/instantutils/
 	cp -r setup ${DESTDIR}${PREFIX}/share/instantutils/

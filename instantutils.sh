@@ -4,7 +4,7 @@
 
 USAGE="usage: instantutils [action]
     root              execute postinstall steps for root owned files
-    root              execute postinstall steps for user owned files
+    user              execute postinstall steps for user owned files
     repo              add instantOS repos to the system
     alttab            launch alttab with instantOS theming
     default           create symlinks for default applications
