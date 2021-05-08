@@ -32,7 +32,7 @@ case "$CHOICE" in
     st &
     ;;
 *Documentation)
-    firefox 'https://instantos.github.io/instantos.github.io/documentation' &
+    "$(iconf browser)" 'https://instantos.io/documentation' &
     ;;
 *Keybindings)
     st -e instanthotkeys &
