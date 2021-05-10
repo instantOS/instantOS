@@ -112,7 +112,7 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         echo "instantOS repo found"
     fi
 
-    sed -i 's/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION="instantOS"' /etc/lsb-release
+    sed -i 's/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION="instantOS"/g' /etc/lsb-release
 
     if ! [ -e /opt/instantos/bootscreen ] && [ -e /opt/instantos/realinstall ] && ! [ -e /opt/instantos/noplymouth ]; then
         echo "installing boot splash screen"
