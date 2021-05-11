@@ -23,7 +23,7 @@ yellow)
 esac
 
 if pgrep picom > /dev/null; then
-    slop --highlight -b 3 -c "$SLOPCOLOR",0.1 $@
+    slop --highlight -b 3 -c "$SLOPCOLOR",0.1 "$@"
 else
-    slop -b 3 -c "$SLOPCOLOR" $@
+    slop -b 3 -c "$SLOPCOLOR" "$@"
 fi
