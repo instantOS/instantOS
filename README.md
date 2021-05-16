@@ -20,4 +20,9 @@ instantOS is an Arch based distro that works out of the box but is still aimed a
 
 ## [website](https://instantos.github.io)
 
-This repo contains utilities used all around instantOS, but for a proper README refer to the [website](https://instantos.github.io)  
+This repo contains utilities used all around instantOS, but for a proper README refer to the [website](https://instantos.github.io)
+
+## Repo info
+
+This repository is the source for the [instantutils](https://github.com/instantOS/extra/blob/master/instantutils/PKGBUILD) package. 
+It can not be used to create a full installation medium. Please refer to [instantOS/iso](https://github.com/instantOS/iso) for information on how to build the project. 
