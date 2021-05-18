@@ -8,7 +8,8 @@ if ! [ -e ~/.config/instantos/israspi ]; then
 	else
 		# normal graphical menu
         export TERMINAL=~/.config/instantos/default/terminal
-		rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary'
+		rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary' &
+        pgrep instantmenu && pkill instantmenu
 	fi
 else
 	# rofi doesn't perform well on raspberry pi
