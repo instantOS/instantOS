@@ -3,6 +3,10 @@
 # official main repo
 Server = http://packages.instantos.io
 
+# mirrors
 Server = https://instantos.file.coffee
+Server = https://instantosmirror.app.craftcat.dev/packages
 Server = https://instantos.netlify.app
 Server = https://instantos.web.app
+Server = https://instantos.vercel.app
+
