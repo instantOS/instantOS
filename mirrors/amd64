@@ -9,4 +9,6 @@ Server = https://instantosmirror.app.craftcat.dev/packages
 Server = https://instantos.netlify.app
 Server = https://instantos.web.app
 Server = https://instantos.vercel.app
+Server = https://ipfs.io/ipns/k51qzi5uqu5dg87hfo10k7ey7fi7i4li3ouk8jis7mckes75tlerv5h62bwv3v/
+Server = https://cloudflare-ipfs.com/ipns/k51qzi5uqu5dg87hfo10k7ey7fi7i4li3ouk8jis7mckes75tlerv5h62bwv3v/
 
