@@ -33,6 +33,10 @@ if iconf -r hasnvidia; then
     iconf -i uselight 1
 fi
 
+if ! iconf -i nodesktophide && ! iconf -i desktophidden; then
+    instantutils hide
+fi
+
 instantmouse gen
 
 mkdir ~/instantos

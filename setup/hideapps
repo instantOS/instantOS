@@ -25,3 +25,5 @@ hidefile qv4l2
 hidefile qvidcap
 hidefile fma-config-tool
 hidefile gxkb
+
+iconf -i desktophidden 1
