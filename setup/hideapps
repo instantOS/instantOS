@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# this hides away some of the desktop entries that most users do not need but that are created by dependencies of the system
+
+echo "hiding unnecessary desktop files"
+
+[ -e ~/.local/share/applications/ ] || mkdir -p ~/.local/share/applications || exit 1
+
+hidefile() {
+    echo "hiding $1"
+    [ -e /usr/share/applications/"$1".desktop ] || return 1
+    {
+        cat /usr/share/applications/"$1".desktop
+        echo '# hidden by instantOS'
+        echo 'Hidden=true'
+    } >~/.local/share/applications/"$1".desktop
+}
+
+hidefile gtk-lshw
+hidefile xfce4-about
+hidefile lxsession-default-apps
+hidefile lstopo
+hidefile rox
+hidefile qv4l2
+hidefile qvidcap
+hidefile fma-config-tool
+hidefile gxkb

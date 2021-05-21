@@ -63,6 +63,10 @@ conky)
     shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
     conky -c /usr/share/instantwidgets/tooltips.conf &
     ;;
+
+hide)
+    /usr/share/instantutils/setup/hideapps
+    ;;
 *)
     echo "$USAGE"
     ;;
