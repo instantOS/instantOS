@@ -41,4 +41,4 @@ setprogram appmenu appmenu
 setprogram editor nvim-qt
 setprogram termeditor nvim
 setprogram lockscreen ilock
-setprogram termfilemanager ranger
+setprogram termfilemanager 'instantutils open terminal -e ranger'
