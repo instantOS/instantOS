@@ -177,5 +177,19 @@ else
     mkdir -p /opt/instantos
 fi
 
+if [ -e /etc/goeclue.conf ] && ! grep -q '^\[redshift' /etc/geoclue/geoclue.conf; then
+    # make sure redshift can use geoclue
+    {
+        echo '[redshift]'
+        echo 'allowed=true'
+        echo 'system=false'
+        echo 'users='
+    } >>/etc/geoclue/geoclue.conf
+
+    # apply api key
+    sed -i '0,/^#url=.*mozilla/{s/^#url=.*mozilla.*/url=https:\/\/location.services.mozilla.com\/v1\/geolocate?key=2bc2a500-5d25-4ae2-a484-7a70cb7cb99e/g}' /etc/geoclue/geoclue.conf
+
+fi
+
 # indicator file
 touch /opt/instantos/rootinstall
