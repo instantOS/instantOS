@@ -3,7 +3,7 @@
 # utility for checking if something has already been done this month/year/stuff
 
 if [ -z "$2" ]; then
-    echo "usage: idate y/m/d/w/h/m timername"
+    echo "usage: idate y/m/d/w/h/M timername"
     exit 1
 fi
 
@@ -29,6 +29,10 @@ m)
 y)
     # year
     CHECKNUMBER="$(date +%Y)"
+    ;;
+M)
+    # minute
+    CHECKNUMBER="$(date +%Y%m%d%H%M)"
     ;;
 esac
 
