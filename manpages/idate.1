@@ -1,0 +1,44 @@
+.TH IDATE 1 2021-06-05 GNU
+
+.SH NAME
+idate \- run once a [n amount of time]
+
+.SH SYNOPSIS
+.B idate
+\fBTIME\fR \fBNAME\fR
+
+.SH DESCRIPTION
+
+.B idate
+can check if a command by the name [NAME] has already been run in [TIME] amount
+of time. If it has not been run yet, it will mark the name as run and the exit
+code is 0. If it has already been run idate will exit with exit code 1. Only
+after [TIME] has passed, the marker will disappear the next time idate is run
+to check [NAME]
+
+.SH OPTIONS
+.TP
+.BR y
+year
+.TP
+.BR m
+month
+.TP
+.BR w
+month
+.TP
+.BR d
+day
+.TP
+.BR h
+hour
+.TP
+.BR M
+minute
+
+.SH EXAMPLE USAGE
+.BR
+
+\fBidate m testtimer && echo 'I ran the monthly testtimer'\fR
+
+This command will echo the message once a month no matter how often you run it.

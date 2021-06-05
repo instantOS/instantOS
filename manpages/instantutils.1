@@ -1,0 +1,46 @@
+.TH INSTANTUTILS 1 2021-06-05 GNU
+
+.SH NAME
+instantutils \- various instantOS system administration tools
+
+.SH SYNOPSIS
+.B instantutils
+\fBCOMMAND\fR
+
+.SH DESCRIPTION
+
+instantutils is a collection of scripts that are used by almost all instantOS
+tools to fullfill all sorts of general system tasks, ranging from the shutdown
+menu to setting default applications
+
+.SH OPTIONS
+.TP
+.BR user
+set up user configuration
+.TP
+.BR repo
+repair or set up the instantOS pacman repository
+.HP
+\fBopen\fR defaultapplication [arguments]
+.IP
+Open one of the default applications defined in instantsettings
+.TP
+.BR alttab
+Run the x11 alttab program with instantOS styled configuration
+.TP
+.BR root
+Set up stock configuration for root owned files
+.TP
+.BR conky
+Start up conky with the instantOS configuration
+.TP
+.BR hide
+Hide unnecessary and defunct desktop entries
+.TP
+.BR rangerplugins
+Install stock ranger configuration and plugins
+
+.SH WARNING
+
+this manpage is wildly incomplete, feel free to ask questions at
+instantos.io/support and contribute to it

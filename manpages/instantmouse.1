@@ -1,0 +1,35 @@
+.TH INSTANTMOUSE 1 2021-06-05 GNU
+
+.SH NAME
+instantmouse \- change and apply instantOS mouse settings
+
+.SH SYNOPSIS
+.B instantmouse
+\fBCOMMAND\fR [option]
+
+.SH DESCRIPTION
+
+Applies and changes mouse settings using xinput and libinput.
+
+.SH OPTIONS
+.TP
+.BR g
+Detect connected mouse input devices
+.HP
+\fBs\fR speed
+.IP
+Set mouse speed using the libinput scale
+.HP
+\fBm\fR speed
+.IP
+Set mouse speed using a scale from 0 to 100
+.TP
+.BR z
+Toggle mouse movement
+.HP
+\fBr\fR [0/1]
+.IP
+Reverse mouse wheel scrolling direction
+.TP
+.BR l
+Get mouse sensitivity (on the libinput scale)
