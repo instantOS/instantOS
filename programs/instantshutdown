@@ -57,7 +57,12 @@ shut*)
     zconfirm "shutdown"
     prepareshutdown
     sleep 0.4
-    shutdown now
+    if command -v systemctl; then
+        shutdown now
+    else
+        # needs root on artix
+        instantsudo poweroff
+    fi
     ;;
 reb*)
     zconfirm "reboot"
