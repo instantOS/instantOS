@@ -15,8 +15,10 @@ mkdir -p /opt/instantos
 ugroup() {
     groupadd "$1" &>/dev/null
     for USER in $(ls /home/ | grep -v '+'); do
-        if ! sudo su "$USER" -c groups | grep -Eq " $1|$1 "; then
-            sudo gpasswd -a "$USER" "$1"
+        if id -u "$USER" &>/dev/null; then
+            if ! sudo su "$USER" -c groups | grep -Eq " $1|$1 "; then
+                sudo gpasswd -a "$USER" "$1"
+            fi
         fi
     done
 }
@@ -177,9 +179,11 @@ else
     mkdir -p /opt/instantos
 fi
 
-if [ -e /etc/goeclue.conf ] && ! grep -q '^\[redshift' /etc/geoclue/geoclue.conf; then
+if [ -e /etc/geoclue/geoclue.conf ] && ! grep -q '^\[redshift' /etc/geoclue/geoclue.conf; then
     # make sure redshift can use geoclue
+    echo 'applying redshift fix'
     {
+        echo ''
         echo '[redshift]'
         echo 'allowed=true'
         echo 'system=false'
