@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## instantmenu speedtest wrapper
+
 instantinstall speedtest-cli || exit 1
 
 imenu -w "running speedtest, please wait" &

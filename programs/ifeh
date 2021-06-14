@@ -1,5 +1,7 @@
 #!/usr/bin/dash
 
+# wallpaper setter wrapper to support rox icons
+
 VARTIMES="$(xrandr | grep '[^s]connected.*x' | wc -l)"
 if [ "$VARTIMES" -gt 1 ]; then
     echo "settings wallpaper for $VARTIMES monitors"

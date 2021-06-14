@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Show a list of available key bindings
 
 dlbinds() {

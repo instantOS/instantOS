@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# open instantos snapshare instance
+
 if [ -z "$1" ] || [ "$1" = snap ]; then
     instantinstall chromium
     chromium --app='https://instantos.io/share'

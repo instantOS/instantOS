@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# albert wrapper to start it faster
+
 if ! albert show
 then
     if [ -e ~/.config/albert/albert.conf ]

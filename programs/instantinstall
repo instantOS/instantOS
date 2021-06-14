@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # program that prompts the user to install a package if it is not already installed
 
 err() {
