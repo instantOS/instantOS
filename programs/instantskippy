@@ -1,0 +1,3 @@
+#!/usr/bin/dash
+
+skippy-xd; sleep 0.1; instantwmctl warpfocus
