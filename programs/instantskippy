@@ -1,3 +1,2 @@
 #!/usr/bin/dash
-
-skippy-xd; sleep 0.1; instantwmctl warpfocus; find-cursor -g -s 250 --color "#292F3A" -o -w 250 -d 50 -l 10
+! pgrep skippy-xd && skippy-xd; sleep 0.1; instantwmctl warpfocus; find-cursor -g -s 250 --color "#292F3A" -o -w 250 -d 50 -l 10
