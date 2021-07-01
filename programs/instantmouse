@@ -129,4 +129,7 @@ l*)
 h)
     echohelp
     ;;
+*)
+    echohelp
+    ;;
 esac

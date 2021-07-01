@@ -179,7 +179,9 @@ Disable compositing for this VM?" | imenu -C; then
     fi
 
     if ! [ -e /opt/instantos/guestadditions ]; then
-        if lsmod | grep -q vboxguest; then
+        if lsmod | grep -q vboxguest && ! {
+            [ "$(xrandr | head -1 | grep -o 'current [0-9]* *x *[0-9]*' | sed 's/[a-zA-Z ]//g')" = "800600" ]
+        }; then
             echo "guestadditions detected"
         else
             if echo "virtual machine detected.
