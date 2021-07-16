@@ -2,16 +2,20 @@
 
 # restart instantWM from cli
 
-if ! [ -e /tmp/wmpid ]; then
+# setup runtime dir variable 
+RTD="$(instantruntimedir)"
+RTD=${RTD:-'/tmp/instantos'}
+
+if ! [ -e "$RTD"/wmpid ]; then
     if pgrep instantwm; then
         pkill instantwm
         exit
     fi
 else
-    WMPID="$(cat /tmp/wmpid)"
+    WMPID="$(cat "$RTD"/wmpid)"
     if kill -0 "$WMPID"; then
         kill "$WMPID"
-        rm /tmp/wmpid
+        rm "$RTD"/wmpid
         exit
     fi
 fi
