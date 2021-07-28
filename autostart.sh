@@ -38,7 +38,10 @@ else
     echo "forced run"
 fi
 
-cd
+cd || {
+    notify-send 'there seems to be a problem with your home directory, autostart failed'
+    exit 1
+}
 if ! iconf -r keepdotfiles && ! iconf -i nodotfiles; then
     command -v instantdotfiles && instantdotfiles
 fi
@@ -336,7 +339,9 @@ else
     ipicom &
 fi
 
-xfce4-power-manager &
+if acpi | grep -q '[0-9][0-9]*%' || iconf -i enablepowermanager; then
+    xfce4-power-manager &
+fi
 
 # auto open menu when connecting/disconnecting monitor
 checkautoswitch() {
