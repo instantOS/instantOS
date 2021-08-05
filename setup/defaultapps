@@ -5,7 +5,19 @@
 
 echo "setting up default applications"
 
-[ -e ~/.config/instantos/default ] || mkdir -p ~/.config/instantos/default
+if [ -e ~/.config/instantos/default ]; then
+    cd ~/.config/instantos/default || exit
+    for i in ./*; do
+        [ -L ./"$i" ] || continue
+        if [ ! -e "$i" ]; then
+            echo "link $i is broken, repairing"
+            rm "$i"
+        fi
+    done
+else
+    mkdir -p ~/.config/instantos/default
+fi
+
 cd ~/.config/instantos/default || exit
 
 XDGBROWSER="$(xdg-settings get default-web-browser)"
