@@ -480,6 +480,11 @@ if ! iconf -i nodesktopautostart; then
     done
 fi
 
+if command -v nvidia-settings &>/dev/null; then
+    # load nvidia user settings
+    nvidia-settings -l
+fi
+
 # update notifier
 if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
     sleep 2m
