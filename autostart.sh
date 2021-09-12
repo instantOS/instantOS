@@ -42,8 +42,13 @@ cd || {
     notify-send 'there seems to be a problem with your home directory, autostart failed'
     exit 1
 }
+
 if ! iconf -r keepdotfiles && ! iconf -i nodotfiles; then
-    command -v instantdotfiles && instantdotfiles
+    if idate w dotfileupdate; then
+        command -v imosid && {
+            imosid apply /usr/share/instantdotfiles/dotfiles
+        }
+    fi
 fi
 
 if ! iconf -i rangerplugins; then
