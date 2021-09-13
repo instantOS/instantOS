@@ -1,7 +1,7 @@
 <div align="center">
     <h1>instantOS</h1>
     <p>it works. fast. powerful.</p>
-    <img width="300" height="300" src="https://raw.githubusercontent.com/instantOS/instantLOGO/master/png/logo.png">
+    <img width="300" height="300" src="https://raw.githubusercontent.com/instantOS/instantLOGO/main/png/logo.png">
 </div>
 
 <p align="left">
@@ -24,5 +24,5 @@ This repo contains utilities used all around instantOS, but for a proper README 
 
 ## Repo info
 
-This repository is the source for the [instantutils](https://github.com/instantOS/extra/blob/master/instantutils/PKGBUILD) package. 
+This repository is the source for the [instantutils](https://github.com/instantOS/extra/blob/main/instantutils/PKGBUILD) package. 
 It can not be used to create a full installation medium. Please refer to [instantOS/iso](https://github.com/instantOS/iso) for information on how to build the project. 

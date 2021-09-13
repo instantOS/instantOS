@@ -3,7 +3,7 @@
 # Show a list of available key bindings
 
 dlbinds() {
-    curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' 2>/dev/null |
+    curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/main/youtube/hotkeys.md' 2>/dev/null |
         sed 's/^\([^|#]\)/    \1/g' |
         sed 's/^##*[ ]*/ /g' >~/.cache/instantos/hotkeys.md \
     || \

@@ -12,8 +12,8 @@ install: install_external  install_local
 .PHONY: install_external
 install_external:
 	mkdir -p ${DESTDIR}${PREFIX}/share/instantutils
-	curl -s 'https://raw.githubusercontent.com/instantOS/instantLOGO/master/description/thanks.txt'> ${DESTDIR}${PREFIX}/share/instantutils/thanks.txt
-	curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/master/youtube/hotkeys.md' | \
+	curl -s 'https://raw.githubusercontent.com/instantOS/instantLOGO/main/description/thanks.txt'> ${DESTDIR}${PREFIX}/share/instantutils/thanks.txt
+	curl -s 'https://raw.githubusercontent.com/instantOS/instantos.github.io/main/youtube/hotkeys.md' | \
 		sed 's/^\([^|#]\)/    \1/g' | \
 		sed 's/^##*[ ]*/ /g' >${DESTDIR}${PREFIX}/share/instantutils/keybinds
 

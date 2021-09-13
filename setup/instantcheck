@@ -19,7 +19,7 @@ setup() {
     fi
     export PATH=$PATH:/tmp/instantcheck
     if ! command -v imenu; then
-        curl -s https://raw.githubusercontent.com/instantOS/imenu/master/imenu.sh >imenu
+        curl -s https://raw.githubusercontent.com/instantOS/imenu/main/imenu.sh >imenu
         chmod +x imenu
     fi
 }

@@ -25,7 +25,7 @@ addrepo() {
     if [ -e /usr/share/instantutils/mirrors/"$1" ]; then
         cat /usr/share/instantutils/mirrors/"$1" >/etc/pacman.d/instantmirrorlist
     else
-        curl -s https://raw.githubusercontent.com/instantOS/instantOS/master/mirrors/"$1" >/etc/pacman.d/instantmirrorlist
+        curl -s https://raw.githubusercontent.com/instantOS/instantOS/main/mirrors/"$1" >/etc/pacman.d/instantmirrorlist
     fi
 
     # allow choosing subdirectory for testing purposes
