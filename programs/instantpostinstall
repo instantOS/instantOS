@@ -17,8 +17,4 @@ bash /usr/share/instantdotfiles/rootinstall.sh
 
 if command -v systemctl; then
     systemctl disable instantpostinstall
-    echo "entering sleep cycle, press ctrl + c to cancel"
-    while :; do
-        sleep 10000m
-    done
 fi

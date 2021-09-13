@@ -1,11 +1,15 @@
 [Unit]
 Description=instantOS post installation steps
+Before=lightdm.service lightdm-plymouth.service
 
 [Service]
-Type=simple
+Type=oneshot
 ExecStart=/usr/bin/instantpostinstall
+KillMode=process
+TimeoutStopSec=1000000
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target lightdm.service lightdm-plymouth.service
+RequiredBy=lightdm.service lightdm-plymouth.service
 
 
