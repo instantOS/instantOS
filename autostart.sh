@@ -51,6 +51,13 @@ if ! iconf -r keepdotfiles && ! iconf -i nodotfiles; then
     fi
 fi
 
+if idate m appimagescan; then
+    if [ -e ~/.local/bin/appimaged ]; then
+        timeout 30 ~/.local/bin/appimaged &
+        echo 'rescanning appimage files'
+    fi
+fi
+
 if ! iconf -i rangerplugins; then
     mkdir instantos
     instantutils rangerplugins && iconf -i rangerplugins 1
@@ -96,6 +103,7 @@ applymouse() {
 }
 
 # optionally disable status bar
+# TODO replace this with an instantwmctl command
 if iconf -i nobar; then
     NMON=$(iconf names | wc -l)
     for i in $(eval "echo {1..$NMON}"); do
@@ -118,6 +126,7 @@ if [ -n "$ISRASPI" ]; then
     fi
 fi
 
+# TODO: rework for new instantthemes
 if ! iconf -i notheming; then
     instantthemes a
     xrdb ~/.Xresources

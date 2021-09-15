@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# simple way to remember most frequently used items out of a cache
+
+echousage() {
+    cat <<EOF
+Usage: 
+
+    smartcat cachename
+        output stdin and all items from the cache in order of most frequent use
+    smartcat cachename entry [maxsize]
+        add entry to cache, trim cache if its size exceeds maxsize
+
+Report bugs to: 
+up home page:
+EOF
+
+}
+
+[ -z "$1" ] && echousage && exit
+
+ICACHE="$HOME/.cache/instantos/smart/$1"
+
+if [ -n "$2" ]; then
+    MAXSIZE="${3:-8000}"
+    # add entry
+    if [ -e ~/.cache/instantos/smart/"$1" ]; then
+        if [ "$(wc -l <"$ICACHE")" -gt "$MAXSIZE" ]; then
+            # make cache conform to max size
+            sed -i "1,${4:-50}d" "$ICACHE"
+        fi
+    else
+        mkdir -p ~/.cache/instantos/smart &>/dev/null
+        echo "creating new cache"
+    fi
+    echo "$2" >>"$ICACHE" || exit 1
+elif [ -z "$1" ]; then
+    echousage
+    exit 1
+else
+    # get contents
+    {
+        tac "$ICACHE"
+        sort -u /dev/stdin
+    } | perl -nE '$seen{$_}++ or print'
+fi
