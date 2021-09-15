@@ -19,6 +19,18 @@ EOF
 
 [ -z "$1" ] && echousage && exit
 
+if [ "$1" == "--clean" ]; then
+    shift 1
+    ICACHE="$HOME/.cache/instantos/smart/$1"
+    [ -z "$1" ] && exit 1
+    [ -e "$ICACHE" ] || exit 1
+    echo 'comm'
+    DIFFLINES="$(comm -23 <(sort -u "$ICACHE") <(sort -u /dev/stdin))"
+    NEWCACHE="$(grep -Fvx "$DIFFLINES" "$ICACHE")"
+    echo "$NEWCACHE" >"$ICACHE"
+    exit
+fi
+
 ICACHE="$HOME/.cache/instantos/smart/$1"
 
 if [ -n "$2" ]; then
