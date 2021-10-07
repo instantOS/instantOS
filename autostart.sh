@@ -527,6 +527,12 @@ if ! [ -e ~/.config/instantos/default/browser ]; then
     instantutils default
 fi
 
+if command -v redshift-gtk &> /dev/null
+then
+    # needed to fix location stuff
+    /usr/lib/geoclue-2.0/demos/agent &
+fi
+
 # start processes that need to be kept running
 while :; do
     sleep 2
