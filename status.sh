@@ -9,10 +9,10 @@
 INTERNET="X"
 date=""
 
-RED='#fc4138'
-GREEN='#52E067'
-DARKBACK='#3E485A'
-LIGHTBACK='#5B6579'
+RED='#F18A81'
+GREEN='#80C895'
+DARKBACK='#384252'
+LIGHTBACK='#516078'
 
 istat() {
     echo "$2" >/tmp/instantos/status/"$1"
