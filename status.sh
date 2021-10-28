@@ -34,7 +34,7 @@ while :; do
 
     # battery indicator on laptop
     if [ -n "$ISLAPTOP" ]; then
-        TMPBAT=$(acpi | grep -iv Unknown |head -1)
+        TMPBAT=$(acpi | grep -iv Unknown | head -1)
         if [[ $TMPBAT =~ "Charging" ]]; then
             BATTERY="^c$GREEN^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
         else
@@ -99,12 +99,7 @@ while :; do
     # date time
     date="$date^d^  $(date +'%d-%m')  ^c$DARKBACK^  $(date +'%H:%M')  "
     # volume
-    date="$date^c$LIGHTBACK^  A$(
-        {
-            amixer -D pulse get Master || amixer sget Master
-        } 2>/dev/null |
-            grep -Eo -m1 '1?[0-9]{1,2}%'
-    )  "
+    date="$date^c$LIGHTBACK^  A$(/usr/share/instantassist/utils/p.sh g)%  "
 
     # option to disable status text
     if [ -e ~/.instantsilent ] && [ -z "$FORCESTATUS" ]; then
