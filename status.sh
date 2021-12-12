@@ -36,9 +36,9 @@ while :; do
     if [ -n "$ISLAPTOP" ]; then
         TMPBAT=$(acpi | grep -iv Unknown | head -1)
         if [[ $TMPBAT =~ "Charging" ]]; then
-            BATTERY="^c$GREEN^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
+            BATTERY="^c$GREEN^  B"$(grep -Eo '[0-9]*%' <<<"$TMPBAT")"  "
         else
-            BATTERY="  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
+            BATTERY="  B"$(grep -Eo '[0-9]*%' <<<"$TMPBAT")"  "
             # make indicator red on low battery
             if [ $(grep '[0-9]*' <<<"$BATTERY") -lt 10 ]; then
                 BATTERY="^c$RED^  B$BATTERY  ^d^"
