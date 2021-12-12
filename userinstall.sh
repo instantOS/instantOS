@@ -15,17 +15,23 @@ if acpi | grep -q '.' &>/dev/null; then
 fi
 
 # needed for nm-applet start
-if lspci | grep -Eiq '(wifi|wireless)'; then
-    echo "device has wifi capabilities"
-    iconf -i haswifi 1
-    iconf -i wifiapplet 1
-fi
+while read; do
+    case $REPLY in
+        *[Ww][Ii][Ff][Ii]*|*[Ww][Ii][Rr][Ee][Ll][Ee][Ss][Ss]*)
+            echo "device has wifi capabilities"
+            iconf -i haswifi 1
+            iconf -i wifiapplet 1 ;;
+    esac
+done <<< "$(lspci)"
 
 # needed to disable bluetooth service
-if lsusb | grep -iq 'bluetooth'; then
-    echo "device has bluetooth"
-    iconf -i hasbluetooth 1
-fi
+while read; do
+    case $REPLY in
+        *[Bb][Ll][Uu][Ee][Tt][Oo][Oo][Tt][Hh]*)
+            echo "device has bluetooth"
+            iconf -i hasbluetooth 1 ;;
+    esac
+done <<< "$(lsusb)"
 
 # change some behaviour like light for setting brightness
 if iconf -r hasnvidia; then
