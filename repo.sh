@@ -35,20 +35,22 @@ addrepo() {
 
 }
 
-if uname -m | grep -q '^x'; then
-    # default is 64 bit repo
-    addrepo amd64
-elif uname -m | grep 'arm'; then
-    echo "no official arm repo yet"
-    exit
-    addrepo instantosarm
-elif uname -m | grep '^i'; then
-    echo "no official 32 bit repo yet"
-    exit
-    addrepo instantos32
-else
-    echo "no suitable repo for architecture found"
-fi
+Machine=`uname -m`
+case $Machine in
+    x*)
+        # default is 64 bit repo
+        addrepo amd64 ;;
+    *arm*)
+        echo "no official arm repo yet"
+        exit
+        addrepo instantosarm ;;
+    i*)
+        echo "no official 32 bit repo yet"
+        exit
+        addrepo instantos32 ;;
+    ''|*)
+        echo "no suitable repo for architecture found" ;;
+esac
 
 echo "the instantOS pacman repository has been added to your system"
 echo "run the following to install all instantOS packages"
