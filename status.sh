@@ -9,10 +9,11 @@
 INTERNET="X"
 date=""
 
-RED='#fc4138'
-GREEN='#52E067'
+RED='#F28B82'
+GREEN='#81C995'
 DARKBACK='#3E485A'
 LIGHTBACK='#5B6579'
+DARKTEXT='#121212'
 
 istat() {
     echo "$2" >/tmp/instantos/status/"$1"
@@ -25,23 +26,23 @@ mkdir -p /tmp/instantos/status
 # 1m loop
 while :; do
     if ping -q -c 1 -W 1 8.8.8.8; then
-        INTERNET="^c$GREEN^  i  ^d^"
+        INTERNET="^c$GREEN^^t$DARKTEXT^  i  ^d^"
     else
-        INTERNET="^c$RED^  i  ^d^"
+        INTERNET="^c$RED^^t$DARKTEXT^  i  ^d^"
     fi
 
     istat INTERNET "$INTERNET"
 
     # battery indicator on laptop
     if [ -n "$ISLAPTOP" ]; then
-        TMPBAT=$(acpi | grep -iv Unknown |head -1)
+        TMPBAT=$(acpi | grep -iv Unknown | head -1)
         if [[ $TMPBAT =~ "Charging" ]]; then
-            BATTERY="^c$GREEN^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
+            BATTERY="^c$GREEN^^t$DARKTEXT^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
         else
             BATTERY="  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
             # make indicator red on low battery
             if [ $(grep '[0-9]*' <<<"$BATTERY") -lt 10 ]; then
-                BATTERY="^c$RED^  B$BATTERY  ^d^"
+                BATTERY="^c$RED^^t$DARKTEXT^  B$BATTERY  ^d^"
             fi
         fi
         istat BATTERY "$BATTERY"
@@ -99,12 +100,7 @@ while :; do
     # date time
     date="$date^d^  $(date +'%d-%m')  ^c$DARKBACK^  $(date +'%H:%M')  "
     # volume
-    date="$date^c$LIGHTBACK^  A$(
-        {
-            amixer -D pulse get Master || amixer sget Master
-        } 2>/dev/null |
-            grep -Eo -m1 '1?[0-9]{1,2}%'
-    )  "
+    date="$date^c$LIGHTBACK^  A$(/usr/share/instantassist/utils/p.sh g)%  "
 
     # option to disable status text
     if [ -e ~/.instantsilent ] && [ -z "$FORCESTATUS" ]; then
