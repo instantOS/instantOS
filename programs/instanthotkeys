@@ -30,5 +30,5 @@ if [ -z "$1" ]; then
     less --mouse --wheel-lines=3 /tmp/hotkeys
 else
     sed 's/^/>/g' /tmp/hotkeys | 
-      instantmenu -i -c -l 35 -fn "Fira Code Nerd Font:pixelsize=13" -bw 3
+      instantmenu -i -c -l 35 -M -bw 3
 fi
