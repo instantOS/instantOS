@@ -97,8 +97,18 @@ while :; do
         date="${date}$(cat "$i")"
     done
 
+    if iconf -i 12hclock; then
+        clock="$(date +'%l:%M %p')"
+        # remove space from the beginning when it's present
+        if [ "${clock:0:1}" = " " ]; then
+            clock="${clock:1}"
+        fi
+    else
+        clock="$(date +'%H:%M')"
+    fi
+
     # date time
-    date="$date^d^  $(date +'%d-%m')  ^c$DARKBACK^  $(date +'%H:%M')  "
+    date="$date^d^  $(date +'%d-%m')  ^c$DARKBACK^  $clock  "
     # volume
     date="$date^c$LIGHTBACK^  A$(/usr/share/instantassist/utils/p.sh g)%  "
 
