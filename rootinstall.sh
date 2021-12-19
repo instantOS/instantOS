@@ -80,22 +80,22 @@ if ! grep -q '# nord colors' /etc/profile; then
     } >>/etc/profile
 
     cat <<EOT >>/etc/profile
-    echo -en "\e]P0383c4a" #black
-    echo -en "\e]P8404552" #darkgrey
-    echo -en "\e]P19A4138" #darkred
-    echo -en "\e]P9E7766B" #red
-    echo -en "\e]P24BEC90" #darkgreen
-    echo -en "\e]PA3CBF75" #green
-    echo -en "\e]P3CFCD63" #brown
-    echo -en "\e]PBFFD75F" #yellow
-    echo -en "\e]P45294e2" #darkblue
-    echo -en "\e]PC579CEF" #blue
-    echo -en "\e]P5CE50DD" #darkmagenta
-    echo -en "\e]PDE7766B" #magenta
-    echo -en "\e]P66BE5E7" #darkcyan
-    echo -en "\e]PE90FDFF" #cyan
-    echo -en "\e]P7CCCCCC" #lightgrey
-    echo -en "\e]PFFFFFFF" #white
+    echo -en "\e]P0 #3F4451" #black
+    echo -en "\e]P8 #4F5666" #darkgrey
+    echo -en "\e]P1 #E05561" #darkred
+    echo -en "\e]P9 #FF616E" #red
+    echo -en "\e]P2 #8CC265" #darkgreen
+    echo -en "\e]PA #A5E075" #green
+    echo -en "\e]P3 #D18F52" #brown
+    echo -en "\e]PB #F0A45D" #yellow
+    echo -en "\e]P4 #4AA5F0" #darkblue
+    echo -en "\e]PC #4DC4FF" #blue
+    echo -en "\e]P5 #C162DE" #darkmagenta
+    echo -en "\e]PD #DE73FF" #magenta
+    echo -en "\e]P6 #42B3C2" #darkcyan
+    echo -en "\e]PE #4CD1E0" #cyan
+    echo -en "\e]P7 #D7DAE0" #lightgrey
+    echo -en "\e]PF #E6E6E6" #white
     clear #for background artifacting
 fi
 
