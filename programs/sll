@@ -2,7 +2,7 @@
 
 # very subtle easter egg, turn up the volume and wear headphones to get the best experience
 
-if iconf -i nothomas; then
+if iconf -i nothomas && ! [ "$1" = "-f" ] ; then
     echo "this maneuver could've cost you 51 years and your ears"
     echo "be mindful of your spelling"
     exit 1
