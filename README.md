@@ -1,20 +1,21 @@
-<div align="center">
-    <h1>instantOS</h1>
-    <p>it works. fast. powerful.</p>
-    <img width="300" height="300" src="https://raw.githubusercontent.com/instantOS/instantLOGO/main/png/logo.png">
-</div>
+<p align="center"><a href="https://instantos.io">
+<img src="https://raw.githubusercontent.com/instantOS/instantLOGO/main/png/logo.png" width="150">
+</a></p> 
+<h2 align="center"><b>instantOS</b></h2>
+<h4 align="center">It works. Fast. Powerful</h4>
 
-<p align="left">
-<a href="https://www.buymeacoffee.com/paperbenni" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
+<p align="center">
+<a href="https://www.gnu.org/licenses/gpl-2.0" alt="License: GPLv2"><img src="https://img.shields.io/badge/License-GPL%20v2-blue.svg"></a>
+<a href="https://www.codacy.com/gh/instantOS/instantOS/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=instantOS/instantOS&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/645adc9562204dbda6052d6cb0f5d64f" alt="Codacy Badge"></a>
+<a href="https://discord.io/instantos"> <img src="https://img.shields.io/discord/683782260071071764" alt="Discord"> </a>
+<img src="https://img.shields.io/maintenance/yes/2022" alt="Maintenance">
 </p>
+<hr>
 
 [![BECOME A PATRON](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?u=8814964)
+<a href="https://www.buymeacoffee.com/paperbenni" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-blue.png" alt="Buy Me A Coffee" style="height: 51px !important;width: 217px !important;" ></a>
 
 # [instantOS](https://instantos.github.io)
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a5ff3ab070e34744a0fd3f47c1a46a63)](https://app.codacy.com/gh/instantOS/instantOS?utm_source=github.com&utm_medium=referral&utm_content=instantOS/instantOS&utm_campaign=Badge_Grade_Settings)
-![Discord](https://img.shields.io/discord/683782260071071764)
-![Maintenance](https://img.shields.io/maintenance/yes/2021)
 
 instantOS is an Arch based distro that works out of the box but is still aimed at power users. 
 
