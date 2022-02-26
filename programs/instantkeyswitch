@@ -12,10 +12,14 @@ fi
 
 if ! [ -e "$TMPPATH" ]; then
     mkdir -p /tmp/instantos/"$(whoami)" &>/dev/null
-    echo "1" >"$TMPPATH"
+    # Detect index from current layout
+    CURLAYOUT="$(setxkbmap -query | grep layout | grep -o '[^ ]*$')"
+    echo "detected layout $CURLAYOUT"
+    TMPINDEX="$(grep -n "$CURLAYOUT" "$KEYCONF" | grep -o '^[^:]*')"
+    echo "$TMPINDEX" >"$TMPPATH"
+else
+    TMPINDEX="$(cat "$TMPPATH")"
 fi
-
-TMPINDEX="$(cat "$TMPPATH")"
 
 if ! [ "$TMPINDEX" -eq "$TMPINDEX" ]; then
     TMPINDEX=0
