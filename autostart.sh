@@ -133,6 +133,7 @@ if ! iconf -i notheming; then
     iconf -i instantthemes 1
 
     # dynamically switch between light and dark gtk theme
+    # TODO: build time detection into instantthemes
     DATEHOUR=$(date +%H)
     if [ "$DATEHOUR" -gt "20" ] || [ "$DATEHOUR" -lt "7" ]; then
         instantthemes d &
@@ -150,7 +151,7 @@ fi
 mkdir -p /tmp/notifications &>/dev/null
 if ! pgrep dunst; then
     while :; do
-        # wait for theming before starting dunst
+        # wait for theming to finish before starting dunst
         if [ -e /tmp/instantdarkmode ] || [ -e /tmp/instantlightmode ]; then
             dunst
         fi
@@ -165,7 +166,11 @@ onlinetrigger() {
 }
 
 # set up oh-my-zsh config if not existing already
-iconf -i nozsh || instantshell &
+iconf -i nozsh || {
+    if ! [ -e ~/.zshrc ]; then
+        instantshell install &
+    fi
+}
 
 # fix resolution on virtual machine
 if ! iconf -i novmfix && grep -q 'hypervisor' /proc/cpuinfo; then
@@ -432,19 +437,9 @@ if ! iconf -i norootinstall && ! islive; then
     fi
 fi
 
-TODAY="$(date '+%d%m')"
-OTHERTODAY="$(iconf today)"
-
-if [ -z "$OTHERTODAY" ]; then
-    iconf today "$(date '+%d%m')"
-    OTHERTODAY="$(iconf today)"
-fi
-
-if ! [ "$TODAY" = "$OTHERTODAY" ]; then
-    iconf today "$(date '+%d%m')"
-    echo "running daily routine"
+if idate d dailyroutine; then
     menuclean
-fi &
+fi
 
 # displays message user opens the terminal for the first time
 if ! iconf -i nohelp; then
@@ -527,8 +522,7 @@ if ! [ -e ~/.config/instantos/default/browser ]; then
     instantutils default
 fi
 
-if command -v redshift-gtk &> /dev/null
-then
+if command -v redshift-gtk &>/dev/null; then
     # needed to fix location stuff
     /usr/lib/geoclue-2.0/demos/agent &
 fi

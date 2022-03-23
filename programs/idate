@@ -2,6 +2,25 @@
 
 # utility for checking if something has already been done this month/year/stuff
 
+echousage() {
+    echo "usage: idate y/m/d/w/h/M timername"
+}
+
+echoexample() {
+    echo "example:
+if idate m exampletimer
+then
+    echo 'this will old run once a month'
+fi"
+
+}
+
+if [ "$1" = '--help' ] || [ "$1" = '-h' ]; then
+    echousage
+    echoexample
+    exit 0
+fi
+
 if [ -z "$2" ]; then
     echo "usage: idate y/m/d/w/h/M timername"
     exit 1
