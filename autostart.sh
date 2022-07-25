@@ -462,9 +462,9 @@ if iconf savebright; then
 fi
 
 if iconf -i alttab; then
-    instantwmctrl alttab 3
+    instantwmctl alttab 3
 else
-    instantwmctrl alttab 1
+    instantwmctl alttab 1
 fi
 
 # desktop icons
@@ -512,13 +512,14 @@ if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
     fi
 fi &
 
-# needed for things like the pamac auth prompt
+# needed for graphical root prompts
 while :; do
     lxpolkit
     sleep 2
 done &
 
 if ! [ -e ~/.config/instantos/default/browser ]; then
+    # generate symlinks that point to default applications
     instantutils default
 fi
 
@@ -530,7 +531,8 @@ fi
 # start processes that need to be kept running
 while :; do
     sleep 2
-    # check if new device has been plugged in
+    # check if new device has been plugged in and apply settings
+    # TODO: look into slowing this down with udevwait
     XINPUTSUM="$(xinput | md5sum)"
     if ! [ "$OLDXSUM" = "$XINPUTSUM" ]; then
         OLDXSUM="$XINPUTSUM"
@@ -554,3 +556,4 @@ while :; do
 
     sleep 1m
 done
+
