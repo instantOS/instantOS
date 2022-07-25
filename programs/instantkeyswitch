@@ -45,8 +45,8 @@ SL=(${NEWLAYOUT//:/ })
     setxkbmap -layout "${SL[0]}" -variant "${SL[1]}" || notify-send 'failed setting the layout'
 } &
 
-imenu -t "Keyboard layout:  
-$NEWLAYOUT"
+MSG=$'Keyboard layout: \n'
+[[ ${SL[1]} ]] && (imenu -t "${MSG} "${SL[0]}" ("${SL[1]}")") || (imenu -t "${MSG} "${SL[0]}"")
 
 # save index
 echo "$TMPINDEX" >"$TMPPATH"
