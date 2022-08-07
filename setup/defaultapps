@@ -38,7 +38,7 @@ setprogram() {
     if command -v "$TEMPSETTING"; then
         ln -s "$(which "$TEMPSETTING")" ./"$1"
     else
-        echo "$TEMPSETTING" >"$1"
+        echo "$TEMPSETTING" '"$@"' >"$1"
         chmod +x "$1"
     fi
 }
