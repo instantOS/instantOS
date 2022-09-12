@@ -137,7 +137,6 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
         systemctl disable lightdm
         systemctl enable lightdm-plymouth
 
-        /etc/mkinitcpio.conf
         if [ -e /etc/default/grub ]; then
             update-grub
         fi
