@@ -1,14 +1,13 @@
 # mirror list for isntantOS amd64
 
 # official main repo
-Server = http://packages.instantos.io
+Server = https://packages.instantos.io
 
 # mirrors
-Server = https://instantos.file.coffee
-Server = https://instantosmirror.app.craftcat.dev/packages
+Server = https://instantos.surge.sh
+Server = https://instantos.vercel.app
 Server = https://instantos.netlify.app
 Server = https://instantos.web.app
-Server = https://instantos.vercel.app
 Server = https://ipfs.io/ipns/k51qzi5uqu5dg87hfo10k7ey7fi7i4li3ouk8jis7mckes75tlerv5h62bwv3v/
 Server = https://cloudflare-ipfs.com/ipns/k51qzi5uqu5dg87hfo10k7ey7fi7i4li3ouk8jis7mckes75tlerv5h62bwv3v/
 
