@@ -6,16 +6,16 @@
 echo "setting up default applications"
 
 if [ -e ~/.config/instantos/default ]; then
-    cd ~/.config/instantos/default || exit
-    for i in ./*; do
-        [ -L ./"$i" ] || continue
-        if [ ! -e "$i" ]; then
-            echo "link $i is broken, repairing"
-            rm "$i"
-        fi
-    done
+	cd ~/.config/instantos/default || exit
+	for i in ./*; do
+		[ -L ./"$i" ] || continue
+		if [ ! -e "$i" ]; then
+			echo "link $i is broken, repairing"
+			rm "$i"
+		fi
+	done
 else
-    mkdir -p ~/.config/instantos/default
+	mkdir -p ~/.config/instantos/default
 fi
 
 cd ~/.config/instantos/default || exit
@@ -25,22 +25,28 @@ BROWSERLOCATION="$(grep -m 1 Exec </usr/share/applications/"$XDGBROWSER" | sed '
 
 # symlink browser
 if [ -e "$BROWSERLOCATION" ]; then
-    echo "setting default browser to $BROWSERLOCATION"
-    [ -e browser ] && rm browser
-    ln -s "$BROWSERLOCATION" ./browser
+	echo "setting default browser to $BROWSERLOCATION"
+	[ -e browser ] && rm browser
+	ln -s "$BROWSERLOCATION" ./browser
 fi
 
 # apply the default setting for an application type, fallback to $2
 setprogram() {
-    [ -e "$1" ] && rm "$1"
-    TEMPSETTING=$(iconf "$1:$2")
-    echo "setting $1 to $TEMPSETTING"
-    if command -v "$TEMPSETTING"; then
-        ln -s "$(command -v "$TEMPSETTING")" ./"$1"
-    else
-        echo "$TEMPSETTING" '"$@"' >"$1"
-        chmod +x "$1"
-    fi
+	[ -e "$1" ] && rm "$1"
+	TEMPSETTING=$(iconf "$1:$2")
+	echo "setting $1 to $TEMPSETTING"
+	if command -v "$TEMPSETTING"; then
+		PROGRAMPATH="$(command -v "$TEMPSETTING")"
+		if [ -z "$PROGRAMPATH" ]; then
+			echo "$TEMPSETTING not installed or not in PATH"
+			return
+		fi
+
+		ln -s "$PROGRAMPATH" ./"$1"
+	else
+		echo "$TEMPSETTING" '"$@"' >"$1"
+		chmod +x "$1"
+	fi
 }
 
 setprogram terminal st
