@@ -26,7 +26,7 @@ default)
     /usr/share/instantutils/setup/defaultapps
     ;;
 alttab)
-    alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
+    alttab -fg "#ffffff" -bg "#121212" -frame "#89B3F7" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
     ;;
 user)
     /usr/share/instantutils/userinstall.sh
