@@ -15,11 +15,19 @@ else
 fi
 
 # set wallpaper for ROX
-if [ -e ~/.config/rox.sourceforge.net ]
-then
+if [ -e ~/.config/rox.sourceforge.net ]; then
     ROXFILE="$(realpath ~/.config/rox.sourceforge.net/ROX-Filer/pb_Default)"
-    if grep -q '<backdrop' "$ROXFILE"
-    then
+
+    #initialize with default file
+    if ! [ -e "$ROXFILE" ]; then
+        echo '<?xml version="1.0"?>
+<pinboard>
+  <backdrop style="Tiled">'"$HOME"'/Pictures/instantwallpaper.png</backdrop>
+  <icon x="32" y="32" label="Home">'"$HOME"'</icon>
+</pinboard>' >"$ROXFILE"
+    fi
+
+    if grep -q '<backdrop' "$ROXFILE"; then
         sed -i '/<backdrop /d' "$ROXFILE"
     fi
 
