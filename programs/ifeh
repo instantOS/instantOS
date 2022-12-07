@@ -2,7 +2,7 @@
 
 # wallpaper setter wrapper to support rox icons
 
-VARTIMES="$(xrandr | grep '[^s]connected.*x' | wc -l)"
+VARTIMES="$(xrandr | grep -c '[^s]connected.*x')"
 if [ "$VARTIMES" -gt 1 ]; then
     echo "settings wallpaper for $VARTIMES monitors"
     for i in $(seq 0 "$((VARTIMES - 1))"); do
@@ -18,20 +18,19 @@ fi
 if [ -e ~/.config/rox.sourceforge.net ]; then
     ROXFILE="$(realpath ~/.config/rox.sourceforge.net/ROX-Filer/pb_Default)"
 
-    #initialize with default file
     if ! [ -e "$ROXFILE" ]; then
+        #initialize with default file
         echo '<?xml version="1.0"?>
 <pinboard>
-  <backdrop style="Tiled">'"$HOME"'/Pictures/instantwallpaper.png</backdrop>
+  <backdrop style="Tiled">'"$(realpath "$1")"'</backdrop>
   <icon x="32" y="32" label="Home">'"$HOME"'</icon>
 </pinboard>' >"$ROXFILE"
+    else
+        if grep -q '<backdrop' "$ROXFILE"; then
+            sed -i '/<backdrop /d' "$ROXFILE"
+        fi
+        sed -i "/<pinboard/a<backdrop style=\"Tiled\">$(realpath "$1")</backdrop>" "$ROXFILE"
     fi
-
-    if grep -q '<backdrop' "$ROXFILE"; then
-        sed -i '/<backdrop /d' "$ROXFILE"
-    fi
-
-    sed -i "/<pinboard/a<backdrop style=\"Tiled\">$(realpath $1)</backdrop>" "$ROXFILE"
 
 fi
 
