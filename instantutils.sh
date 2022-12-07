@@ -9,6 +9,7 @@ USAGE="usage: instantutils [action]
     alttab            launch alttab with instantOS theming
     default           create symlinks for default applications
     open              open default application \$2
+    dotfiles          restore deleted default dotfiles
     conky             launch conky with instantOS tooltips
     rangerplugins     install instantOS ranger plugins
     help              show this message"
@@ -46,6 +47,9 @@ open)
     APP="$2"
     shift 2
     ~/.config/instantos/default/"$APP" "$@"
+    ;;
+dotfiles)
+    imosid apply /usr/share/instantdotfiles/dotfiles
     ;;
 rangerplugins)
     cd || exit 1
