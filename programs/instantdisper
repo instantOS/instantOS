@@ -132,7 +132,7 @@ while [ -n "$LOOPING" ]; do
 	CHOICE="$(mainmenu)"
 	unset LOOPING
 	case "$CHOICE" in
-	"*Default layout")
+	*"Default layout")
 		if ! autorandr --list | grep -q '^instantos$'; then
 			autorandr horizontal
 		else
