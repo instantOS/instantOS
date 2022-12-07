@@ -392,7 +392,7 @@ if checkautoswitch; then
                     instantdisper
                     echo "multi monitor setup"
                 else
-                    disper -e
+                    autorandr horizontal
                 fi
                 DISPLAYCOUNT="$NEWDISPLAYCOUNT"
                 # todo: open menu
