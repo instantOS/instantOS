@@ -128,7 +128,7 @@ fi
 
 # TODO: rework for new instantthemes
 if ! iconf -i notheming; then
-    instantthemes a
+    instantthemes apply
     xrdb ~/.Xresources
     iconf -i instantthemes 1
 
