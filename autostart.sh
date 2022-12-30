@@ -128,11 +128,12 @@ fi
 
 # TODO: rework for new instantthemes
 if ! iconf -i notheming; then
-    instantthemes a
+    instantthemes apply
     xrdb ~/.Xresources
     iconf -i instantthemes 1
 
     # dynamically switch between light and dark gtk theme
+    # TODO: build time detection into instantthemes
     DATEHOUR=$(date +%H)
     if [ "$DATEHOUR" -gt "20" ] || [ "$DATEHOUR" -lt "7" ]; then
         instantthemes d &
@@ -150,7 +151,7 @@ fi
 mkdir -p /tmp/notifications &>/dev/null
 if ! pgrep dunst; then
     while :; do
-        # wait for theming before starting dunst
+        # wait for theming to finish before starting dunst
         if [ -e /tmp/instantdarkmode ] || [ -e /tmp/instantlightmode ]; then
             dunst
         fi
@@ -165,7 +166,11 @@ onlinetrigger() {
 }
 
 # set up oh-my-zsh config if not existing already
-iconf -i nozsh || instantshell &
+iconf -i nozsh || {
+    if ! [ -e ~/.zshrc ]; then
+        instantshell install &
+    fi
+}
 
 # fix resolution on virtual machine
 if ! iconf -i novmfix && grep -q 'hypervisor' /proc/cpuinfo; then
@@ -387,7 +392,7 @@ if checkautoswitch; then
                     instantdisper
                     echo "multi monitor setup"
                 else
-                    disper -e
+                    autorandr horizontal
                 fi
                 DISPLAYCOUNT="$NEWDISPLAYCOUNT"
                 # todo: open menu
@@ -432,19 +437,9 @@ if ! iconf -i norootinstall && ! islive; then
     fi
 fi
 
-TODAY="$(date '+%d%m')"
-OTHERTODAY="$(iconf today)"
-
-if [ -z "$OTHERTODAY" ]; then
-    iconf today "$(date '+%d%m')"
-    OTHERTODAY="$(iconf today)"
-fi
-
-if ! [ "$TODAY" = "$OTHERTODAY" ]; then
-    iconf today "$(date '+%d%m')"
-    echo "running daily routine"
+if idate d dailyroutine; then
     menuclean
-fi &
+fi
 
 # displays message user opens the terminal for the first time
 if ! iconf -i nohelp; then
@@ -467,9 +462,9 @@ if iconf savebright; then
 fi
 
 if iconf -i alttab; then
-    instantwmctrl alttab 3
+    instantwmctl alttab 3
 else
-    instantwmctrl alttab 1
+    instantwmctl alttab 1
 fi
 
 # desktop icons
@@ -517,18 +512,18 @@ if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
     fi
 fi &
 
-# needed for things like the pamac auth prompt
+# needed for graphical root prompts
 while :; do
     lxpolkit
     sleep 2
 done &
 
 if ! [ -e ~/.config/instantos/default/browser ]; then
+    # generate symlinks that point to default applications
     instantutils default
 fi
 
-if command -v redshift-gtk &> /dev/null
-then
+if command -v redshift-gtk &>/dev/null; then
     # needed to fix location stuff
     /usr/lib/geoclue-2.0/demos/agent &
 fi
@@ -536,7 +531,8 @@ fi
 # start processes that need to be kept running
 while :; do
     sleep 2
-    # check if new device has been plugged in
+    # check if new device has been plugged in and apply settings
+    # TODO: look into slowing this down with udevwait
     XINPUTSUM="$(xinput | md5sum)"
     if ! [ "$OLDXSUM" = "$XINPUTSUM" ]; then
         OLDXSUM="$XINPUTSUM"
@@ -560,3 +556,4 @@ while :; do
 
     sleep 1m
 done
+

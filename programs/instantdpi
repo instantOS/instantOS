@@ -4,6 +4,23 @@
 
 DPI="$(iconf dpi)"
 
+# ensure xresources keeps its unmodified status if modified by the OS
+checkxresources() {
+    if ! imosid info ~/.Xresources; then
+        XUNMODIFIED=true
+    else
+        unset XUNMODIFIED
+    fi
+
+}
+
+finishxresources() {
+    if [ -n "$XUNMODIFIED" ]; then
+        imosid compile ~/.Xresources
+        unset XUNMODIFIED
+    fi
+}
+
 resetdpi() {
     echo "resetting dpi"
     sed -i '/^Xft\.dpi/d' ~/.Xresources
@@ -19,8 +36,11 @@ appendpi() {
     echo "st.font2: JoyPixels:pixelsize=$NEWDPI:antialias=true:autohint=true" >>~/.Xresources
 }
 
+checkxresources
+
 if [ -z "$DPI" ]; then
     resetdpi
+    finishxresources
     exit
 fi
 
@@ -29,6 +49,7 @@ fi
 # resetting
 if [ "$DPI" = "96" ]; then
     resetdpi
+    finishxresources
     exit
 fi
 
@@ -42,3 +63,5 @@ else
     fi
     appendpi "$DPI"
 fi
+
+finishxresources

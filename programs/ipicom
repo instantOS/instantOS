@@ -41,7 +41,11 @@ blur-background-exclude = [ "class_g = 'slop'", "class_g = 'Peek'", "class_g = '
 EOT
         fi
     else
-        echo "vm detected"
+        echo "vm detected, disabling blur"
+        if pgrep Xorg; then
+            imenu -t 'blur causes massive issues on virtual machines.
+Manually edit ~/.config/picom/picom.conf to force blur. You have been warned'
+        fi
     fi
 
     if iconf -i vsync; then
@@ -58,11 +62,4 @@ if ! [ -e .config/picom/picom.conf ] ||
     genconfig
 fi
 
-if (! grep -q 'hypervisor' /proc/cpuinfo &&
-    grep -q 'instantos' .config/picom/picom.conf &&
-    iconf -i blur) || iconf -i experimentalpicom; then
-    echo "running picom with blur support"
-    picom --experimental-backends &
-else
-    picom "$@" &
-fi
+picom "$@" &
