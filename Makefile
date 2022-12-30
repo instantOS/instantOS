@@ -39,3 +39,17 @@ install_local:
 	mkdir -p ${DESTDIR}/etc/X11/xorg.conf.d
 	find -regex './xorg/.*' -exec install -Dm 755 "{}" ${DESTDIR}/etc/X11/xorg.conf.d/ \;
 
+.PHONY: uninstall
+uninstall:
+	rm ${DESTDIR}${PREFIX}/bin/instantautostart
+	rm ${DESTDIR}${PREFIX}/bin/instantstatus
+	rm ${DESTDIR}${PREFIX}/bin/instantmonitor
+	rm ${DESTDIR}${PREFIX}/bin/instantutils
+	rm ${DESTDIR}${PREFIX}/bin/installinstantos
+	rm ${DESTDIR}/etc/systemd/system/instantpostinstall.service
+	rm -rf ${DESTDIR}${PREFIX}/share/instantutils
+	# TODO remove manpages
+	# TODO remove xorg config
+	# TODO remove desktop files
+
+
