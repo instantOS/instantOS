@@ -131,21 +131,6 @@ if ! iconf -i notheming; then
     instantthemes apply
     xrdb ~/.Xresources
     iconf -i instantthemes 1
-
-    # dynamically switch between light and dark gtk theme
-    # TODO: build time detection into instantthemes
-    DATEHOUR=$(date +%H)
-    if [ "$DATEHOUR" -gt "20" ] || [ "$DATEHOUR" -lt "7" ]; then
-        instantthemes d &
-        touch /tmp/instantdarkmode
-        [ -e /tmp/instantlightmode ] && rm /tmp/instantlightmode
-    else
-        instantthemes l &
-        touch /tmp/instantlightmode
-        [ -e /tmp/instantdarkmode ] && rm /tmp/instantdarkmode
-    fi &
-else
-    touch /tmp/instantlightmode
 fi
 
 mkdir -p /tmp/notifications &>/dev/null
@@ -551,9 +536,8 @@ while :; do
     fi
 
     if iconf -i alttab && ! pgrep alttab; then
-        alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
+        instantutils alttab
     fi
 
     sleep 1m
 done
-

@@ -67,25 +67,8 @@ while :; do
         fi
         istat UPDATES "U$UPDATES"
     fi
-
-    if ! iconf -i notheming; then
-        DATEHOUR="$(date +%H)"
-        if [ "$DATEHOUR" -lt "7" ] || [ "$DATEHOUR" -gt "20" ]; then
-            if ! [ -e /tmp/instantdarkmode ]; then
-                instantthemes d &
-                touch /tmp/instantdarkmode
-                [ -e /tmp/instantlightmode ] && rm /tmp/instantlightmode
-            fi
-        else
-            if ! [ -e /tmp/instantlightmode ]; then
-                instantthemes l &
-                touch /tmp/instantlightmode
-                [ -e /tmp/instantdarkmode ] && rm /tmp/instantdarkmode
-
-            fi
-        fi
-    fi
-
+    # TODO make instantthemes only do something if time/variant/theme has changed
+    instantthemes apply
 done &
 
 sleep 2
