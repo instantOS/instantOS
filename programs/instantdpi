@@ -24,16 +24,21 @@ finishxresources() {
 resetdpi() {
     echo "resetting dpi"
     sed -i '/^Xft\.dpi/d' ~/.Xresources
+    sed -i '/^\*dpi/d' ~/.Xresources
     sed -i '/^st.font/d' ~/.Xresources
 }
 
 appendpi() {
     echo "setting dpi to $DPI"
     echo "Xft.dpi: $DPI" >>~/.Xresources
-    NEWDPI="$(echo "( $DPI / 96 ) * 15" | bc -l | grep -o '^[^\.]*')"
+    echo "*dpi: $DPI" >>~/.Xresources
+
+    # recalculate st font size based on dpi
+    # as st does not scale with dpi by default
+    NEWFONTSIZE="$(echo "( $DPI / 96 ) * 15" | bc -l | grep -o '^[^\.]*')"
     sed -i '/^st.font/d' ~/.Xresources
-    echo "st.font: Fira Code Nerd Font Mono:pixelsize=$NEWDPI:antialias=true:autohint=true" >>~/.Xresources
-    echo "st.font2: JoyPixels:pixelsize=$NEWDPI:antialias=true:autohint=true" >>~/.Xresources
+    echo "st.font: Fira Code Nerd Font Mono:pixelsize=$NEWFONTSIZE:antialias=true:autohint=true" >>~/.Xresources
+    echo "st.font2: JoyPixels:pixelsize=$NEWFONTSIZE:antialias=true:autohint=true" >>~/.Xresources
 }
 
 checkxresources
@@ -58,9 +63,7 @@ if ! [ -e .Xresources ]; then
     touch ~/.Xresources
     appendpi "$DPI"
 else
-    if grep -q '^Xft.dpi' ~/.Xresources; then
-        resetdpi
-    fi
+    resetdpi
     appendpi "$DPI"
 fi
 
