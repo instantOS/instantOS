@@ -1,17 +1,30 @@
 #!/usr/bin/dash
 
 if ! [ -e ~/.config/instantos/israspi ]; then
-	# switch to instantmenu on qxl graphics
-	if [ -e /opt/instantos/kvm ] && iconf -i qxl; then
-		pgrep instantmenu && exit
-		instantmenu_path | instantmenu -bw 4 -l 10 -c "$@" | ${SHELL:-"/bin/bash"} &
-	else
-		# normal graphical menu
+    # switch to instantmenu on qxl graphics
+    if [ -e /opt/instantos/kvm ] && iconf -i qxl; then
+        pgrep instantmenu && exit
+        instantmenu_path | instantmenu -bw 4 -l 10 -c "$@" | ${SHELL:-"/bin/bash"} &
+    else
+        # normal graphical menu
         export TERMINAL=~/.config/instantos/default/terminal
-		rofi -show drun -modi drun -theme /usr/share/instantdotfiles/rootconfig/rofi/appmenu.rasi -me-select-entry '' -me-accept-entry 'MousePrimary' -kb-cancel 'Escape,Control+g,Control+bracketleft,Super+q,Alt+F4' &
+
+        USERCONFIG="$HOME/.config/rofi/appmenu.rasi"
+        DPI="$(xrdb -query | grep dpi | head -1 | grep -o '[0-9]*$')"
+        if [ -z "$DPI" ]; then
+            DPI=96
+        fi
+
+        if [ -e "$USERCONFIG" ]; then
+            ROFICONFIG="$USERCONFIG"
+        else
+            ROFICONFIG="/usr/share/instantdotfiles/rootconfig/rofi/appmenu.rasi"
+        fi
+
+        rofi -dpi "$DPI" -show drun -modi drun -theme "$ROFICONFIG" -me-select-entry '' -me-accept-entry 'MousePrimary' -kb-cancel 'Escape,Control+g,Control+bracketleft,Super+q,Alt+F4' &
         pgrep instantmenu && pkill instantmenu
-	fi
+    fi
 else
-	# rofi doesn't perform well on raspberry pi
-	jgmenu_run
+    # rofi doesn't perform well on raspberry pi
+    jgmenu_run
 fi
