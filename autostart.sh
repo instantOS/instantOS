@@ -131,21 +131,6 @@ if ! iconf -i notheming; then
     instantthemes apply
     xrdb ~/.Xresources
     iconf -i instantthemes 1
-
-    # dynamically switch between light and dark gtk theme
-    # TODO: build time detection into instantthemes
-    DATEHOUR=$(date +%H)
-    if [ "$DATEHOUR" -gt "20" ] || [ "$DATEHOUR" -lt "7" ]; then
-        instantthemes d &
-        touch /tmp/instantdarkmode
-        [ -e /tmp/instantlightmode ] && rm /tmp/instantlightmode
-    else
-        instantthemes l &
-        touch /tmp/instantlightmode
-        [ -e /tmp/instantdarkmode ] && rm /tmp/instantdarkmode
-    fi &
-else
-    touch /tmp/instantlightmode
 fi
 
 mkdir -p /tmp/notifications &>/dev/null
@@ -369,13 +354,20 @@ checkautoswitch() {
     } || iconf -i autoswitch || return 1
 }
 
-if checkautoswitch; then
+getdisplaycount() {
 
-    if nvidia-xconfig --query-gpu-info; then
+    # xrandr lags some nvidia gpus, use nvidia-xconfig instead if present
+    if [ -n "$HASNVIDIA" ] || nvidia-xconfig --query-gpu-info; then
         DISPLAYCOUNT="$(nvidia-xconfig --query-gpu-info | grep -oi 'number of dis.*' | grep -o '[0-9]*')"
+        export HASNVIDIA="true"
     else
         DISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
     fi
+
+}
+
+if checkautoswitch; then
+    DISPLAYCOUNT="$(getdisplaycount)"
 
     if [ "$DISPLAYCOUNT" -eq "$DISPLAYCOUNT" ]; then
         while :; do
@@ -384,7 +376,7 @@ if checkautoswitch; then
                 sleep 30
                 continue
             fi
-            NEWDISPLAYCOUNT="$(xrandr | grep -c '[^s]connected')"
+            NEWDISPLAYCOUNT="$(getdisplaycount)"
             if ! [ "$DISPLAYCOUNT" = "$NEWDISPLAYCOUNT" ]; then
                 notify-send "display changed"
                 echo "displays changed"
@@ -551,9 +543,8 @@ while :; do
     fi
 
     if iconf -i alttab && ! pgrep alttab; then
-        alttab -fg "#ffffff" -bg "#292F3A" -frame "#5293E1" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
+        instantutils alttab
     fi
 
     sleep 1m
 done
-
