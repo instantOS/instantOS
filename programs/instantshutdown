@@ -81,7 +81,7 @@ loc*)
     ;;
 sus*)
     systemctl suspend
-    export ILOCKACTIVE="true"
+    export NOILOCKPASSWORD="true"
     instantutils open lockscreen
     ;;
 res*)
