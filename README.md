@@ -8,7 +8,7 @@
 <a href="https://www.gnu.org/licenses/gpl-2.0" alt="License: GPLv2"><img src="https://img.shields.io/badge/License-GPL%20v2-blue.svg"></a>
 <a href="https://www.codacy.com/gh/instantOS/instantOS/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=instantOS/instantOS&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/645adc9562204dbda6052d6cb0f5d64f" alt="Codacy Badge"></a>
 <a href="https://dsc.gg/instantos"> <img src="https://img.shields.io/discord/683782260071071764" alt="Discord"> </a>
-<img src="https://img.shields.io/maintenance/yes/2022" alt="Maintenance">
+<img src="https://img.shields.io/maintenance/yes/2023" alt="Maintenance">
 </p>
 <hr>
 
