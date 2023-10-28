@@ -117,12 +117,19 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
     sed -i 's/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION="instantOS"/g' /etc/lsb-release
 
     if ! [ -e /opt/instantos/bootscreen ] && [ -e /opt/instantos/realinstall ] && ! [ -e /opt/instantos/noplymouth ]; then
+        setup_plymouth
+    fi
+fi
+
+setup_plymouth() {
+
         echo "installing boot splash screen"
         plymouth-set-default-theme instantos
 
         if [ -e /etc/default/grub ]; then
             if ! grep -q 'instantos boot animation' /etc/default/grub; then
                 # boot animation
+                # TODO: update to newer default kernel params
                 sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT quiet splash loglevel=3 rd.udev.log_priority=3 vt.global_cursor_default=0" # instantos boot animation' \
                     /etc/default/grub
                 # set grub entry name
@@ -134,16 +141,12 @@ if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -
             sed -i '/^HOOKS/aHOOKS+=(plymouth) # boot screen' /etc/mkinitcpio.conf
         fi
 
-        systemctl disable lightdm
-        systemctl enable lightdm-plymouth
-
         if [ -e /etc/default/grub ]; then
             update-grub
         fi
         mkinitcpio -P
         touch /opt/instantos/bootscreen
-    fi
-fi
+}
 
 # tmux doesn't count as console user
 if ! [ -e /etc/X11/Xwrapper.config ]; then
