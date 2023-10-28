@@ -16,5 +16,8 @@ bash /usr/share/instantdotfiles/rootinstall.sh
 [ -e /root/instantARCH/config/password ] && rm /root/instantARCH/config/password
 
 if command -v systemctl; then
-    systemctl disable instantpostinstall
+    {
+        sleep 10
+        systemctl disable instantpostinstall
+    } &
 fi
