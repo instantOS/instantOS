@@ -9,15 +9,21 @@ fi
 
 echo "finishing up installation"
 bash /root/instantARCH/postinstall.sh
+echo "running rootinstall"
 bash /usr/share/instantdotfiles/rootinstall.sh
 
 # delete credentials
+echo "deleting leftover credentials"
 [ -e /root/instantARCH/config/user ] && rm /root/instantARCH/config/user
 [ -e /root/instantARCH/config/password ] && rm /root/instantARCH/config/password
 
+echo "disabling instantpostinstall"
 if command -v systemctl; then
     {
         sleep 10
         systemctl disable instantpostinstall
     } &
 fi
+
+echo "instantpostinstall finished"
+exit 0
