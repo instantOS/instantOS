@@ -9,8 +9,11 @@
 INTERNET="X"
 date=""
 
+ORANGE='#FFC87C'
 RED='#F28B82'
-GREEN='#81C995'
+DARKERRED='#BF554D'
+GREEN='#5D9E70'
+LIGHTGREEN='#81C995'
 DARKBACK='#3E485A'
 LIGHTBACK='#5B6579'
 DARKTEXT='#121212'
@@ -26,24 +29,28 @@ mkdir -p /tmp/instantos/status
 # 1m loop
 while :; do
     if ping -q -c 1 -W 1 8.8.8.8; then
-        INTERNET="^c$GREEN^^t$DARKTEXT^  i  ^d^"
+        INTERNET="^c$LIGHTGREEN^^t$DARKTEXT^  i  ^d^"
     else
-        INTERNET="^c$RED^^t$DARKTEXT^  i  ^d^"
+        INTERNET="^c$DARKERRED^^t$DARKTEXT^  i  ^d^"
     fi
 
     istat INTERNET "$INTERNET"
 
     # battery indicator on laptop
     if [ -n "$ISLAPTOP" ]; then
-        TMPBAT=$(acpi | grep -iv Unknown | head -1)
+        TMPBAT=$(acpi)
         if [[ $TMPBAT =~ "Charging" ]]; then
-            BATTERY="^c$GREEN^^t$DARKTEXT^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
-        else
-            BATTERY="  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
+            BATTERY="^c$GREEN^^t$DARKTEXT^  B$(echo "$TMPBAT" | grep -oP '\d+(?=%)')% "
+        elif [[ $TMPBAT =~ "Discharging" ]]; then
+            BATTERY="^c$ORANGE^^t$DARKTEXT^  B$(echo "$TMPBAT" | grep -oP '\d+(?=%)')% "
             # make indicator red on low battery
-            if [ $(grep '[0-9]*' <<<"$BATTERY") -lt 10 ]; then
-                BATTERY="^c$RED^^t$DARKTEXT^  B$BATTERY  ^d^"
-            fi
+            BATTERY_PERCENTAGE=$(echo "$BATTERY" | grep -oP '\d+(?=%)')
+        if [ -n "$BATTERY_PERCENTAGE" ] && [ "$BATTERY_PERCENTAGE" -lt 20 ]; then
+            BATTERY="^c$RED^^t$DARKTEXT^  B$(echo "$TMPBAT" | grep -oP '\d+(?=%)')% ^d^"
+        fi
+
+        else
+            BATTERY="  B$(echo "$TMPBAT" | grep -oP '\d+(?=%)')%  "
         fi
         istat BATTERY "$BATTERY"
     fi
@@ -68,7 +75,7 @@ while :; do
         istat UPDATES "U$UPDATES"
     fi
     # TODO make instantthemes only do something if time/variant/theme has changed
-    instantthemes apply
+    # instantthemes apply
 done &
 
 sleep 2
