@@ -42,10 +42,6 @@ elif uname -m | grep 'arm'; then
     echo "no official arm repo yet"
     exit
     addrepo instantosarm
-elif uname -m | grep '^i'; then
-    echo "no official 32 bit repo yet"
-    exit
-    addrepo instantos32
 else
     echo "no suitable repo for architecture found"
 fi
