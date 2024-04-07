@@ -133,16 +133,20 @@ if ! iconf -i notheming; then
     iconf -i instantthemes 1
 fi
 
-mkdir -p /tmp/notifications &>/dev/null
-if ! pgrep dunst; then
-    while :; do
-        # wait for theming to finish before starting dunst
-        if [ -e /tmp/instantdarkmode ] || [ -e /tmp/instantlightmode ]; then
+startdunst() {
+    mkdir -p /tmp/notifications &>/dev/null
+    # wait for theming to finish before starting dunst
+    # TODO: come up with something better than a constant wait time
+    sleep 5
+    if ! pgrep dunst; then
+        while :; do
             dunst
-        fi
-        sleep 2
-    done &
-fi
+            sleep 2
+        done &
+    fi
+}
+
+startdunst &
 
 onlinetrigger() {
     if ! iconf -i nowallpaper; then
