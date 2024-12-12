@@ -58,6 +58,10 @@ if idate m appimagescan; then
     fi
 fi
 
+if command -v pamac &> /dev/null && idate m pamacupdate; then
+    timeout 30 pamac update &
+fi
+
 if ! iconf -i rangerplugins; then
     mkdir instantos
     instantutils rangerplugins && iconf -i rangerplugins 1
