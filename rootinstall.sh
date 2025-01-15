@@ -71,6 +71,7 @@ else
 fi
 
 # color scheme for tty
+# TODO: redo with pretty font and maybe catpuccin
 if ! grep -q '# nord colors' /etc/profile; then
     echo "applying color scheme"
 

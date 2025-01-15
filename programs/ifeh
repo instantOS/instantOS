@@ -2,41 +2,65 @@
 
 # wallpaper setter wrapper to support rox icons
 
-VARTIMES="$(xrandr | grep -c '[^s]connected.*x')"
-if [ "$VARTIMES" -gt 1 ]; then
-    echo "settings wallpaper for $VARTIMES monitors"
-    for i in $(seq 0 "$((VARTIMES - 1))"); do
-        echo "i $i"
-        nitrogen --set-scaled --save --head="$i" "$1"
-    done
-else
-    echo "settings wallpaper for one monitor"
-    nitrogen --set-scaled --save "$1"
-fi
+setswaywallpaper() {
+	swaymsg output "*" bg "$1"
+}
 
-# set wallpaper for ROX
-if [ -e ~/.config/rox.sourceforge.net ]; then
-    ROXFILE="$(realpath ~/.config/rox.sourceforge.net/ROX-Filer/pb_Default)"
+setx11wallpaper() {
+	VARTIMES="$(xrandr | grep -c '[^s]connected.*x')"
+	if [ "$VARTIMES" -gt 1 ]; then
+		echo "settings wallpaper for $VARTIMES monitors"
+		for i in $(seq 0 "$((VARTIMES - 1))"); do
+			echo "i $i"
+			nitrogen --set-scaled --save --head="$i" "$1"
+		done
+	else
+		echo "settings wallpaper for one monitor"
+		nitrogen --set-scaled --save "$1"
+	fi
+}
 
-    if ! [ -e "$ROXFILE" ]; then
-        #initialize with default file
-        echo '<?xml version="1.0"?>
+setroxwallpaper() {
+
+	# set wallpaper for ROX
+	if [ -e ~/.config/rox.sourceforge.net ]; then
+		ROXFILE="$(realpath ~/.config/rox.sourceforge.net/ROX-Filer/pb_Default)"
+
+		if ! [ -e "$ROXFILE" ]; then
+			#initialize with default file
+			echo '<?xml version="1.0"?>
 <pinboard>
   <backdrop style="Tiled">'"$(realpath "$1")"'</backdrop>
   <icon x="32" y="32" label="Home">'"$HOME"'</icon>
 </pinboard>' >"$ROXFILE"
-    else
-        if grep -q '<backdrop' "$ROXFILE"; then
-            sed -i '/<backdrop /d' "$ROXFILE"
+		else
+			if grep -q '<backdrop' "$ROXFILE"; then
+				sed -i '/<backdrop /d' "$ROXFILE"
+			fi
+			sed -i "/<pinboard/a<backdrop style=\"Tiled\">$(realpath "$1")</backdrop>" "$ROXFILE"
+		fi
+
+	fi
+
+	if pgrep ROX >/dev/null 2>&1; then
+		pkill ROX
+		if ! pgrep ROX; then
+			rox --pinboard Default
+		fi
+	fi
+}
+
+setwallpaper() {
+	# check if on sway
+	if "$DESKTOP_SESSION" == "sway" && pgrep sway >/dev/null 2>&1; then
+		setswaywallpaper "$1"
+		return
+	else
+		setx11wallpaper "$1"
+        if pgrep rox >/dev/null 2>&1; then
+                setroxwallpaper "$1"
         fi
-        sed -i "/<pinboard/a<backdrop style=\"Tiled\">$(realpath "$1")</backdrop>" "$ROXFILE"
-    fi
+	fi
+}
 
-fi
-
-if pgrep ROX >/dev/null 2>&1; then
-    pkill ROX
-    if ! pgrep ROX; then
-        rox --pinboard Default
-    fi
-fi
+setwallpaper "$1"
