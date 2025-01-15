@@ -3,7 +3,7 @@
 # wallpaper setter wrapper to support rox icons
 
 setswaywallpaper() {
-	swaymsg output "*" bg "$1"
+	swaymsg output "*" bg "$1" fill
 }
 
 setx11wallpaper() {
