@@ -7,23 +7,31 @@ SLOPCOLOR="${SLOPCOLOR:-green}"
 case "$SLOPCOLOR" in
 red)
     SLOPCOLOR="0.9529411764705882,0.5450980392156862,0.5098039215686274"
-;;
+    WLSLOPCOLOR="#F38B82" # Hex for red
+    ;;
 
 green)
     SLOPCOLOR="0.5058823529411764,0.788235294117647,0.5843137254901961"
-;;
+    WLSLOPCOLOR="#81C995" # Hex for green
+    ;;
 
 blue)
     SLOPCOLOR="0.5372549019607843,0.7019607843137254,0.9686274509803922"
-;;
+    WLSLOPCOLOR="#89B3F7" # Hex for blue
+    ;;
 
 yellow)
     SLOPCOLOR="0.9921568627450981,0.8392156862745098,0.38823529411764707"
-;;
+    WLSLOPCOLOR="#FDD663" # Hex for yellow
+    ;;
 esac
 
-if pgrep picom > /dev/null; then
-    slop --highlight -b 3 -c "$SLOPCOLOR",0.1 "$@"
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    slurp -c "$WLSLOPCOLOR" "$@"
 else
-    slop -b 3 -c "$SLOPCOLOR" "$@"
+    if pgrep picom >/dev/null; then
+        slop --highlight -b 3 -c "$SLOPCOLOR",0.1 "$@"
+    else
+        slop -b 3 -c "$SLOPCOLOR" "$@"
+    fi
 fi
