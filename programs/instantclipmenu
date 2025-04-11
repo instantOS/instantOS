@@ -5,6 +5,7 @@
 : "${CM_DIR="${XDG_RUNTIME_DIR-"${TMPDIR-/tmp}"}"}"
 major_version=6
 
+# TODO: try out clipcat
 enableclipmenu() {
     if ! imenu -c "enable clipboard management?"; then
         exit
