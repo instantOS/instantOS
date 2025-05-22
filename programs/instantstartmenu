@@ -23,19 +23,19 @@ case "$CHOICE" in
     instantsettings &
     ;;
 *Info)
-    st -e sh -c 'neofetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
+    kitty -e sh -c 'fastfetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
     ;;
 *Shutdown)
     instantshutdown &
     ;;
 *Terminal)
-    st &
+    kitty &
     ;;
 *Documentation)
     instantutils open browser 'https://instantos.io/docs/' &
     ;;
 *Keybindings)
-    st -e instanthotkeys &
+    kitty -e instanthotkeys &
     ;;
 *menu)
     echo "closed menu"
