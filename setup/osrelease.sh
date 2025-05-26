@@ -14,8 +14,9 @@ setoption() {
     echo "$1=\"$2\""
 }
 
+setoption ID instantos
 setoption ID_LIKE arch
-setoption NAME instantos
+setoption NAME instantOS
 setoption PRETTY_NAME instantOS
 setoption HOME_URL "https://instantos.io/"
 setoption LOGO instantos
