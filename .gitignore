@@ -1,3 +1,4 @@
 tags
 .nvimlog
 .vscode
+node_modules

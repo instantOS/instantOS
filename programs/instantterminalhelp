@@ -3,7 +3,7 @@
 # first time help message when opening the terminal
 
 echo "> Welcome
-> instantOS is using the st terminal emulator and tmux terminal multiplexer
+> instantOS is using the kitty terminal emulator and tmux terminal multiplexer
 > Because of this, some things work differently
 > selecting text is done with Shift + Left mouse button
 > Copy Paste is Ctrl + Shift + C/V
