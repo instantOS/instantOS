@@ -10,6 +10,7 @@ set -eo pipefail
 instantinstall archiso
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." &>/dev/null && pwd)
 [ "$ISO_BUILD" ] || ISO_BUILD="$SCRIPT_DIR/build"
 echo "iso will be built in $ISO_BUILD"
 
@@ -21,6 +22,9 @@ sleep 1
 
 cp -r "$SCRIPT_DIR/releng" "$ISO_BUILD/instantlive"
 cp "$SCRIPT_DIR"/syslinux/* "$ISO_BUILD/instantlive/syslinux/"
+
+install -Dm755 "$REPO_ROOT/rootinstall.sh" \
+    "$ISO_BUILD/instantlive/airootfs/usr/share/instantos/rootinstall.sh"
 
 ensurerepo() {
     local url="$1"

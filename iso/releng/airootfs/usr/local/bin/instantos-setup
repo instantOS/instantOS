@@ -92,13 +92,13 @@ cd "$workdir"
 log "cloning instantARCH"
 git clone --depth 1 https://github.com/instantOS/instantARCH >/dev/null 2>&1
 
-log "cloning instantOS"
-git clone --depth 1 https://github.com/instantOS/instantOS >/dev/null 2>&1
-log "running instantOS rootinstall"
-bash instantOS/rootinstall.sh
+if [[ ! -x /usr/share/instantos/rootinstall.sh ]]; then
+  log "rootinstall script missing"
+  exit 1
+fi
 
-log "cloning instantOS iso repo"
-git clone --depth 1 https://github.com/instantOS/iso >/dev/null 2>&1
+log "running instantOS rootinstall"
+bash /usr/share/instantos/rootinstall.sh
 
 if [[ ! -f /etc/default/grub ]] || ! grep -q 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' /etc/default/grub; then
   log "setting grub theme"
