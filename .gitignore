@@ -2,3 +2,4 @@ tags
 .nvimlog
 .vscode
 node_modules
+iso/build

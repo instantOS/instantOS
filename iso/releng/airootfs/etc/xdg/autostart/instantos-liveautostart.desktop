@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=instantOS Live Tweaks
+Exec=/usr/local/bin/liveautostart
+X-GNOME-Autostart-enabled=true
+NoDisplay=true
+Terminal=false
