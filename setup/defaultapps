@@ -49,7 +49,7 @@ setprogram() {
 	fi
 }
 
-setprogram terminal st
+setprogram terminal kitty
 setprogram graphicaleditor code
 setprogram appmenu appmenu
 setprogram browser firefox
