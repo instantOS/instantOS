@@ -50,18 +50,15 @@ pgrep conky && pkill conky
 echo "beginning installation" | sudo tee /root/instantos.log
 xdotool key super+2
 
-if command -v kitty; then
-    TERMINALCMD=kitty
-elif command -v st; then
-    TERMINALCMD=st
+TERMINALCMD="$(command -v kitty || true)"
+if [ -n "$TERMINALCMD" ]; then
+    while :; do
+        "$TERMINALCMD" -e bash -c "sudo tail -f /root/instantos.log"
+        sleep 10
+    done &
 else
-    TERMINALCMD=xterm
+    echo "kitty terminal not found; install kitty to view installer logs in a terminal." >&2
 fi
-
-while :; do
-    "$TERMINALCMD" -e bash -c "sudo tail -f /root/instantos.log"
-    sleep 10
-done &
 
 sleep 3
 xdotool key super+1

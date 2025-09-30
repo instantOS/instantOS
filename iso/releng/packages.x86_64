@@ -196,4 +196,4 @@ xf86-input-synaptics
 xorg
 xorg-drivers
 xorg-xinit
-xterm
+kitty
