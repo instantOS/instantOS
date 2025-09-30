@@ -8,6 +8,17 @@ fi
 
 cd ~/.config/instantos/quickmenu || exit 1
 
+TERMINAL_CMD="$(command -v kitty 2>/dev/null || true)"
+
+launch_terminal() {
+    if [ -n "$TERMINAL_CMD" ]; then
+        "$TERMINAL_CMD" "$@"
+    else
+        imenu -m "kitty terminal not found"
+        return 1
+    fi
+}
+
 pickscript() {
     unset CHOICE
     while [ -z "$CHOICE" ]; do
@@ -56,7 +67,7 @@ cancel' | imenu -l)"
     edit*)
         echo "editing script"
         echo "# instantOS quickmenu script" >>"$SCRIPTNAME"
-        st -e nvim -c ":e $(realpath "$SCRIPTNAME")"
+        launch_terminal -e nvim -c ":e $(realpath "$SCRIPTNAME")"
         ;;
     options)
         echo "#!/bin/bash" >"$SCRIPTNAME"
@@ -145,7 +156,7 @@ new category' | instantmenu -bw 4 -C -l 7 -w -1 -i)"
             imenu -m "selection $EDITCHOICE invalid"
             exit
         fi
-        st -e nvim -c ":e $(realpath "$EDITCHOICE")"
+        launch_terminal -e nvim -c ":e $(realpath "$EDITCHOICE")"
         ;;
     rename*)
         echo "renaming entry"
@@ -193,7 +204,7 @@ close)
 
     if grep -q "^#instantosterm" "$QUICKCHOICE"; then
         chmod +x "$QUICKCHOICE"
-        st -e bash -c "$QUICKCHOICE $QUICKARGS"
+        launch_terminal -e bash -c "$QUICKCHOICE $QUICKARGS"
     else
         bash "$QUICKCHOICE" "$QUICKARGS"
     fi
