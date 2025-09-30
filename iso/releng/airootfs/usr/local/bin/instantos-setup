@@ -55,6 +55,14 @@ if ! grep -q '#instantosroot' /etc/sudoers; then
   echo 'root ALL=(ALL) NOPASSWD:ALL #instantosroot' >>/etc/sudoers
 fi
 
+sudoers_live="/etc/sudoers.d/99-instantos-live"
+if [[ ! -f "$sudoers_live" ]] || ! grep -Fxq 'instantos ALL=(ALL) NOPASSWD: ALL' "$sudoers_live"; then
+  log "allowing instantos passwordless sudo"
+  install -Dm600 /dev/null "$sudoers_live"
+  echo 'instantos ALL=(ALL) NOPASSWD: ALL' >"$sudoers_live"
+  chmod 440 "$sudoers_live"
+fi
+
 mkdir -p /etc/lightdm/lightdm.conf.d
 cat >/etc/lightdm/lightdm.conf.d/10-instantos.conf <<'EOF'
 [Seat:*]
