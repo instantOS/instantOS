@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=install instantOS
+Exec=instantosinstaller
+Icon=calamares
+Terminal=false

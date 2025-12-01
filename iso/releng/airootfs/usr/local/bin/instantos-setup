@@ -1,0 +1,130 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+log() {
+  printf '[instantos-setup] %s\n' "$1"
+}
+
+append_line() {
+  local file="$1" line="$2"
+  mkdir -p "$(dirname "$file")"
+  if [[ ! -f "$file" ]] || ! grep -Fxq "$line" "$file"; then
+    echo "$line" >>"$file"
+  fi
+}
+
+flag="/opt/instantos/.setup-done"
+if [[ -f "$flag" ]]; then
+  log "setup already completed"
+  exit 0
+fi
+
+touch /opt/livebuilder
+mkdir -p /opt/instantos
+
+if ! id -u instantos >/dev/null 2>&1; then
+  log "creating instantos user"
+  useradd -m -s /bin/bash instantos
+  echo "instantos:instantos" | chpasswd
+fi
+
+ensure_group() {
+  local group="$1"
+  if ! getent group "$group" >/dev/null 2>&1; then
+    log "creating group $group"
+    groupadd "$group"
+  fi
+  if ! id -nG instantos | grep -qw "$group"; then
+    log "adding instantos to $group"
+    gpasswd -a instantos "$group" >/dev/null
+  fi
+}
+
+for group in autologin video wheel input; do
+  ensure_group "$group"
+done
+
+if ! grep -q '^%wheel ALL=(ALL:ALL) ALL' /etc/sudoers; then
+  log "enabling wheel sudo access"
+  sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+fi
+
+if ! grep -q '#instantosroot' /etc/sudoers; then
+  log "allowing root passwordless sudo"
+  echo 'root ALL=(ALL) NOPASSWD:ALL #instantosroot' >>/etc/sudoers
+fi
+
+sudoers_live="/etc/sudoers.d/99-instantos-live"
+if [[ ! -f "$sudoers_live" ]] || ! grep -Fxq 'instantos ALL=(ALL) NOPASSWD: ALL' "$sudoers_live"; then
+  log "allowing instantos passwordless sudo"
+  install -Dm600 /dev/null "$sudoers_live"
+  echo 'instantos ALL=(ALL) NOPASSWD: ALL' >"$sudoers_live"
+  chmod 440 "$sudoers_live"
+fi
+
+mkdir -p /etc/lightdm/lightdm.conf.d
+cat >/etc/lightdm/lightdm.conf.d/10-instantos.conf <<'EOF'
+[Seat:*]
+autologin-user=instantos
+greeter-session=lightdm-gtk-greeter
+EOF
+
+ln -sf /usr/local/bin/instantosinstaller /usr/bin/instantosinstaller
+
+if [[ -f /usr/share/instantdotfiles/rootconfig/lightdm-gtk-greeter.conf ]]; then
+  log "installing lightdm greeter configuration"
+  install -Dm644 /usr/share/instantdotfiles/rootconfig/lightdm-gtk-greeter.conf \
+    /etc/lightdm/lightdm-gtk-greeter.conf
+fi
+
+mkdir -p /etc/systemd/system
+ln -sf /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
+mkdir -p /etc/systemd/system/multi-user.target.wants
+ln -sf /usr/lib/systemd/system/systemd-timesyncd.service \
+  /etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service
+
+append_line /root/.zlogin "[ -e /opt/lightstart ] || systemctl start lightdm & touch /opt/lightstart"
+append_line /root/.zshrc "sleep 2 && systemctl start lightdm"
+append_line /etc/zsh/zshrc "[ -e /opt/lightstart ] || systemctl start lightdm & touch /opt/lightstart"
+
+workdir=$(mktemp -d /tmp/instantos-setup.XXXXXX)
+cleanup() {
+  rm -rf "$workdir"
+  rm -f /opt/livebuilder
+}
+trap cleanup EXIT
+
+cd "$workdir"
+
+log "cloning instantARCH"
+git clone --depth 1 https://github.com/instantOS/instantARCH >/dev/null 2>&1
+
+if [[ ! -x /usr/share/instantos/rootinstall.sh ]]; then
+  log "rootinstall script missing"
+  exit 1
+fi
+
+log "running instantOS rootinstall"
+bash /usr/share/instantos/rootinstall.sh
+
+if [[ ! -f /etc/default/grub ]] || ! grep -q 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' /etc/default/grub; then
+  log "setting grub theme"
+  echo 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' >>/etc/default/grub
+fi
+
+if ! grep -q '^NOILOCKPASSWORD=' /etc/environment 2>/dev/null; then
+  log "disabling lock screen password"
+  echo 'NOILOCKPASSWORD=true' >>/etc/environment
+fi
+
+if ! grep -q 'tzupdate &' /root/.zshrc 2>/dev/null; then
+  log "queueing tzupdate"
+  echo 'tzupdate &' >>/root/.zshrc
+fi
+
+log "installing developer tools"
+curl -fsSL https://raw.githubusercontent.com/instantOS/instantTOOLS/main/netinstall.sh | bash
+
+touch "$flag"
+log "setup completed"

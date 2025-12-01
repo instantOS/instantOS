@@ -512,7 +512,7 @@ fi &
 
 # needed for graphical root prompts
 while :; do
-    lxpolkit
+    lxqt-policykit-agent
     sleep 2
 done &
 

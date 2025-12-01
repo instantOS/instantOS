@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=instantOS Installer
+Exec=/usr/local/bin/installapplet
+X-GNOME-Autostart-enabled=true
+Terminal=false

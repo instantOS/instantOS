@@ -45,7 +45,7 @@ commandwarning instantwallpaper "instantwallpaper missing. wallpaper settings, w
 commandwarning instantmenu "instantmenu is missing. the start menu, shutdown menu, quickmenu and instantASSIST will not work"
 commandwarning imenu "imenu is missing. some messages and setup menus will not work"
 commandwarning instantlock "instantlock is missing. You will not be able to lock the screen"
-commandwarning st "st is missing. Bindings opening a terminal emulator, including the cheatsheet will not work"
+commandwarning kitty "kitty is missing. Bindings opening a terminal emulator, including the cheatsheet will not work"
 commandwarning instantshutdown "instantutils are missing. Basically nothing instantOS related except basic parts of the WM will work"
 commandwarning instantthemes "instantthemes missing. adaptive dark/light mode won't work, terminal coloring and other visual features will look odd"
 commandwarning rofi "rofi not found. The graphical application menu and super + space menu will not work"
