@@ -48,7 +48,6 @@ addenv() {
     fi
 }
 
-addenv -f "QT_QPA_PLATFORMTHEME" "qt5ct"
 addenv -f "PAGER" "less"
 if which nvim; then
     addenv -f "EDITOR" "$(which nvim)"

@@ -467,8 +467,6 @@ else
     instantwmctl alttab 1
 fi
 
-# desktop icons
-confcommand desktopicons rox --pinboard Default
 # auto mount disks
 confcommand udiskie udiskie -t
 # clipboard manager
