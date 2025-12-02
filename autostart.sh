@@ -158,13 +158,6 @@ onlinetrigger() {
     fi
 }
 
-# set up oh-my-zsh config if not existing already
-iconf -i nozsh || {
-    if ! [ -e ~/.zshrc ]; then
-        instantshell install &
-    fi
-}
-
 # fix resolution on virtual machine
 if ! iconf -i novmfix && grep -q 'hypervisor' /proc/cpuinfo; then
     # indicator file only exists on kvm/QEMU on amd
