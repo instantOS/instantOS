@@ -1,0 +1,134 @@
+configuration {
+    font:                           "Cantarell Regular 13";
+    show-icons:                     true;
+    drun-display-format:            "{name}";
+    fullscreen:                     false;
+    threads:                        0;
+    scroll-method:                  0;
+    disable-history:                false;
+}
+
+* {
+    background:                     #00000000;
+    background-color:               #121212;
+    background-entry:               #00000033;
+    background-alt:                 #384252;
+    foreground:                     #dfdfdf;
+    foreground-selected:            #dfdfdf;
+    urgent:                         #F28B8266;
+    urgent-selected:                #F28B8277;
+    border-radius:                  1px;
+}
+
+window {
+    transparency:                   "real";
+    background-color:               @background;
+    text-color:                     @foreground;
+    height:                         92%;
+    width:                          98%;
+    location:                       northwest;
+    anchor:                         northwest;
+    x-offset:                       1%;
+    y-offset:                       5.5%;
+}
+
+prompt {
+    enabled: false;
+}
+
+
+inputbar {
+    background-color:               #384252;
+    text-color:                     @foreground;
+    expand:                         false;
+    margin:                         0px 20% 0px 20%;
+    padding:                        10px 10px 10px 10px;
+    position:                       north;
+}
+
+
+entry {
+    background-color:               @background;
+    text-color:                     @foreground;
+    placeholder-color:              @foreground;
+    expand:                         true;
+    horizontal-align:               0.5;
+    placeholder:                    "Search applications";
+    blink:                          true;
+}
+
+case-indicator {
+    background-color:               @background;
+    text-color:                     @foreground;
+    spacing:                        0;
+}
+
+
+listview {
+    background-color:               @background;
+    columns:                        7;
+    spacing:                        4px;
+    cycle:                          false;
+    dynamic:                        true;
+    layout:                         vertical;
+}
+
+mainbox {
+    background-color:               @background-color;
+    children:                       [ inputbar, listview ];
+    spacing:                        25px;
+    padding:                        45px 5% 45px 5%;
+}
+
+
+element {
+    background-color:               @background;
+    text-color:                     @foreground;
+    orientation:                    vertical;
+    padding:                        25px 0px 25px 0px;
+}
+
+element-icon {
+    size:                           10%;
+    background-color:               inherit;
+    text-color:                     inherit;
+    horizontal-align:               0.5;
+}
+
+element-text {
+    expand:                         true;
+    horizontal-align:               0.5;
+    vertical-align:                 0.5;
+    margin:                         5px 10px 0px 10px;
+    background-color: inherit;
+    text-color:       inherit;
+}
+
+element normal.urgent,
+element alternate.urgent {
+    background-color:               @urgent;
+    text-color:                     @foreground;
+}
+
+element normal.active,
+element alternate.active {
+    background-color:               @background-alt;
+    text-color:                     @foreground;
+}
+
+element selected {
+    border: 0% 0% 0.2% 0%;
+    border-color: #89B3F7;
+    background-color:               @background-alt;
+    text-color:                     @foreground-selected;
+}
+
+element selected.urgent {
+    background-color:               @urgent-selected;
+    text-color:                     @foreground;
+}
+
+element selected.active {
+    background-color:               @background-alt;
+    color:                          @foreground-selected;
+}
