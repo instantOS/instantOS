@@ -43,13 +43,7 @@ cd || {
     exit 1
 }
 
-if ! iconf -r keepdotfiles && ! iconf -i nodotfiles; then
-    if idate w dotfileupdate; then
-        command -v imosid && {
-            imosid apply /usr/share/instantdotfiles/dotfiles
-        }
-    fi
-fi
+ins autostart
 
 if idate m appimagescan; then
     if [ -e ~/.local/bin/appimaged ]; then
@@ -60,11 +54,6 @@ fi
 
 if command -v pamac &> /dev/null && idate m pamacupdate; then
     timeout 30 pamac update &
-fi
-
-if ! iconf -i rangerplugins; then
-    mkdir instantos
-    instantutils rangerplugins && iconf -i rangerplugins 1
 fi
 
 # find out if it's a live session
@@ -130,12 +119,7 @@ if [ -n "$ISRASPI" ]; then
     fi
 fi
 
-# TODO: rework for new instantthemes
-if ! iconf -i notheming; then
-    instantthemes apply
-    xrdb ~/.Xresources
-    iconf -i instantthemes 1
-fi
+xrdb ~/.Xresources
 
 startdunst() {
     mkdir -p /tmp/notifications &>/dev/null
@@ -434,13 +418,6 @@ if idate d dailyroutine; then
     menuclean
 fi
 
-# displays message user opens the terminal for the first time
-if ! iconf -i nohelp; then
-    if ! grep -q 'instantterminalhelp' ~/.zshrc; then
-        echo '[[ $- == *i* ]] && instantterminalhelp' >>~/.zshrc
-    fi
-fi
-
 # run command if iconf option is set
 confcommand() {
     if iconf -i "$1"; then
@@ -480,11 +457,6 @@ if ! iconf -i nodesktopautostart; then
     done
 fi
 
-if command -v nvidia-settings &>/dev/null; then
-    # load nvidia user settings
-    nvidia-settings -l
-fi
-
 # update notifier
 if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
     sleep 2m
@@ -514,14 +486,9 @@ if ! [ -e ~/.config/instantos/default/browser ]; then
     instantutils default
 fi
 
-if command -v redshift-gtk &>/dev/null; then
-    # needed to fix location stuff
-    /usr/lib/geoclue-2.0/demos/agent &
-fi
-
 # start processes that need to be kept running
 while :; do
-    sleep 2
+    sleep 5
     # check if new device has been plugged in and apply settings
     # TODO: look into slowing this down with udevwait
     XINPUTSUM="$(xinput | md5sum)"
