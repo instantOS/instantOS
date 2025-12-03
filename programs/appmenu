@@ -18,7 +18,7 @@ if ! [ -e ~/.config/instantos/israspi ]; then
 		if [ -e "$USERCONFIG" ]; then
 			ROFICONFIG="$USERCONFIG"
 		else
-			ROFICONFIG="/usr/share/instantos/config/rofi/appmenu.rasi"
+			ROFICONFIG="/usr/share/instantos/config/appmenu.rasi"
 		fi
 
 		rofi -dpi "$DPI" -show drun -modi drun -theme "$ROFICONFIG" \
