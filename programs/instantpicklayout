@@ -14,4 +14,4 @@ if [ -z "$LAYOUT" ]; then
     exit
 fi
 
-instantwmctrl layout "$LAYOUT"
+instantwmctl layout "$LAYOUT"

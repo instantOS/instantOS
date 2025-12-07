@@ -5,9 +5,9 @@
 # applies various wm settings
 
 if iconf defaultlayout; then
-    instantwmctrl prefix 1
+    instantwmctl prefix 1
     sleep 0.1
-    instantwmctrl layout "$(iconf defaultlayout)"
+    instantwmctl layout "$(iconf defaultlayout)"
 fi
 
 confkey() {
@@ -17,7 +17,7 @@ confkey() {
 }
 
 if iconf -i noanimations; then
-    instantwmctrl animated 1
+    instantwmctl animated 1
 fi
 
 confkey highfps "super+alt+shift+d"
