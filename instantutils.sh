@@ -11,7 +11,7 @@ USAGE="usage: instantutils [action]
     open              open default application \$2
     dotfiles          restore deleted default dotfiles
     conky             launch conky with instantOS tooltips
-    rangerplugins     install instantOS ranger plugins
+    
     help              show this message"
 
 if [ -z "$1" ]; then
@@ -51,18 +51,7 @@ open)
 dotfiles)
     imosid apply /usr/share/instantdotfiles/dotfiles
     ;;
-rangerplugins)
-    cd || exit 1
-    mkdir instantos &>/dev/null
-    echo "installing ranger plugins"
-    mkdir -p ~/.config/ranger/plugins
-    cp -r /usr/share/rangerplugins/* ~/.config/ranger/plugins/
-    if [ "$2" = '-f' ]
-    then
-        cat /usr/share/instantdotfiles/dotfiles/ranger/commands.py > ~/.config/ranger/commands.py
-        cat /usr/share/instantdotfiles/dotfiles/ranger/rc.conf > ~/.config/ranger/rc.conf
-    fi
-    ;;
+
 conky)
     shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
     conky -c /usr/share/instantwidgets/tooltips.conf &
