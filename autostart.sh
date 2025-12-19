@@ -328,10 +328,6 @@ else
     ipicom &
 fi
 
-if acpi | grep -q '[0-9][0-9]*%' || iconf -i enablepowermanager; then
-    xfce4-power-manager &
-fi
-
 # auto open menu when connecting/disconnecting monitor
 checkautoswitch() {
     {
