@@ -20,7 +20,7 @@ case "$CHOICE" in
     appmenu &
     ;;
 *Settings)
-    instantsettings &
+    ins settings --gui &
     ;;
 *Info)
     kitty -e sh -c 'fastfetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
@@ -32,7 +32,7 @@ case "$CHOICE" in
     kitty &
     ;;
 *Documentation)
-    instantutils open browser 'https://instantos.io/docs/' &
+    xdg-open 'https://instantos.io/docs/' &
     ;;
 *Keybindings)
     kitty -e instanthotkeys &
