@@ -6,8 +6,8 @@ Type = Package
 Target = pacman-mirrorlist
 
 [Action]
-Description = Uncommenting all mirrors in /etc/pacman.d/mirrorlist...
+Description = Uncommenting HTTPS mirrors in /etc/pacman.d/mirrorlist...
 When = PostTransaction
 Depends = pacman-mirrorlist
 Depends = sed
-Exec = /usr/bin/sed -i "s/#Server/Server/g" /etc/pacman.d/mirrorlist
+Exec = /usr/bin/sed -E -i 's/#(Server = https:)/\1/g' /etc/pacman.d/mirrorlist
