@@ -56,12 +56,6 @@ EOF
 
 ln -sf /usr/local/bin/instantosinstaller /usr/bin/instantosinstaller
 
-if [[ -f /usr/share/instantdotfiles/rootconfig/lightdm-gtk-greeter.conf ]]; then
-  log "installing lightdm greeter configuration"
-  install -Dm644 /usr/share/instantdotfiles/rootconfig/lightdm-gtk-greeter.conf \
-    /etc/lightdm/lightdm-gtk-greeter.conf
-fi
-
 mkdir -p /etc/systemd/system
 ln -sf /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
 mkdir -p /etc/systemd/system/multi-user.target.wants
