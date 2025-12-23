@@ -27,4 +27,5 @@ file_permissions=(
   ["/usr/local/bin/instantos-setup"]="0:0:755"
   ["/usr/local/bin/instantosinstaller"]="0:0:755"
   ["/usr/local/bin/liveautostart"]="0:0:755"
+  ["/usr/share/instantos/rootinstall.sh"]="0:0:755"
 )
