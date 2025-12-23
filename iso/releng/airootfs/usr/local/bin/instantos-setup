@@ -91,10 +91,6 @@ if [[ ! -f /etc/default/grub ]] || ! grep -q 'GRUB_THEME="/usr/share/grub/themes
   echo 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' >>/etc/default/grub
 fi
 
-if ! grep -q '^NOILOCKPASSWORD=' /etc/environment 2>/dev/null; then
-  log "disabling lock screen password"
-  echo 'NOILOCKPASSWORD=true' >>/etc/environment
-fi
 
 if ! grep -q 'tzupdate &' /root/.zshrc 2>/dev/null; then
   log "queueing tzupdate"
