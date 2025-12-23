@@ -22,7 +22,7 @@ INSTANTARCHSCRIPT="https://raw.githubusercontent.com/instantOS/instantARCH/main/
 if ! {
     checkinternet ||
         curl -s cht.sh ||
-        curl -s http://packages.instantos.io &>/dev/null ||
+        curl -s https://instantos.io/packages &>/dev/null ||
         ping -c 1 archlinux.org ||
         ping -c github.com ||
         curl -s https://raw.githubusercontent.com/instantOS/instantLOGO/main/ascii.txt
