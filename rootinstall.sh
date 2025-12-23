@@ -11,63 +11,7 @@ fi
 
 mkdir -p /opt/instantos
 
-# add group and add users to group
-ugroup() {
-    groupadd "$1" &>/dev/null
-    for USER in $(ls /home/ | grep -v '+'); do
-        if id -u "$USER" &>/dev/null; then
-            if ! sudo su "$USER" -c groups | grep -Eq " $1|$1 "; then
-                sudo gpasswd -a "$USER" "$1"
-            fi
-        fi
-    done
-}
-
-ugroup video
-ugroup input
-
 export RAW="https://raw.githubusercontent.com"
-
-# adds permanent global environment variable
-addenv() {
-    [ -e /etc/environment ] || touch /etc/environment
-    if [ "$1" = "-f" ]; then
-        local FORCE="true"
-        shift 1
-    fi
-
-    if grep -q "$1=" /etc/environment; then
-        if [ -z "$FORCE" ]; then
-            echo "key already existing"
-            return 1
-        else
-            sed -i "s~$1=.*~$1=$2~g" /etc/environment
-        fi
-    else
-        echo "$1=$2" >>/etc/environment
-    fi
-}
-
-addenv -f "PAGER" "less"
-if which nvim; then
-    addenv -f "EDITOR" "$(which nvim)"
-fi
-addenv -f "XDG_MENU_PREFIX" "gnome-"
-
-# needed for instantLOCK
-if ! grep -q 'nobody' /etc/groups &>/dev/null && ! grep -q 'nobody' </etc/group &>/dev/null; then
-    echo "created group nobody"
-    sudo groupadd nobody
-fi
-
-# fix java gui appearing empty on instantWM
-if ! grep -q 'instantwm' </etc/profile; then
-    echo "fixing java windows for instantwm in /etc/profile"
-    echo '# fix instantwm java windows' >>/etc/profile
-    echo 'export _JAVA_AWT_WM_NONREPARENTING=1' >>/etc/profile
-else
-    echo "java workaround already applied"
-fi
 
 # color scheme for tty
 # TODO: redo with pretty font and maybe catpuccin
@@ -103,50 +47,6 @@ EOT
 
 fi
 
-# /tmp/topinstall is present if rootinstall is running on postinstall
-# like on existing installations
-if ! [ -e /tmp/topinstall ] && command -v plymouth-set-default-theme && ! grep -iq 'manjaro' /etc/os-release; then
-    # install a custom repo
-    if ! grep -q '\[instant\]' /etc/pacman.conf; then
-        echo "restoring repo"
-        /usr/share/instantutils/repo.sh
-    else
-        echo "instantOS repo found"
-    fi
-
-    sed -i 's/DISTRIB_DESCRIPTION.*/DISTRIB_DESCRIPTION="instantOS"/g' /etc/lsb-release
-
-    if ! [ -e /opt/instantos/bootscreen ] && [ -e /opt/instantos/realinstall ] && ! [ -e /opt/instantos/noplymouth ]; then
-        setup_plymouth
-    fi
-fi
-
-setup_plymouth() {
-
-        echo "installing boot splash screen"
-        plymouth-set-default-theme instantos
-
-        if [ -e /etc/default/grub ]; then
-            if ! grep -q 'instantos boot animation' /etc/default/grub; then
-                # boot animation
-                sed -i '/^GRUB_CMDLINE_LINUX_DEFAULT="/aGRUB_CMDLINE_LINUX_DEFAULT="$GRUB_CMDLINE_LINUX_DEFAULT splash" # instantos boot animation' \
-                    /etc/default/grub
-                # set grub entry name
-                sed -i 's/^GRUB_DISTRIBUTOR=.*/GRUB_DISTRIBUTOR="instantOS"/g' /etc/default/grub
-            fi
-        fi
-
-        if ! grep -q '.*plymouth.* # boot screen' /etc/mkinitcpio.conf; then
-            sed -i '/^HOOKS/aHOOKS+=(plymouth) # boot screen' /etc/mkinitcpio.conf
-        fi
-
-        if [ -e /etc/default/grub ]; then
-            update-grub
-        fi
-        mkinitcpio -P
-        touch /opt/instantos/bootscreen
-}
-
 # tmux doesn't count as console user
 if ! [ -e /etc/X11/Xwrapper.config ]; then
     echo "enabling startx"
@@ -156,10 +56,6 @@ fi
 if [ -e /opt/livebuilder ]; then
     echo "live session builder detected"
 else
-    if [ -e /etc/lightdm/lightdm.conf ] && ! grep -q 'instantwm' /etc/lightdm/lightdm.conf; then
-        sudo sed -i 's/^user-session=.*/user-session=instantwm/g' /etc/lightdm/lightdm.conf
-        sudo sed -i '# user-session = Session to load for users/user-session=instantwm/g' /etc/lightdm/lightdm.conf
-    fi
 
     # check if computer is a potato
     MEMAMOUNT="$($(which free) -m | grep -vi swap | grep -o '[0-9]*' | sort -n | tail -1)"
@@ -175,8 +71,6 @@ else
         echo "true" >/opt/instantos/potato
     fi
 
-    # fix brightness permissions
-    bash /usr/share/instantassist/data/backlight.sh
     mkdir -p /opt/instantos
 fi
 
