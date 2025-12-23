@@ -45,13 +45,6 @@ cd || {
 
 ins autostart
 
-if idate m appimagescan; then
-    if [ -e ~/.local/bin/appimaged ]; then
-        timeout 30 ~/.local/bin/appimaged &
-        echo 'rescanning appimage files'
-    fi
-fi
-
 if command -v pamac &> /dev/null && idate m pamacupdate; then
     timeout 30 pamac update &
 fi
@@ -75,24 +68,6 @@ islive() {
     else
         return 1
     fi
-}
-
-applymouse() {
-    if iconf -i nomousesetting; then
-        return
-    fi
-    # read cursor speed
-    if iconf mousespeed; then
-        echo "setting mousespeed"
-        instantmouse s "$(iconf mousespeed)"
-    fi
-
-    if iconf -i reversemouse; then
-        instantmouse r 1
-    else
-        instantmouse r 0
-    fi
-    instantmouse p
 }
 
 # optionally disable status bar
