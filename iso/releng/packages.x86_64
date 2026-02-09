@@ -127,6 +127,9 @@ xfsprogs
 xl2tpd
 zsh
 # instantOS additions
+acpi
+curl
+git
 gparted
 network-manager-applet
 networkmanager
@@ -135,6 +138,7 @@ gvfs-smb
 inetutils
 instantdepend
 instantos
+libappindicator
 lightdm
 lightdm-gtk-greeter
 lshw
