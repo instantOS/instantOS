@@ -27,7 +27,6 @@ install_local:
 	install -Dm 644 systemd/instantpostinstall.service ${DESTDIR}/etc/systemd/system/instantpostinstall.service
 	find -regex './manpages/.*1' -exec install -Dm 644 "{}" ${DESTDIR}${PREFIX}/share/man/man1/ \;
 	mkdir -p ${DESTDIR}${PREFIX}/share/{instantutils,applications}/
-	install -Dm 755 wmautostart.sh ${DESTDIR}${PREFIX}/share/instantutils/wmautostart.sh
 	install -Dm 755 userinstall.sh ${DESTDIR}${PREFIX}/share/instantutils/userinstall.sh
 	install -Dm 755 rootinstall.sh ${DESTDIR}${PREFIX}/share/instantutils/rootinstall.sh
 	install -Dm 755 repo.sh ${DESTDIR}${PREFIX}/share/instantutils/repo.sh
