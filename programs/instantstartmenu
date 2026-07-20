@@ -7,7 +7,6 @@ CHOICE="$(echo ':b Applications
 :b Terminal
 :b Info
 :g Documentation
-:b Keybindings
 :r Shutdown
 :r Close menu' | instantmenu -i -bw 4 -w -1 -h -1 -n -l 10 -x 0 -F -a 0)"
 
@@ -33,9 +32,6 @@ case "$CHOICE" in
     ;;
 *Documentation)
     xdg-open 'https://instantos.io/docs/' &
-    ;;
-*Keybindings)
-    kitty -e instanthotkeys &
     ;;
 *menu)
     echo "closed menu"
