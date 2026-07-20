@@ -16,9 +16,6 @@ else
     instantutils default
 fi
 
-# apply wm settings
-/usr/share/instantutils/wmautostart.sh
-
 # architecture detection
 if [ -z "$1" ]; then
     if uname -m | grep -q '^arm'; then
@@ -70,17 +67,6 @@ islive() {
     fi
 }
 
-# optionally disable status bar
-# TODO replace this with an instantwmctl command
-if iconf -i nobar; then
-    NMON=$(iconf names | wc -l)
-    for i in $(eval "echo {1..$NMON}"); do
-        echo "found monitor $i"
-        xdotool key super+comma
-        xdotool key super+b
-    done &
-fi
-
 if [ -n "$ISRASPI" ]; then
     # enable double drawing for moving floating windows
     # greatly increases smoothness
@@ -111,11 +97,6 @@ startdunst() {
 
 startdunst &
 
-onlinetrigger() {
-    if ! iconf -i nowallpaper; then
-        instantwallpaper &
-    fi
-}
 
 # fix resolution on virtual machine
 if ! iconf -i novmfix && grep -q 'hypervisor' /proc/cpuinfo; then
@@ -182,37 +163,6 @@ if ! islive; then
         autorandr instantos &
     fi
 
-    if checkinternet; then
-        onlinetrigger
-    else
-        # fall back to already installed wallpapers
-        instantwallpaper offline
-        for i in $(seq 10); do
-            if checkinternet; then
-                onlinetrigger
-                break
-            else
-                sleep 10
-            fi
-        done
-    fi &
-
-    # apply keybpard layout
-    if ! iconf layout; then
-        if iconf -r layout; then
-            iconf layout "$(iconf -r layout)"
-        fi
-    fi
-
-    if ! iconf nokeylayout; then
-        KEYLAYOUT="$(iconf layout:us)"
-        if iconf keyvariant; then
-            setxkbmap -layout "$KEYLAYOUT" -variant "$(iconf keyvariant)"
-        else
-            setxkbmap -layout "$KEYLAYOUT"
-        fi
-    fi
-
     if ! iconf -i noconky; then
         instantutils conky
     fi
@@ -257,6 +207,7 @@ if ! iconf -i nostatus; then
     source /usr/bin/instantstatus &
 fi
 
+#TODO: move this into `ins settings`
 offerdpi() {
     HEIGHT=$(iconf max | grep -o '[0-9]*$')
     WIDTH=$(iconf max | grep -o '^[0-9]*')
@@ -357,11 +308,6 @@ if checkautoswitch; then
     fi
 fi
 
-# welcome app
-if iconf -b welcome; then
-    instantwelcome
-fi &
-
 # prompt to fix configuration if installed from the AUR
 if ! iconf -i norootinstall && ! islive; then
     if ! command -v imenu || ! command -v instantmenu; then
@@ -397,6 +343,7 @@ confcommand() {
     fi &
 }
 
+# TODO: replace with `ins` call
 if iconf savebright; then
     export NOBRIGHTMESSAGE=true
     /usr/share/instantassist/utils/b.sh 2 "$(iconf savebright)"
@@ -407,11 +354,6 @@ if iconf -i alttab; then
 else
     instantwmctl alttab 1
 fi
-
-# auto mount disks
-confcommand udiskie udiskie -t
-# clipboard manager
-confcommand clipmanager clipmenud
 
 # user declared autostart
 if [ -e ~/.config/instantos/autostart.sh ]; then
@@ -447,6 +389,7 @@ if ! iconf -i noupdates && [ -z "$ISLIVE" ]; then
 fi &
 
 # needed for graphical root prompts
+# TODO: replace with systemd?
 while :; do
     lxqt-policykit-agent
     sleep 2
@@ -479,9 +422,7 @@ while :; do
         blueman-applet &
     fi
 
-    if iconf -i alttab && ! pgrep alttab; then
-        instantutils alttab
-    fi
+    # TODO: make instantWM alttab binding toml configurable
 
     sleep 1m
 done

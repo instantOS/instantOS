@@ -67,8 +67,6 @@ while :; do
         fi
         istat UPDATES "U$UPDATES"
     fi
-    # TODO make instantthemes only do something if time/variant/theme has changed
-    instantthemes apply
 done &
 
 sleep 2
