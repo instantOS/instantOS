@@ -66,17 +66,10 @@ append_line /root/.zlogin "[ -e /opt/lightstart ] || systemctl start lightdm & t
 append_line /root/.zshrc "sleep 2 && systemctl start lightdm"
 append_line /etc/zsh/zshrc "[ -e /opt/lightstart ] || systemctl start lightdm & touch /opt/lightstart"
 
-workdir=$(mktemp -d /tmp/instantos-setup.XXXXXX)
 cleanup() {
-  rm -rf "$workdir"
   rm -f /opt/livebuilder
 }
 trap cleanup EXIT
-
-cd "$workdir"
-
-log "cloning instantARCH"
-git clone --depth 1 https://github.com/instantOS/instantARCH >/dev/null 2>&1
 
 if [[ ! -x /usr/share/instantos/rootinstall.sh ]]; then
   log "rootinstall script missing"

@@ -186,7 +186,6 @@ else
 
     sudo systemctl start NetworkManager
 
-    iconf -b welcome 1
     iconf -i wifiapplet 1
     instantwallpaper set /usr/share/instantwallpaper/defaultphoto.png
     conky -c /usr/share/instantwidgets/install.conf &
