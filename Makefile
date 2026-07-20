@@ -23,7 +23,6 @@ install_local:
 	install -Dm 755 status.sh ${DESTDIR}${PREFIX}/bin/instantstatus
 	install -Dm 755 monitor.sh ${DESTDIR}${PREFIX}/bin/instantmonitor
 	install -Dm 755 instantutils.sh ${DESTDIR}${PREFIX}/bin/instantutils
-	install -Dm 755 installinstantos.sh ${DESTDIR}${PREFIX}/bin/installinstantos
 	install -Dm 644 systemd/instantpostinstall.service ${DESTDIR}/etc/systemd/system/instantpostinstall.service
 	find -regex './manpages/.*1' -exec install -Dm 644 "{}" ${DESTDIR}${PREFIX}/share/man/man1/ \;
 	mkdir -p ${DESTDIR}${PREFIX}/share/{instantutils,applications}/
@@ -44,7 +43,6 @@ uninstall:
 	rm ${DESTDIR}${PREFIX}/bin/instantstatus
 	rm ${DESTDIR}${PREFIX}/bin/instantmonitor
 	rm ${DESTDIR}${PREFIX}/bin/instantutils
-	rm ${DESTDIR}${PREFIX}/bin/installinstantos
 	rm ${DESTDIR}/etc/systemd/system/instantpostinstall.service
 	rm -rf ${DESTDIR}${PREFIX}/share/instantutils
 	# TODO remove manpages
