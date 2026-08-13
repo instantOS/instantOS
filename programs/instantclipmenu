@@ -1,38 +1,8 @@
 #!/usr/bin/env bash
 
-# simple clipmenu wrapper
-
-: "${CM_DIR="${XDG_RUNTIME_DIR-"${TMPDIR-/tmp}"}"}"
-major_version=6
-
-# TODO: try out clipcat
-enableclipmenu() {
-    if ! imenu -c "enable clipboard management?"; then
-        exit
-    fi
-    iconf -i clipmanager 1
-    instantinstall clipmenu
-    sleep 0.2
-    pgrep -f clipmenud || clipmenud &
-    notify-send "enabling clipboard management, loading..."
-    sleep 2
-    echo "this menu will show recent clipboard entries" >"$cache_file"
-    echo "click on an entry to restore its contents" >>"$cache_file"
-}
-
-shopt -s nullglob
-
-cache_dir=$CM_DIR/clipmenu.$major_version.$USER
-cache_file=$cache_dir/line_cache
-
-if [ "$1" = "delete" ]; then
-    if imenu -c "clear clipboard cache?"; then
-        echo "clearing cache"
-        echo "cache $cache_file"
-        echo "cleared" >"$cache_file"
-        exit
-    fi
+# Compatibility shim. Clipboard history is now managed by instantCLI.
+if [[ ${1-} == delete ]]; then
+    exec ins clip clear
 fi
 
-[ -e "$cache_file" ] || enableclipmenu
-CM_LAUNCHER=instantmenu clipmenu -p "    " -q 'clipboard manager' -h -1 -lc "instantclipmenu delete"
+exec ins clip --gui "$@"
