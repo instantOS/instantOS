@@ -1,0 +1,13 @@
+# remove from airootfs!
+[Trigger]
+Operation = Install
+Type = Package
+Target = *
+
+[Action]
+Description = Configuring instantOS live environment...
+When = PostTransaction
+Depends = bash
+Depends = curl
+Depends = git
+Exec = /usr/bin/bash /usr/local/bin/instantos-setup

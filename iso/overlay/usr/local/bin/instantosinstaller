@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# instantOS installer wrapper
+
+# warn user when installing without power source
+if acpi | grep -i discharging; then
+    echo "laptop without power source detected"
+    if echo 'Warning: discharging battery detected
+it is recommended to connect your device to a power
+source or ensure it is fully charged
+before beginning the installation
+Begin installation?' | imenu -C; then
+        echo "ignoring warning"
+    else
+        exit
+    fi
+fi
+
+# connect user to the internet
+if ! {
+    checkinternet ||
+        curl -s cht.sh ||
+        curl -s https://instantos.io/packages &>/dev/null ||
+        ping -c 1 archlinux.org ||
+        ping -c github.com ||
+        curl -s https://raw.githubusercontent.com/instantOS/instantLOGO/main/ascii.txt
+}; then
+    sudo systemctl start NetworkManager &
+    echo "please connect to the internet before starting the installation
+ethernet is recommended
+for wifi please use the applet in the top right
+and then restart the installation" | imenu -M &
+    pgrep nm-applet && pkill nm-applet
+    sleep 0.5
+    nm-applet &
+    exit 1
+fi
+
+# allow disabling gui
+if [ -n "$1" ] && [ "$1" = "-cli" ]; then
+    exec sudo ins arch install
+fi
+
+if ! command -v ins >/dev/null 2>&1; then
+    echo "The instantOS installer is missing from this live image." | imenu -e
+    exit 1
+fi
+
+if ! command -v kitty >/dev/null 2>&1; then
+    echo "A terminal is required to start the instantOS installer." | imenu -e
+    exit 1
+fi
+
+pgrep conky && pkill conky
+exec kitty --class ins-install --title "instantOS Installation" -e ins arch install
