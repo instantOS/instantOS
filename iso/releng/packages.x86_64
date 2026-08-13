@@ -31,6 +31,7 @@ f2fs-tools
 fatresize
 foot-terminfo
 fsarchiver
+ghostty-terminfo
 gpart
 gpm
 gptfdisk
@@ -44,6 +45,7 @@ iw
 iwd
 jfsutils
 kitty-terminfo
+kmscon-terminfo
 ldns
 less
 lftp
@@ -75,7 +77,7 @@ ndisc6
 nfs-utils
 nilfs-utils
 nmap
-ntfs-3g
+ntfsprogs
 nvme-cli
 open-iscsi
 open-vm-tools

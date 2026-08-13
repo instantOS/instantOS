@@ -8,7 +8,7 @@ usage() {
     Usage: livecdsound [OPTION]
     OPTIONS
         -u, --unmute      unmute all sound cards
-        -p, --pick        select a card for  speetch output
+        -p, --pick        select a card for speech output
         -h, --help        Show this usage message
 
 _EOF_
@@ -183,8 +183,8 @@ play_on_card() {
 # using auditory feedback.
 pick_a_card() {
     set -f
-    usable_cards="$(list_non_pcsp_cards)"
-    num_usable_cards="$(wc -w <<<"$usable_cards")"
+    mapfile -t usable_cards < <(list_non_pcsp_cards)
+    num_usable_cards="${#usable_cards[@]}"
 
     if (( num_usable_cards == 1 )); then
         systemd-cat -t "livecdsound" printf "Only one sound card is detected\n"

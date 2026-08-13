@@ -1,5 +1,5 @@
 [Match]
-Name=ww*
+Type=wwan
 
 [Link]
 RequiredForOnline=routable

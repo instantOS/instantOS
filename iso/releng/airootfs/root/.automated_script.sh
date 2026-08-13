@@ -17,13 +17,12 @@ automated_script() {
     script="$(script_cmdline)"
     if [[ -n "${script}" && ! -x /tmp/startup_script ]]; then
         if [[ "${script}" =~ ^((http|https|ftp|tftp)://) ]]; then
-            # there's no synchronization for network availability before executing this script
-            printf '%s: waiting for network-online.target\n' "$0"
-            until systemctl --quiet is-active network-online.target; do
-                sleep 1
-            done
             printf '%s: downloading %s\n' "$0" "${script}"
-            curl "${script}" --location --retry-connrefused --retry 10 --fail -s -o /tmp/startup_script
+            # there's no synchronization for network availability before executing this script; to ensure the network
+            # is online, we use a transient systemd service that depends on network-online.target to download the
+            # script rather than manually polling the target
+            systemd-run --pty --quiet -p Wants=network-online.target -p After=network-online.target \
+                curl "${script}" --location --retry-connrefused --retry 10 --fail -s -o /tmp/startup_script
             rt=$?
         else
             cp "${script}" /tmp/startup_script

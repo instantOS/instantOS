@@ -1,5 +1,5 @@
 [Match]
-Name=wl*
+Type=wlan
 
 [Link]
 RequiredForOnline=routable
