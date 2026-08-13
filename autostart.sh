@@ -189,14 +189,11 @@ else
     iconf -i wifiapplet 1
     instantwallpaper set /usr/share/instantwallpaper/defaultphoto.png
     conky -c /usr/share/instantwidgets/install.conf &
-    sleep 0.3
-    while :; do
-        if ! pgrep python; then
-            installapplet
-        fi &
-        sleep 6m
-    done &
-    sudo liveautostart &
+    # Refresh the package-managed installer before exposing launch actions.
+    # A failed refresh is non-fatal: the ISO-bundled version remains usable.
+    sudo liveautostart
+    installapplet &
+    ins welcome --gui --force-live &
     sleep 1
 
 fi

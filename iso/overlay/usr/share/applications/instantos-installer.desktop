@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Install instantOS
+Exec=ins arch install
+Icon=system-software-install
+Terminal=false
