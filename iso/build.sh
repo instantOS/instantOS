@@ -7,7 +7,10 @@
 echo "starting build of instantOS live iso"
 set -eo pipefail
 
-instantinstall archiso
+if ! command -v mkarchiso >/dev/null 2>&1; then
+    echo "installing archiso build tools"
+    sudo pacman -S --needed archiso
+fi
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
 REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." &>/dev/null && pwd)
@@ -21,6 +24,8 @@ cd "$ISO_BUILD"
 sleep 1
 
 cp -r "$SCRIPT_DIR/releng" "$ISO_BUILD/instantlive"
+# `overlay/` is the single source of truth for instantOS airootfs additions.
+cp -a "$SCRIPT_DIR/overlay/." "$ISO_BUILD/instantlive/airootfs/"
 cp "$SCRIPT_DIR"/syslinux/* "$ISO_BUILD/instantlive/syslinux/"
 
 install -Dm755 "$REPO_ROOT/rootinstall.sh" \

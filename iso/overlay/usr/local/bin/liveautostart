@@ -2,13 +2,34 @@
 
 # this script autostarts on an instantOS live session
 
+if (( EUID != 0 )); then
+    exec sudo -- "$0" "$@"
+fi
+
+exec 9>/run/instantos-liveautostart.lock
+flock 9
+if [[ -e /run/instantos-liveautostart.done ]]; then
+    exit 0
+fi
+
 echo "applying live session tweaks"
 
+# `ins self-update` deliberately leaves package-managed installations alone.
+# Refresh just the installer package from the instantOS repository instead.
+if checkinternet; then
+    echo "updating ins from the instantOS repository"
+    pacman -Sy --needed --noconfirm ins || \
+        echo "warning: could not update ins; using the ISO-bundled version"
+else
+    echo "offline; using the ISO-bundled ins version"
+fi
+
 if command -v systemctl; then
-    sudo systemctl enable --now systemd-timesyncd
+    systemctl enable --now NetworkManager
+    systemctl enable --now systemd-timesyncd
     if command -v tzupdate; then
         sleep 10
-        sudo tzupdate
+        tzupdate
     fi &
 fi
 
@@ -26,4 +47,5 @@ if mountpoint -q /run/archiso/cowspace; then
     mount -o remount,size="$size_arg" /run/archiso/cowspace
 fi
 
+touch /run/instantos-liveautostart.done
 echo "finished applying live session tweaks"

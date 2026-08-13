@@ -7,6 +7,4 @@ rm -rf releng/
 
 cp -r /usr/share/archiso/configs/releng/ .
 
-echo "reapplying overlay stuff"
-
-cp -a overlay/. releng/airootfs/
+echo "releng refreshed; build.sh applies overlay/ to its temporary profile"
