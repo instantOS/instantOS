@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Welcome to instantOS
+Exec=ins welcome --gui --force-live
+X-GNOME-Autostart-enabled=true
+Terminal=false

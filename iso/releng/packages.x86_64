@@ -141,8 +141,8 @@ inetutils
 instantdepend
 instantos
 libappindicator
-lightdm
-lightdm-gtk-greeter
+gdm
+kitty
 lshw
 netctl
 os-prober
