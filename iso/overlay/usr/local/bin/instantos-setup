@@ -56,7 +56,7 @@ EOF
 mkdir -p /var/lib/AccountsService/users
 cat >/var/lib/AccountsService/users/instantos <<'EOF'
 [User]
-Session=instantwm
+Session=instantwm-wayland
 SystemAccount=false
 EOF
 
