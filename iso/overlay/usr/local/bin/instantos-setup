@@ -25,7 +25,7 @@ mkdir -p /opt/instantos
 
 if ! id -u instantos >/dev/null 2>&1; then
   log "creating instantos user"
-  useradd -m -s /bin/bash instantos
+  useradd -m -s /bin/zsh instantos
   echo "instantos:instantos" | chpasswd
 fi
 
@@ -45,26 +45,26 @@ for group in autologin video wheel input; do
   ensure_group "$group"
 done
 
-
-
-mkdir -p /etc/lightdm/lightdm.conf.d
-cat >/etc/lightdm/lightdm.conf.d/10-instantos.conf <<'EOF'
-[Seat:*]
-autologin-user=instantos
-greeter-session=lightdm-gtk-greeter
+mkdir -p /etc/gdm
+cat >/etc/gdm/custom.conf <<'EOF'
+[daemon]
+AutomaticLoginEnable=True
+AutomaticLogin=instantos
 EOF
 
-ln -sf /usr/local/bin/instantosinstaller /usr/bin/instantosinstaller
+# Select instantWM on the first autologin instead of relying on GDM's default.
+mkdir -p /var/lib/AccountsService/users
+cat >/var/lib/AccountsService/users/instantos <<'EOF'
+[User]
+Session=instantwm
+SystemAccount=false
+EOF
 
 mkdir -p /etc/systemd/system
-ln -sf /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
+ln -sf /usr/lib/systemd/system/gdm.service /etc/systemd/system/display-manager.service
 mkdir -p /etc/systemd/system/multi-user.target.wants
 ln -sf /usr/lib/systemd/system/systemd-timesyncd.service \
   /etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service
-
-append_line /root/.zlogin "[ -e /opt/lightstart ] || systemctl start lightdm & touch /opt/lightstart"
-append_line /root/.zshrc "sleep 2 && systemctl start lightdm"
-append_line /etc/zsh/zshrc "[ -e /opt/lightstart ] || systemctl start lightdm & touch /opt/lightstart"
 
 cleanup() {
   rm -f /opt/livebuilder
@@ -78,6 +78,19 @@ fi
 
 log "running instantOS rootinstall"
 bash /usr/share/instantos/rootinstall.sh
+
+if command -v ins >/dev/null 2>&1; then
+  log "cloning and applying instantOS dotfiles for the live user"
+  if ! runuser -u instantos -- env HOME=/home/instantos \
+    ins dot repo list | grep -qw dotfiles; then
+    runuser -u instantos -- env HOME=/home/instantos \
+      ins dot repo clone https://github.com/instantOS/dotfiles --read-only
+  fi
+  runuser -u instantos -- env HOME=/home/instantos ins dot apply
+else
+  log "ins is unavailable; cannot prepare live-user dotfiles"
+  exit 1
+fi
 
 if [[ ! -f /etc/default/grub ]] || ! grep -q 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' /etc/default/grub; then
   log "setting grub theme"
