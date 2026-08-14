@@ -65,28 +65,28 @@ setdefault() {
         fi
 
         case "$DEFAULTCHOICE" in
-        *Extend)
-            iconf automon e
-            ;;
-        *only)
-            iconf automon s
-            if [ -n "$(choicetomonitor "$DEFAULTCHOICE")" ]; then
-                iconf automon "only:$DEFAULTCHOICE"
-            fi
-            ;;
-        *Duplicate)
-            iconf automon c
-            ;;
-        *None)
-            iconf automon n
-            ;;
-        *Ask)
-            iconf -d automon
-            ;;
-        *) # Back
-            instantdisper &
-            exit
-            ;;
+            *Extend)
+                iconf automon e
+                ;;
+            *only)
+                iconf automon s
+                if [ -n "$(choicetomonitor "$DEFAULTCHOICE")" ]; then
+                    iconf automon "only:$DEFAULTCHOICE"
+                fi
+                ;;
+            *Duplicate)
+                iconf automon c
+                ;;
+            *None)
+                iconf automon n
+                ;;
+            *Ask)
+                iconf -d automon
+                ;;
+            *) # Back
+                instantdisper &
+                exit
+                ;;
         esac
     done
 }
@@ -117,20 +117,20 @@ applydefault() {
 
 if [ -n "$1" ]; then
     case "$1" in
-    apply)
-        if iconf automon; then
+        apply)
+            if iconf automon; then
+                applydefault
+                exit
+            fi
+            ;;
+        setdefault)
+            setdefault
             applydefault
             exit
-        fi
-        ;;
-    setdefault)
-        setdefault
-        applydefault
-        exit
-        ;;
-    settings)
-        echo "starting instantdisper"
-        ;;
+            ;;
+        settings)
+            echo "starting instantdisper"
+            ;;
     esac
 fi
 
@@ -139,43 +139,43 @@ while [ -n "$LOOPING" ]; do
     CHOICE="$(mainmenu)"
     unset LOOPING
     case "$CHOICE" in
-    *"Default layout")
-        if ! autorandr --list | grep -q '^instantos$'; then
+        *"Default layout")
+            if ! autorandr --list | grep -q '^instantos$'; then
+                autorandr horizontal
+            else
+                autorandr instantos
+            fi
+            restartdunst &
+            ;;
+        *Extend)
+            echo "using extended layout"
             autorandr horizontal
-        else
-            autorandr instantos
-        fi
-        restartdunst &
-        ;;
-    *Extend)
-        echo "using extended layout"
-        autorandr horizontal
-        restartdunst &
-        ;;
-    *only)
-        onlymonitor "$(choicetomonitor "$CHOICE")"
-        restartdunst &
-        ;;
-    *Duplicate)
-        echo "duplicating monitors"
-        autorandr common
-        restartdunst &
-        ;;
-    *action)
-        echo "setting default action"
-        setdefault
-        applydefault
-        ;;
-    *"custom: "*)
-        autorandr "$(sed 's/^....custom: //g' <<<"$CHOICE")"
-        ;;
-    *menu | '')
-        exit
-        ;;
-    *)
-        echo "choice $CHOICE"
-        LOOPING="true"
-        ;;
+            restartdunst &
+            ;;
+        *only)
+            onlymonitor "$(choicetomonitor "$CHOICE")"
+            restartdunst &
+            ;;
+        *Duplicate)
+            echo "duplicating monitors"
+            autorandr common
+            restartdunst &
+            ;;
+        *action)
+            echo "setting default action"
+            setdefault
+            applydefault
+            ;;
+        *"custom: "*)
+            autorandr "$(sed 's/^....custom: //g' <<<"$CHOICE")"
+            ;;
+        *menu | '')
+            exit
+            ;;
+        *)
+            echo "choice $CHOICE"
+            LOOPING="true"
+            ;;
     esac
 
 done

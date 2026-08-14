@@ -93,6 +93,6 @@ if [ -n "$INSTALLPACKAGES" ]; then
     kitty -e "bash" -c "instantinstall -i"
 fi
 
-for pkg in $@; do
+for pkg in "$@"; do
     checkpackage "$pkg" || exit 1
 done

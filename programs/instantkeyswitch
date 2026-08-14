@@ -40,13 +40,17 @@ fi
 
 NEWLAYOUT="$(sed -n "${TMPINDEX}p" "$KEYCONF")"
 
-SL=(${NEWLAYOUT//:/ })
+IFS=: read -r -a SL <<<"$NEWLAYOUT"
 {
     setxkbmap -layout "${SL[0]}" -variant "${SL[1]}" || notify-send 'failed setting the layout'
 } &
 
 MSG=$'Keyboard layout: \n'
-[[ ${SL[1]} ]] && (imenu -t "${MSG} "${SL[0]}" ("${SL[1]}")") || (imenu -t "${MSG} "${SL[0]}"")
+if [[ ${SL[1]} ]]; then
+    imenu -t "${MSG}${SL[0]} (${SL[1]})"
+else
+    imenu -t "${MSG}${SL[0]}"
+fi
 
 # save index
 echo "$TMPINDEX" >"$TMPPATH"

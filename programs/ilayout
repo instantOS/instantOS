@@ -72,27 +72,27 @@ $(cat layouts)
         #:b Move down
 
         case "$LAYOUTCHOICE" in
-        *Delete)
-            echo "deleting $CHOICE"
-            sed -i "/^$CHOICE$/d" layouts
-            ;;
-        *Back)
-            echo "going back"
-            ;;
+            *Delete)
+                echo "deleting $CHOICE"
+                sed -i "/^$CHOICE$/d" layouts
+                ;;
+            *Back)
+                echo "going back"
+                ;;
         esac
     fi
 
     case "$CHOICE" in
-    *menu)
-        exit
-        ;;
-    *layout)
-        echo "adding layouts"
-        ADDEDLAYOUT="$(localectl list-x11-keymap-layouts | instantmenu -bw 4 -q 'add layout' -c -l 40)"
-        if [ -n "$ADDEDLAYOUT" ]; then
-            echo "adding layout"
-            echo "$ADDEDLAYOUT" >>layouts
-        fi
-        ;;
+        *menu)
+            exit
+            ;;
+        *layout)
+            echo "adding layouts"
+            ADDEDLAYOUT="$(localectl list-x11-keymap-layouts | instantmenu -bw 4 -q 'add layout' -c -l 40)"
+            if [ -n "$ADDEDLAYOUT" ]; then
+                echo "adding layout"
+                echo "$ADDEDLAYOUT" >>layouts
+            fi
+            ;;
     esac
 done

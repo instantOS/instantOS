@@ -2,10 +2,8 @@
 
 # albert wrapper to start it faster
 
-if ! albert show
-then
-    if [ -e ~/.config/albert/albert.conf ]
-    then
+if ! albert show; then
+    if [ -e ~/.config/albert/albert.conf ]; then
         sed -i 's/^theme=.*/theme=Arc Dark Blue/g' ~/.config/albert/albert.conf
         sed -i '/^hotkey/d' ~/.config/albert/albert.conf
     fi

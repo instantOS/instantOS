@@ -2,7 +2,7 @@
 
 # restart instantWM from cli
 
-# setup runtime dir variable 
+# setup runtime dir variable
 RTD="$(instantruntimedir)"
 RTD=${RTD:-'/tmp/instantos'}
 

@@ -8,10 +8,10 @@
 command -v xrandr &>/dev/null ||
     (echo "please install xrandr" && exit 1)
 
-cd
+cd || exit 1
 
 mkdir -p ~/instantos/monitor &>/dev/null
-cd ~/instantos/monitor
+cd ~/instantos/monitor || exit 1
 
 POSITIONS="$(xrandr | grep '[^s]connected' | grep -o '[0-9]*x[0-9]*+[0-9]*' | grep -o '[0-9]*$')"
 AMOUNT=$(wc -l <<<"$POSITIONS")
@@ -35,9 +35,9 @@ else
     iconf resolutions "$RESOLUTIONS"
 fi
 
-if [ $(echo "$RESOLUTIONS" | sort -u | wc -l) = "1" ]; then
+if [ "$(sort -u <<<"$RESOLUTIONS" | wc -l)" -eq 1 ]; then
     echo "resolutions identical"
-    iconf max $(head -1 <<<"$RESOLUTIONS")
+    iconf max "$(head -1 <<<"$RESOLUTIONS")"
 else
     # get monitor with highest resolution
     let PIXELS1="$(head -1 <<<$RESOLUTIONS | grep -o '^[0-9]*') * $(head -1 <<<$RESOLUTIONS | grep -o '[0-9]*$')"

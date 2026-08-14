@@ -3,46 +3,46 @@
 set -euo pipefail
 
 log() {
-  printf '[instantos-setup] %s\n' "$1"
+    printf '[instantos-setup] %s\n' "$1"
 }
 
 append_line() {
-  local file="$1" line="$2"
-  mkdir -p "$(dirname "$file")"
-  if [[ ! -f "$file" ]] || ! grep -Fxq "$line" "$file"; then
-    echo "$line" >>"$file"
-  fi
+    local file="$1" line="$2"
+    mkdir -p "$(dirname "$file")"
+    if [[ ! -f "$file" ]] || ! grep -Fxq "$line" "$file"; then
+        echo "$line" >>"$file"
+    fi
 }
 
 flag="/opt/instantos/.setup-done"
 if [[ -f "$flag" ]]; then
-  log "setup already completed"
-  exit 0
+    log "setup already completed"
+    exit 0
 fi
 
 touch /opt/livebuilder
 mkdir -p /opt/instantos
 
 if ! id -u instantos >/dev/null 2>&1; then
-  log "creating instantos user"
-  useradd -m -s /bin/zsh instantos
-  echo "instantos:instantos" | chpasswd
+    log "creating instantos user"
+    useradd -m -s /bin/zsh instantos
+    echo "instantos:instantos" | chpasswd
 fi
 
 ensure_group() {
-  local group="$1"
-  if ! getent group "$group" >/dev/null 2>&1; then
-    log "creating group $group"
-    groupadd "$group"
-  fi
-  if ! id -nG instantos | grep -qw "$group"; then
-    log "adding instantos to $group"
-    gpasswd -a instantos "$group" >/dev/null
-  fi
+    local group="$1"
+    if ! getent group "$group" >/dev/null 2>&1; then
+        log "creating group $group"
+        groupadd "$group"
+    fi
+    if ! id -nG instantos | grep -qw "$group"; then
+        log "adding instantos to $group"
+        gpasswd -a instantos "$group" >/dev/null
+    fi
 }
 
 for group in autologin video wheel input; do
-  ensure_group "$group"
+    ensure_group "$group"
 done
 
 mkdir -p /etc/gdm
@@ -64,43 +64,42 @@ mkdir -p /etc/systemd/system
 ln -sf /usr/lib/systemd/system/gdm.service /etc/systemd/system/display-manager.service
 mkdir -p /etc/systemd/system/multi-user.target.wants
 ln -sf /usr/lib/systemd/system/systemd-timesyncd.service \
-  /etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service
+    /etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service
 
 cleanup() {
-  rm -f /opt/livebuilder
+    rm -f /opt/livebuilder
 }
 trap cleanup EXIT
 
 if [[ ! -x /usr/share/instantos/rootinstall.sh ]]; then
-  log "rootinstall script missing"
-  exit 1
+    log "rootinstall script missing"
+    exit 1
 fi
 
 log "running instantOS rootinstall"
 bash /usr/share/instantos/rootinstall.sh
 
 if command -v ins >/dev/null 2>&1; then
-  log "cloning and applying instantOS dotfiles for the live user"
-  if ! runuser -u instantos -- env HOME=/home/instantos \
-    ins dot repo list | grep -qw dotfiles; then
-    runuser -u instantos -- env HOME=/home/instantos \
-      ins dot repo clone https://github.com/instantOS/dotfiles --read-only
-  fi
-  runuser -u instantos -- env HOME=/home/instantos ins dot apply
+    log "cloning and applying instantOS dotfiles for the live user"
+    if ! runuser -u instantos -- env HOME=/home/instantos \
+        ins dot repo list | grep -qw dotfiles; then
+        runuser -u instantos -- env HOME=/home/instantos \
+            ins dot repo clone https://github.com/instantOS/dotfiles --read-only
+    fi
+    runuser -u instantos -- env HOME=/home/instantos ins dot apply
 else
-  log "ins is unavailable; cannot prepare live-user dotfiles"
-  exit 1
+    log "ins is unavailable; cannot prepare live-user dotfiles"
+    exit 1
 fi
 
 if [[ ! -f /etc/default/grub ]] || ! grep -q 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' /etc/default/grub; then
-  log "setting grub theme"
-  echo 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' >>/etc/default/grub
+    log "setting grub theme"
+    echo 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' >>/etc/default/grub
 fi
 
-
 if ! grep -q 'tzupdate &' /root/.zshrc 2>/dev/null; then
-  log "queueing tzupdate"
-  echo 'tzupdate &' >>/root/.zshrc
+    log "queueing tzupdate"
+    echo 'tzupdate &' >>/root/.zshrc
 fi
 
 log "installing developer tools"

@@ -14,32 +14,32 @@ CHOICE="$(echo ':b Applications
 
 echo "$CHOICE"
 case "$CHOICE" in
-*Applications)
-    sleep 0.05
-    appmenu &
-    ;;
-*Settings)
-    ins settings --gui &
-    ;;
-*Info)
-    kitty -e sh -c 'fastfetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
-    ;;
-*Shutdown)
-    instantshutdown &
-    ;;
-*Terminal)
-    kitty &
-    ;;
-*Documentation)
-    xdg-open 'https://instantos.io/docs/' &
-    ;;
-*menu)
-    echo "closed menu"
-    ;;
-*)
-    echo "other choice"
-    instantmenu_smartrun "startmenu" "$CHOICE"
-    ;;
+    *Applications)
+        sleep 0.05
+        appmenu &
+        ;;
+    *Settings)
+        ins settings --gui &
+        ;;
+    *Info)
+        kitty -e sh -c 'fastfetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
+        ;;
+    *Shutdown)
+        instantshutdown &
+        ;;
+    *Terminal)
+        kitty &
+        ;;
+    *Documentation)
+        xdg-open 'https://instantos.io/docs/' &
+        ;;
+    *menu)
+        echo "closed menu"
+        ;;
+    *)
+        echo "other choice"
+        instantmenu_smartrun "startmenu" "$CHOICE"
+        ;;
 esac
 
 exit

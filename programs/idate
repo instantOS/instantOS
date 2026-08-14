@@ -29,30 +29,30 @@ fi
 [ -e ~/.cache/idate ] || mkdir -p ~/.cache/idate
 
 case "$1" in
-h)
-    # hour
-    CHECKNUMBER="$(date +%Y%m%d%H)"
-    ;;
-d)
-    # day
-    CHECKNUMBER="$(date +%Y%m%d)"
-    ;;
-w)
-    # week
-    CHECKNUMBER="$(date +%Y%m%U)"
-    ;;
-m)
-    # month
-    CHECKNUMBER="$(date +%Y%m)"
-    ;;
-y)
-    # year
-    CHECKNUMBER="$(date +%Y)"
-    ;;
-M)
-    # minute
-    CHECKNUMBER="$(date +%Y%m%d%H%M)"
-    ;;
+    h)
+        # hour
+        CHECKNUMBER="$(date +%Y%m%d%H)"
+        ;;
+    d)
+        # day
+        CHECKNUMBER="$(date +%Y%m%d)"
+        ;;
+    w)
+        # week
+        CHECKNUMBER="$(date +%Y%m%U)"
+        ;;
+    m)
+        # month
+        CHECKNUMBER="$(date +%Y%m)"
+        ;;
+    y)
+        # year
+        CHECKNUMBER="$(date +%Y)"
+        ;;
+    M)
+        # minute
+        CHECKNUMBER="$(date +%Y%m%d%H%M)"
+        ;;
 esac
 
 CACHEFILE="$HOME/.cache/idate/$2"

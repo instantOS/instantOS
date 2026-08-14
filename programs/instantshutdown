@@ -53,41 +53,41 @@ prepareshutdown() {
 }
 
 case "$answer" in
-shut*)
-    zconfirm "shutdown"
-    prepareshutdown
-    sleep 0.4
-    if command -v systemctl; then
-        shutdown now
-    else
-        # needs root on artix
-        instantsudo poweroff
-    fi
-    ;;
-reb*)
-    zconfirm "reboot"
-    prepareshutdown
-    sleep 0.4
-    reboot
-    ;;
-log*)
-    zconfirm "sign out"
-    rm "$(instantruntimedir)"/instantosrunning
-    sleep 0.4
-    kill -9 -1
-    ;;
-loc*)
-    instantutils open lockscreen
-    ;;
-sus*)
-    systemctl suspend
-    export NOILOCKPASSWORD="true"
-    instantutils open lockscreen
-    ;;
-res*)
-    pkill instantwm
-    ;;
-*)
-    echo "canceled"
-    ;;
+    shut*)
+        zconfirm "shutdown"
+        prepareshutdown
+        sleep 0.4
+        if command -v systemctl; then
+            shutdown now
+        else
+            # needs root on artix
+            instantsudo poweroff
+        fi
+        ;;
+    reb*)
+        zconfirm "reboot"
+        prepareshutdown
+        sleep 0.4
+        reboot
+        ;;
+    log*)
+        zconfirm "sign out"
+        rm "$(instantruntimedir)"/instantosrunning
+        sleep 0.4
+        kill -9 -1
+        ;;
+    loc*)
+        instantutils open lockscreen
+        ;;
+    sus*)
+        systemctl suspend
+        export NOILOCKPASSWORD="true"
+        instantutils open lockscreen
+        ;;
+    res*)
+        pkill instantwm
+        ;;
+    *)
+        echo "canceled"
+        ;;
 esac

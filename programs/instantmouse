@@ -16,120 +16,120 @@ echohelp() {
 }
 
 case "$1" in
-g*)
-    # detect connected mouse devices
-    IDS=$(xinput | grep -o 'id=[0-9]*' | grep -o '[0-9]*')
-    echo "generating mouse IDS"
-    [ -e /tmp/mouse ] && rm /tmp/mouse
-    while read -r line; do
-        if xinput list-props "$line" | grep -q 'libinput Accel Speed'; then
-            echo "$line"
-            echo "$line" >>/tmp/mouse
-        fi
-    done <<<"$IDS"
-    iconf mouse "$(cat /tmp/mouse)"
-    ;;
-s*)
-    # set sensitivity
-    while read -r line; do
-        xinput set-prop "$line" "libinput Accel Speed" "${2:--0.4}"
-    done <<<"$(iconf mouse)"
-    ;;
-m*)
-    # set sensitivity but map volume from 0 to 100
-    if [ -n "$2" ]; then
-        SENSITIVITY=$(echo "( $2 / 50 ) - 1" | bc -l)
-    else
-        SENSITIVITY="-.04"
-    fi
-
-    while read -r line; do
-        xinput set-prop "$line" "libinput Accel Speed" "$SENSITIVITY"
-    done <<<"$(iconf mouse)"
-    ;;
-z) # toggle mouse on/off
-
-    if ! iconf mousespeed &>/dev/null; then
-        iconf mousespeed -.4
-    fi
-
-    if [ -e /tmp/zeromouse ]; then
-        rm /tmp/zeromouse
+    g*)
+        # detect connected mouse devices
+        IDS=$(xinput | grep -o 'id=[0-9]*' | grep -o '[0-9]*')
+        echo "generating mouse IDS"
+        [ -e /tmp/mouse ] && rm /tmp/mouse
         while read -r line; do
-            xinput --enable "$line"
-        done <<<"$(iconf mouse)"
-    else
+            if xinput list-props "$line" | grep -q 'libinput Accel Speed'; then
+                echo "$line"
+                echo "$line" >>/tmp/mouse
+            fi
+        done <<<"$IDS"
+        iconf mouse "$(cat /tmp/mouse)"
+        ;;
+    s*)
+        # set sensitivity
         while read -r line; do
-            xinput --disable "$line"
+            xinput set-prop "$line" "libinput Accel Speed" "${2:--0.4}"
         done <<<"$(iconf mouse)"
-        touch /tmp/zeromouse
-    fi
-
-    ;;
-r*) # reverse scrolling direction
-    if [ -n "$2" ]; then
-        if [ "$2" = "0" ]; then
-            iconf -i reversemouse 1
+        ;;
+    m*)
+        # set sensitivity but map volume from 0 to 100
+        if [ -n "$2" ]; then
+            SENSITIVITY=$(echo "( $2 / 50 ) - 1" | bc -l)
         else
+            SENSITIVITY="-.04"
+        fi
+
+        while read -r line; do
+            xinput set-prop "$line" "libinput Accel Speed" "$SENSITIVITY"
+        done <<<"$(iconf mouse)"
+        ;;
+    z) # toggle mouse on/off
+
+        if ! iconf mousespeed &>/dev/null; then
+            iconf mousespeed -.4
+        fi
+
+        if [ -e /tmp/zeromouse ]; then
+            rm /tmp/zeromouse
+            while read -r line; do
+                xinput --enable "$line"
+            done <<<"$(iconf mouse)"
+        else
+            while read -r line; do
+                xinput --disable "$line"
+            done <<<"$(iconf mouse)"
+            touch /tmp/zeromouse
+        fi
+
+        ;;
+    r*) # reverse scrolling direction
+        if [ -n "$2" ]; then
+            if [ "$2" = "0" ]; then
+                iconf -i reversemouse 1
+            else
+                iconf -i reversemouse 0
+            fi
+        fi
+
+        if iconf -i reversemouse; then
             iconf -i reversemouse 0
-        fi
-    fi
-
-    if iconf -i reversemouse; then
-        iconf -i reversemouse 0
-        while read -r line; do
-            xinput set-prop "$line" "libinput Natural Scrolling Enabled" "0"
-        done <<<"$(iconf mouse)"
-        echo "reverse scrolling disabled"
-    else
-        iconf -i reversemouse 1
-        echo "reverse scrolling enabled"
-        while read -r line; do
-            xinput set-prop "$line" "libinput Natural Scrolling Enabled" "1"
-        done <<<"$(iconf mouse)"
-    fi
-    ;;
-p*)
-    if [ -z "$2" ]; then
-        if iconf -i leftprimary; then
-            export LEFTPRIMARY="true"
-        fi
-    else
-        if [ "$2" = 0 ]; then
-            iconf -i leftprimary 0
+            while read -r line; do
+                xinput set-prop "$line" "libinput Natural Scrolling Enabled" "0"
+            done <<<"$(iconf mouse)"
+            echo "reverse scrolling disabled"
         else
-            export LEFTPRIMARY="true"
-            iconf -i leftprimary 1
+            iconf -i reversemouse 1
+            echo "reverse scrolling enabled"
+            while read -r line; do
+                xinput set-prop "$line" "libinput Natural Scrolling Enabled" "1"
+            done <<<"$(iconf mouse)"
         fi
-    fi
-    if [ -z "$LEFTPRIMARY" ]; then
-        echo "setting left button as primary"
-        while read -r id; do
-            xinput set-button-map "$id" 1 2 3
-        done <<<"$(iconf mouse)"
-    else
-        iconf -i leftprimary 1
-        echo "setting right button as primary"
-        while read -r id; do
-            xinput set-button-map "$id" 3 2 1
-        done <<<"$(iconf mouse)"
-    fi
-    ;;
+        ;;
+    p*)
+        if [ -z "$2" ]; then
+            if iconf -i leftprimary; then
+                export LEFTPRIMARY="true"
+            fi
+        else
+            if [ "$2" = 0 ]; then
+                iconf -i leftprimary 0
+            else
+                export LEFTPRIMARY="true"
+                iconf -i leftprimary 1
+            fi
+        fi
+        if [ -z "$LEFTPRIMARY" ]; then
+            echo "setting left button as primary"
+            while read -r id; do
+                xinput set-button-map "$id" 1 2 3
+            done <<<"$(iconf mouse)"
+        else
+            iconf -i leftprimary 1
+            echo "setting right button as primary"
+            while read -r id; do
+                xinput set-button-map "$id" 3 2 1
+            done <<<"$(iconf mouse)"
+        fi
+        ;;
 
-l*)
-    # get current sensitivity
-    xinput list-props "$(iconf mouse | head -1)" | grep 'libinput Accel Speed' | head -1 | grep -o '[-.0-9]*$'
-    ;;
---help)
-    echohelp
-    ;;
--h)
-    echohelp
-    ;;
-h)
-    echohelp
-    ;;
-*)
-    echohelp
-    ;;
+    l*)
+        # get current sensitivity
+        xinput list-props "$(iconf mouse | head -1)" | grep 'libinput Accel Speed' | head -1 | grep -o '[-.0-9]*$'
+        ;;
+    --help)
+        echohelp
+        ;;
+    -h)
+        echohelp
+        ;;
+    h)
+        echohelp
+        ;;
+    *)
+        echohelp
+        ;;
 esac

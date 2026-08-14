@@ -60,34 +60,34 @@ cancel' | imenu -l)"
     fi
 
     case "$ADDCHOICE" in
-    enter*)
-        COMMAND="$(imenu -i 'enter command')"
-        echo "$COMMAND" >>"$SCRIPTNAME"
-        ;;
-    edit*)
-        echo "editing script"
-        echo "# instantOS quickmenu script" >>"$SCRIPTNAME"
-        launch_terminal -e nvim -c ":e $(realpath "$SCRIPTNAME")"
-        ;;
-    options)
-        echo "#!/bin/bash" >"$SCRIPTNAME"
-        ADDTEMPLATE="$(echo 'run in terminal
+        enter*)
+            COMMAND="$(imenu -i 'enter command')"
+            echo "$COMMAND" >>"$SCRIPTNAME"
+            ;;
+        edit*)
+            echo "editing script"
+            echo "# instantOS quickmenu script" >>"$SCRIPTNAME"
+            launch_terminal -e nvim -c ":e $(realpath "$SCRIPTNAME")"
+            ;;
+        options)
+            echo "#!/bin/bash" >"$SCRIPTNAME"
+            ADDTEMPLATE="$(echo 'run in terminal
 enable argument dialog' | imenu -b)"
-        if grep -q 'terminal' <<<"$ADDTEMPLATE"; then
-            echo "enabling terminal"
-            echo '#instantosterm' >>"$SCRIPTNAME"
-        fi
+            if grep -q 'terminal' <<<"$ADDTEMPLATE"; then
+                echo "enabling terminal"
+                echo '#instantosterm' >>"$SCRIPTNAME"
+            fi
 
-        if grep -q 'argument' <<<"$ADDTEMPLATE"; then
-            echo "enabling argument"
-            echo '#instantosarg' >>"$SCRIPTNAME"
-        fi
-        chooseaddmode no
-        ;;
-    cancel)
-        [ -e "$SCRIPTNAME" ] && rm "$SCRIPTNAME"
-        exit
-        ;;
+            if grep -q 'argument' <<<"$ADDTEMPLATE"; then
+                echo "enabling argument"
+                echo '#instantosarg' >>"$SCRIPTNAME"
+            fi
+            chooseaddmode no
+            ;;
+        cancel)
+            [ -e "$SCRIPTNAME" ] && rm "$SCRIPTNAME"
+            exit
+            ;;
     esac
 }
 
@@ -103,75 +103,75 @@ new category' | instantmenu -bw 4 -C -l 7 -w -1 -i)"
         exit
     fi
     case "$ADDCHOICE" in
-    remove*)
-        echo "removing entry"
-        REMOVECHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
-        if [ -d "$REMOVECHOICE" ] && [ -n "$(ls "$REMOVECHOICE/")" ]; then
-            imenu -m "category is not empty"
-            exit
-        elif ! [ -e "$REMOVECHOICE" ]; then
-            imenu -m "selection $REMOVECHOICE invalid"
-        fi
-
-        if imenu -c "remove $REMOVECHOICE"; then
-            if [ -d "$REMOVECHOICE" ]; then
-                rm -rf "$REMOVECHOICE"
-            else
-                rm "$REMOVECHOICE"
+        remove*)
+            echo "removing entry"
+            REMOVECHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
+            if [ -d "$REMOVECHOICE" ] && [ -n "$(ls "$REMOVECHOICE/")" ]; then
+                imenu -m "category is not empty"
+                exit
+            elif ! [ -e "$REMOVECHOICE" ]; then
+                imenu -m "selection $REMOVECHOICE invalid"
             fi
-        fi
 
-        ;;
-    new*)
-        CATEGORYNAME="$(imenu -i 'enter category name')"
-        [ -n "$CATEGORYNAME" ] && mkdir "$CATEGORYNAME"
-        ;;
-    add*)
-        echo "adding new entry"
-        SCRIPTNAME="$(imenu -i 'enter name')"
+            if imenu -c "remove $REMOVECHOICE"; then
+                if [ -d "$REMOVECHOICE" ]; then
+                    rm -rf "$REMOVECHOICE"
+                else
+                    rm "$REMOVECHOICE"
+                fi
+            fi
 
-        if [ -e "$SCRIPTNAME" ]; then
-            imenu -m "script $SCRIPTNAME already existing"
-            exit
-        fi
+            ;;
+        new*)
+            CATEGORYNAME="$(imenu -i 'enter category name')"
+            [ -n "$CATEGORYNAME" ] && mkdir "$CATEGORYNAME"
+            ;;
+        add*)
+            echo "adding new entry"
+            SCRIPTNAME="$(imenu -i 'enter name')"
 
-        if [ -z "$SCRIPTNAME" ]; then
-            exit
-        fi
+            if [ -e "$SCRIPTNAME" ]; then
+                imenu -m "script $SCRIPTNAME already existing"
+                exit
+            fi
 
-        touch "$SCRIPTNAME" || {
-            imenu -m "invalid script name"
-            exit
-        }
-        chooseaddmode
-        ;;
-    edit*)
-        echo "editing existing entry"
-        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
-        [ -z "$EDITCHOICE" ] && exit
-        if [ -d "$EDITCHOICE" ]; then
-            imenu -m "selection is not a script"
-            exit
-        elif ! [ -e "$EDITCHOICE" ]; then
-            imenu -m "selection $EDITCHOICE invalid"
-            exit
-        fi
-        launch_terminal -e nvim -c ":e $(realpath "$EDITCHOICE")"
-        ;;
-    rename*)
-        echo "renaming entry"
-        EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
-        [ -z "$EDITCHOICE" ] && exit
+            if [ -z "$SCRIPTNAME" ]; then
+                exit
+            fi
 
-        if ! [ -e "$EDITCHOICE" ]; then
-            imenu -m "$EDITCHOICE does not exist"
-        fi
+            touch "$SCRIPTNAME" || {
+                imenu -m "invalid script name"
+                exit
+            }
+            chooseaddmode
+            ;;
+        edit*)
+            echo "editing existing entry"
+            EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
+            [ -z "$EDITCHOICE" ] && exit
+            if [ -d "$EDITCHOICE" ]; then
+                imenu -m "selection is not a script"
+                exit
+            elif ! [ -e "$EDITCHOICE" ]; then
+                imenu -m "selection $EDITCHOICE invalid"
+                exit
+            fi
+            launch_terminal -e nvim -c ":e $(realpath "$EDITCHOICE")"
+            ;;
+        rename*)
+            echo "renaming entry"
+            EDITCHOICE="$(ls -p | instantmenu -bw 4 -C -l 7 -w -1 -i)"
+            [ -z "$EDITCHOICE" ] && exit
 
-        NEWNAME="$(imenu -i 'enter new name')"
-        [ -z "$NEWNAME" ] && exit
-        mv "$EDITCHOICE" "$NEWNAME"
+            if ! [ -e "$EDITCHOICE" ]; then
+                imenu -m "$EDITCHOICE does not exist"
+            fi
 
-        ;;
+            NEWNAME="$(imenu -i 'enter new name')"
+            [ -z "$NEWNAME" ] && exit
+            mv "$EDITCHOICE" "$NEWNAME"
+
+            ;;
     esac
 }
 
@@ -183,31 +183,31 @@ if [ -z "$QUICKCHOICE" ]; then
 fi
 
 case "$QUICKCHOICE" in
-close)
-    exit
-    ;;
-"edit menu")
-    echo "editing menu"
-    addmenu
-    ;;
-*)
-    if ! [ -e "$QUICKCHOICE" ]; then
-        echo ""
-        echo "choice $QUICKCHOICE not found"
+    close)
         exit
-    fi
+        ;;
+    "edit menu")
+        echo "editing menu"
+        addmenu
+        ;;
+    *)
+        if ! [ -e "$QUICKCHOICE" ]; then
+            echo ""
+            echo "choice $QUICKCHOICE not found"
+            exit
+        fi
 
-    if grep -q "^#instantosarg" "$QUICKCHOICE"; then
-        QUICKARGS="$(imenu -i options)"
-        [ -z "$QUICKARGS" ] && exit
-    fi
+        if grep -q "^#instantosarg" "$QUICKCHOICE"; then
+            QUICKARGS="$(imenu -i options)"
+            [ -z "$QUICKARGS" ] && exit
+        fi
 
-    if grep -q "^#instantosterm" "$QUICKCHOICE"; then
-        chmod +x "$QUICKCHOICE"
-        launch_terminal -e bash -c "$QUICKCHOICE $QUICKARGS"
-    else
-        bash "$QUICKCHOICE" "$QUICKARGS"
-    fi
+        if grep -q "^#instantosterm" "$QUICKCHOICE"; then
+            chmod +x "$QUICKCHOICE"
+            launch_terminal -e bash -c "$QUICKCHOICE $QUICKARGS"
+        else
+            bash "$QUICKCHOICE" "$QUICKARGS"
+        fi
 
-    ;;
+        ;;
 esac
