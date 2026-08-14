@@ -21,6 +21,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes shellcheck shfmt
+          shellcheck --version
+          shfmt --version
 
       - name: Find tracked shell scripts
         run: |

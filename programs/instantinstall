@@ -35,7 +35,7 @@ install_from_list() {
     exit
 }
 
-if [ "$1" == -i ]; then install_from_list; fi
+if [ "$1" == -i ]; then install_from_list /tmp/instantinstalllist; fi
 if [ -e /tmp/instantinstalllist ]; then rm /tmp/instantinstalllist; fi
 
 checkpackage() {
