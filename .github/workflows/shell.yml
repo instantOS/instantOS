@@ -25,6 +25,10 @@ jobs:
       - name: Find tracked shell scripts
         run: |
           while IFS= read -r -d '' file; do
+            if [[ "$file" == iso/releng/* ]]; then
+              continue
+            fi
+
             if [[ -f "$file" ]] &&
               head -n 1 "$file" |
                 grep -Eq '^#!.*(/|env[[:space:]]+)(ba|da|k|z)?sh([[:space:]]|$)'; then

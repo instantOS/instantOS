@@ -20,47 +20,47 @@ if [ -z "$1" ]; then
 fi
 
 case "$1" in
-root)
-    sudo /usr/share/instantutils/rootinstall.sh
-    ;;
-default)
-    /usr/share/instantutils/setup/defaultapps
-    ;;
-alttab)
-    alttab -fg "#ffffff" -bg "#121212" -frame "#89B3F7" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
-    ;;
-user)
-    /usr/share/instantutils/userinstall.sh
-    ;;
-repo)
-    /usr/share/instantutils/repo.sh
-    ;;
-open)
-    if [ -z "$2" ]; then
-        echo "usage: instantutils open defaultappname"
-        exit
-    fi
-    if ! [ -e ~/.config/instantos/default/"$2" ]; then
-        instantutils default
-        chmod +x ~/.config/instantos/default/"$2"
-    fi
-    APP="$2"
-    shift 2
-    ~/.config/instantos/default/"$APP" "$@"
-    ;;
-dotfiles)
-    imosid apply /usr/share/instantdotfiles/dotfiles
-    ;;
+    root)
+        sudo /usr/share/instantutils/rootinstall.sh
+        ;;
+    default)
+        /usr/share/instantutils/setup/defaultapps
+        ;;
+    alttab)
+        alttab -fg "#ffffff" -bg "#121212" -frame "#89B3F7" -d 0 -s 1 -t 128x150 -i 127x64 -w 1 -vp pointer &
+        ;;
+    user)
+        /usr/share/instantutils/userinstall.sh
+        ;;
+    repo)
+        /usr/share/instantutils/repo.sh
+        ;;
+    open)
+        if [ -z "$2" ]; then
+            echo "usage: instantutils open defaultappname"
+            exit
+        fi
+        if ! [ -e ~/.config/instantos/default/"$2" ]; then
+            instantutils default
+            chmod +x ~/.config/instantos/default/"$2"
+        fi
+        APP="$2"
+        shift 2
+        ~/.config/instantos/default/"$APP" "$@"
+        ;;
+    dotfiles)
+        imosid apply /usr/share/instantdotfiles/dotfiles
+        ;;
 
-conky)
-    shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
-    conky -c /usr/share/instantwidgets/tooltips.conf &
-    ;;
+    conky)
+        shuf /usr/share/instantwidgets/tooltips.txt | head -1 >~/.cache/tooltip
+        conky -c /usr/share/instantwidgets/tooltips.conf &
+        ;;
 
-hide)
-    /usr/share/instantutils/setup/hideapps
-    ;;
-*)
-    echo "$USAGE"
-    ;;
+    hide)
+        /usr/share/instantutils/setup/hideapps
+        ;;
+    *)
+        echo "$USAGE"
+        ;;
 esac

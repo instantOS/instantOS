@@ -42,7 +42,7 @@ cd || {
 
 ins autostart
 
-if command -v pamac &> /dev/null && idate m pamacupdate; then
+if command -v pamac &>/dev/null && idate m pamacupdate; then
     timeout 30 pamac update &
 fi
 
@@ -96,7 +96,6 @@ startdunst() {
 }
 
 startdunst &
-
 
 # fix resolution on virtual machine
 if ! iconf -i novmfix && grep -q 'hypervisor' /proc/cpuinfo; then

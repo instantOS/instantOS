@@ -1,8 +1,5 @@
 #!/bin/bash
 
-if iconf -r keyvariant
-then
+if iconf -r keyvariant; then
     iconf keyvariant "$(iconf -r keyvariant)"
 fi
-
-

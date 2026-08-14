@@ -36,12 +36,13 @@ while :; do
     # battery indicator on laptop
     if [ -n "$ISLAPTOP" ]; then
         TMPBAT=$(acpi | grep -iv Unknown | head -1)
+        BATTERY_PERCENTAGE="$(grep -Eo '[0-9]+%' <<<"$TMPBAT")"
         if [[ $TMPBAT =~ "Charging" ]]; then
-            BATTERY="^c$GREEN^^t$DARKTEXT^  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
+            BATTERY="^c$GREEN^^t$DARKTEXT^  B${BATTERY_PERCENTAGE}  "
         else
-            BATTERY="  B"$(egrep -o '[0-9]*%' <<<"$TMPBAT")"  "
+            BATTERY="  B${BATTERY_PERCENTAGE}  "
             # make indicator red on low battery
-            if [ $(grep '[0-9]*' <<<"$BATTERY") -lt 10 ]; then
+            if [ "${BATTERY_PERCENTAGE%%%}" -lt 10 ]; then
                 BATTERY="^c$RED^^t$DARKTEXT^  B$BATTERY  ^d^"
             fi
         fi
