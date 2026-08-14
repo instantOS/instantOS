@@ -86,23 +86,24 @@ for group in autologin video wheel input; do
     ensure_group "$group"
 done
 
-mkdir -p /etc/gdm
-cat >/etc/gdm/custom.conf <<'EOF'
-[daemon]
-AutomaticLoginEnable=True
-AutomaticLogin=instantos
-EOF
+# greetd autologins the live user straight into the instantWM Wayland session.
+# Written here rather than shipped in the overlay: the overlay is copied into
+# the airootfs before packages are installed, and the `greetd` package owns
+# /etc/greetd/config.toml — pacman would overwrite an overlay copy with the
+# stock greeter config. Post-install hooks are the only place a package-owned
+# config can be produced reliably.
+mkdir -p /etc/greetd
+cat >/etc/greetd/config.toml <<'EOF'
+[terminal]
+vt = 1
 
-# Select instantWM on the first autologin instead of relying on GDM's default.
-mkdir -p /var/lib/AccountsService/users
-cat >/var/lib/AccountsService/users/instantos <<'EOF'
-[User]
-Session=instantwm-wayland
-SystemAccount=false
+[default_session]
+user = "instantos"
+command = "/usr/bin/instantwm --backend drm"
 EOF
 
 mkdir -p /etc/systemd/system
-ln -sf /usr/lib/systemd/system/gdm.service /etc/systemd/system/display-manager.service
+ln -sf /usr/lib/systemd/system/greetd.service /etc/systemd/system/display-manager.service
 mkdir -p /etc/systemd/system/multi-user.target.wants
 ln -sf /usr/lib/systemd/system/systemd-timesyncd.service \
     /etc/systemd/system/multi-user.target.wants/systemd-timesyncd.service

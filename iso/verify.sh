@@ -82,8 +82,8 @@ assert_file home/instantos/.config/instant/dots.toml
 assert_file home/instantos/.local/share/instant/dots/dotfiles/.git/config
 assert_file usr/local/bin/ibuild
 assert_file usr/local/share/instanttools/version
-assert_contains etc/gdm/custom.conf 'AutomaticLogin=instantos'
-assert_contains var/lib/AccountsService/users/instantos 'Session=instantwm-wayland'
+assert_contains etc/greetd/config.toml 'user = "instantos"'
+assert_contains etc/greetd/config.toml 'instantwm --backend drm'
 assert_contains home/instantos/.config/instant/dots.toml \
     'https://github.com/instantOS/dotfiles'
 assert_contains home/instantos/.local/share/instant/dots/dotfiles/.git/config \

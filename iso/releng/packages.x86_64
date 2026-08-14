@@ -138,12 +138,12 @@ network-manager-applet
 networkmanager
 gvfs-mtp
 gvfs-smb
+greetd
 inetutils
 instantdepend
 instantos
 jq
 libappindicator
-gdm
 kitty
 lshw
 mako
