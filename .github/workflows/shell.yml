@@ -1,0 +1,46 @@
+name: Shell checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: ShellCheck and shfmt
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install shell tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck shfmt
+
+      - name: Find tracked shell scripts
+        run: |
+          while IFS= read -r -d '' file; do
+            if [[ -f "$file" ]] &&
+              head -n 1 "$file" |
+                grep -Eq '^#!.*(/|env[[:space:]]+)(ba|da|k|z)?sh([[:space:]]|$)'; then
+              printf '%s\0' "$file"
+            fi
+          done < <(git ls-files -z) > shell-files
+
+          count="$(tr -cd '\0' < shell-files | wc -c)"
+          echo "Found ${count} tracked shell scripts"
+          if (( count == 0 )); then
+            echo "No shell scripts found" >&2
+            exit 1
+          fi
+
+      - name: Run ShellCheck
+        run: xargs -0 --no-run-if-empty shellcheck --severity=warning -- < shell-files
+
+      - name: Check shell formatting
+        run: xargs -0 --no-run-if-empty shfmt -d -i 4 -ci -- < shell-files
