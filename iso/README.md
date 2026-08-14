@@ -29,3 +29,25 @@ terminal.
 At live-session startup, `liveautostart` refreshes the package-managed `ins`
 package before Welcome and the installer applet are launched. If the machine is
 offline or the refresh fails, the version bundled in the ISO remains available.
+
+## Build-time inputs and verification
+
+`build.sh` fetches the dotfiles, instantTOOLS, and liveutils repositories before
+starting `mkarchiso`. Their resolved commits are recorded in
+`/usr/share/instantos/build-sources.env`. The package hook configures the live
+system exclusively from those bundled sources, so it does not depend on DNS or
+network access inside the temporary airootfs chroot.
+
+The hook writes `/opt/instantos/.setup-done` only after all customizations have
+been applied and checked. Failures are recorded in
+`/opt/instantos/.setup-failed` for diagnostics. Pacman continues running its
+remaining post-transaction hooks after a hook failure, so `build.sh` does not
+trust the package transaction alone. After `mkarchiso` returns, `verify.sh`
+extracts the root squashfs from the finished ISO and verifies the marker, live-user
+dotfiles, instantTOOLS installation, login configuration, source revisions,
+and removal of the build-only package hook. A missing or incomplete instantOS
+customization therefore fails the entire ISO build.
+
+Set `DOTFILES_REF`, `INSTANTTOOLS_REF`, or `LIVEUTILS_REF` to build from a
+specific branch, tag, or commit. Their corresponding `*_BRANCH` variables
+control the branch retained in the bundled Git checkout and default to `main`.

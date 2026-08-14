@@ -131,6 +131,7 @@ zsh
 # instantOS additions
 acpi
 curl
+fzf
 git
 gparted
 network-manager-applet
@@ -140,6 +141,7 @@ gvfs-smb
 inetutils
 instantdepend
 instantos
+jq
 libappindicator
 gdm
 kitty
@@ -148,6 +150,8 @@ mako
 netctl
 os-prober
 pamixer
+ripgrep
+wget
 pipewire-jack
 python-gobject
 samba
