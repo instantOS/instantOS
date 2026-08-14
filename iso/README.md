@@ -17,6 +17,10 @@ directory and then applies `overlay/` to that temporary copy. Do not duplicate
 overlay files under `releng/airootfs/`. `update.sh` only refreshes the upstream
 releng base; it does not modify or copy the overlay.
 
+The live image version in `/etc/instantos/version` is generated at build time
+from `SOURCE_DATE_EPOCH`, or from the current time when it is unset. The same
+UTC date is used by the archiso profile for its ISO version and label.
+
 The live user is configured for GDM autologin and its default instantOS
 dotfiles repository is cloned and applied with `ins dot` by `instantos-setup`.
 The welcome app starts via XDG autostart and launches the TUI installer in a

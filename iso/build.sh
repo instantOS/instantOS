@@ -31,6 +31,11 @@ cp "$SCRIPT_DIR"/syslinux/* "$ISO_BUILD/instantlive/syslinux/"
 install -Dm755 "$REPO_ROOT/rootinstall.sh" \
     "$ISO_BUILD/instantlive/airootfs/usr/share/instantos/rootinstall.sh"
 
+# Record ISO build date as the live image version
+mkdir -p "$ISO_BUILD/instantlive/airootfs/etc/instantos"
+ISO_VERSION="$(date -u --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
+echo "$ISO_VERSION" >"$ISO_BUILD/instantlive/airootfs/etc/instantos/version"
+
 ensurerepo() {
     local url="$1"
     local reponame="${url%.git}"

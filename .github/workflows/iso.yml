@@ -1,0 +1,131 @@
+name: Build & Release ISO
+
+on:
+  push:
+    branches:
+      - 'release'
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Publish as GitHub Release'
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-iso:
+    name: Build instantOS ISO
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set build version
+        run: |
+          source_date_epoch="$(date +%s)"
+          version_date="$(date -u --date="@${source_date_epoch}" +'%Y.%m.%d')"
+          echo "SOURCE_DATE_EPOCH=${source_date_epoch}" >> "$GITHUB_ENV"
+          echo "VERSION_DATE=${version_date}" >> "$GITHUB_ENV"
+
+      - name: Free runner disk space
+        run: |
+          echo "Initial disk space:"
+          df -h
+          # Remove large pre-installed tools to guarantee ~30+ GB free space for archiso
+          sudo rm -rf \
+            /usr/share/dotnet \
+            /usr/local/lib/android \
+            /opt/ghc \
+            /opt/hostedtoolcache
+          echo "Disk space after cleanup:"
+          df -h
+
+      - name: Build ISO in Arch Linux container
+        run: |
+          docker run --privileged --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            -e SOURCE_DATE_EPOCH \
+            archlinux:base-devel \
+            bash -c "
+              set -e
+              pacman -Syu --noconfirm --needed archiso git sudo curl
+              ./iso/build.sh
+            "
+
+      - name: Fix output permissions & generate checksums
+        run: |
+          sudo chown -R "$USER:$USER" iso/build
+          cd iso/build/iso
+
+          shopt -s nullglob
+          iso_files=(./*.iso)
+          if (( ${#iso_files[@]} == 0 )); then
+            echo "No ISO was produced" >&2
+            exit 1
+          fi
+
+          for iso_file in "${iso_files[@]}"; do
+            sha256sum "$iso_file" > "${iso_file}.sha256"
+          done
+          ls -lh
+
+      - name: Upload ISO Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: instantos-iso
+          path: |
+            iso/build/iso/*.iso
+            iso/build/iso/*.sha256
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: github.ref_name == 'release' || inputs.create_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="v${VERSION_DATE}-${GITHUB_RUN_NUMBER}"
+          RELEASE_TITLE="instantOS Release ${VERSION_DATE}"
+
+          cd iso/build/iso
+
+          shopt -s nullglob
+          iso_files=(./*.iso)
+          checksum_files=(./*.sha256)
+          if (( ${#iso_files[@]} == 0 || ${#checksum_files[@]} == 0 )); then
+            echo "ISO or checksum is missing" >&2
+            exit 1
+          fi
+
+          cat <<EOF > release_notes.md
+          # instantOS Live ISO Release (${VERSION_DATE})
+
+          Automated build from commit [\`${{ github.sha }}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) on branch \`${{ github.ref_name }}\`.
+
+          ### Checksums (SHA256)
+          \`\`\`text
+          $(cat -- "${checksum_files[@]}")
+          \`\`\`
+          EOF
+
+          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
+            gh release edit "$TAG_NAME" \
+              --title "$RELEASE_TITLE" \
+              --notes-file release_notes.md
+            gh release upload "$TAG_NAME" \
+              "${iso_files[@]}" \
+              "${checksum_files[@]}" \
+              --clobber
+          else
+            gh release create "$TAG_NAME" \
+              "${iso_files[@]}" \
+              "${checksum_files[@]}" \
+              --title "$RELEASE_TITLE" \
+              --notes-file release_notes.md
+          fi
