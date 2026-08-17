@@ -7,6 +7,7 @@ CHOICE="$(echo ':b Applications
 :b Terminal
 :b Info
 :g Documentation
+:g Keybinds
 :r Shutdown
 :r Close menu' | instantmenu -i -bw 4 -w -1 -h -1 -n -l 10 -x 0 -F -a 0)"
 
@@ -17,6 +18,9 @@ case "$CHOICE" in
     *Applications)
         sleep 0.05
         appmenu &
+        ;;
+    *Keybinds)
+        ins keyhelp --gui &
         ;;
     *Settings)
         ins settings --gui &
