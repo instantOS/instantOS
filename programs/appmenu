@@ -4,7 +4,7 @@ if ! [ -e ~/.config/instantos/israspi ]; then
     # switch to instantmenu on qxl graphics
     if [ -e /opt/instantos/kvm ] && iconf -i qxl; then
         pgrep instantmenu && exit
-        instantmenu_path | instantmenu -bw 4 -l 10 -c "$@" | ${SHELL:-"/bin/bash"} &
+        instantmenu_path | instantmenu --border-width 4 -l 10 --position center "$@" | ${SHELL:-"/bin/bash"} &
     else
         # normal graphical menu
         export TERMINAL=~/.config/instantos/default/terminal

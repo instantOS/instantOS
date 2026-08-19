@@ -60,12 +60,12 @@ while :; do
 $(cat layouts)
 :gadd layout
 :rclose menu"
-    CHOICE=$(echo "$LIST" | sed 's/^$/>/g' | instantmenu -c -w -1 -l 40 -q 'search' -p 'keyboard layout manager' -bw 4)
+    CHOICE=$(echo "$LIST" | sed 's/^$/>/g' | instantmenu --position center -w -1 -l 40 --placeholder 'search' -p 'keyboard layout manager' --border-width 4)
     [ -z "$CHOICE" ] && exit
     if grep "^$CHOICE$" layouts; then
         LAYOUTCHOICE="$(echo ">>h $CHOICE
 :r Delete
-:b Back" | instantmenu -c -l 20 -h -1 -bw 4 -q "layout options: $CHOICE")"
+:b Back" | instantmenu --position center -l 20 --line-height -1 --border-width 4 --placeholder "layout options: $CHOICE")"
 
         # todo feaures
         #:b Move up
@@ -88,7 +88,7 @@ $(cat layouts)
             ;;
         *layout)
             echo "adding layouts"
-            ADDEDLAYOUT="$(localectl list-x11-keymap-layouts | instantmenu -bw 4 -q 'add layout' -c -l 40)"
+            ADDEDLAYOUT="$(localectl list-x11-keymap-layouts | instantmenu --border-width 4 --placeholder 'add layout' --position center -l 40)"
             if [ -n "$ADDEDLAYOUT" ]; then
                 echo "adding layout"
                 echo "$ADDEDLAYOUT" >>layouts

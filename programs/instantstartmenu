@@ -9,7 +9,7 @@ CHOICE="$(echo ':b Applications
 :g Documentation
 :g Keybinds
 :r Shutdown
-:r Close menu' | instantmenu -i -bw 4 -w -1 -h -1 -n -l 10 -x 0 -F -a 0)"
+:r Close menu' | instantmenu -i --border-width 4 -w -1 --line-height -1 -n -l 10 -x 0 --match-mode dmenu -a 0)"
 
 [ -z "$CHOICE" ] && exit
 

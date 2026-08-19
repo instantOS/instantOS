@@ -20,7 +20,7 @@ logout
 reboot
 lock screen
 suspend
-restart wm' | instantmenu -l 10 -w -1 -c -n -F -p 'shutdown menu' -q 'select')"
+restart wm' | instantmenu -l 10 -w -1 --position center -n --match-mode dmenu -p 'shutdown menu' --placeholder 'select')"
 fi
 
 # if there are apps open, ask for confirmation

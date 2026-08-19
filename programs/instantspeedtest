@@ -30,7 +30,7 @@ while :; do
             echo ":b $UPLOAD"
             echo ":b Copy all"
             echo "OK"
-        } | instantmenu -l 20 -c -h -1 -wm -w -1 -q 'speedtest'
+        } | instantmenu -l 20 --position center --line-height -1 --managed -w -1 --placeholder 'speedtest'
     )"
 
     [ -z "$CHOICE" ] && exit 1
