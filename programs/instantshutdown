@@ -15,20 +15,20 @@ if [ -n "$1" ]; then
     answer="$1"
 else
     # ':X <icon>label' items, same convention as instantstartmenu
-    MENUITEMS=':r cancel
-:r shutdown
-:b logout
-:b reboot
-:b lock screen
-:b suspend'
+    MENUITEMS=':r cancel
+:r shutdown
+:b logout
+:b reboot
+:b lock screen
+:b suspend'
     if [ "$XDG_SESSION_TYPE" = wayland ] || [ -n "$WAYLAND_DISPLAY" ]; then
         echo "wayland detected, not offering restart wm"
     else
         # restarting instantwm is an X11 thing
         MENUITEMS="$MENUITEMS
-:b restart wm"
+:b restart wm"
     fi
-    answer="$(echo "$MENUITEMS" | instantmenu -l 10 -w -1 --position center -n --match-mode dmenu -p 'shutdown menu' --placeholder 'select' --border-width 4)"
+    answer="$(echo "$MENUITEMS" | instantmenu -l 10 -w auto --position center -n --match-mode dmenu -p 'shutdown menu' --placeholder 'select' --border-width 4)"
 fi
 
 # strip the ':X ' prefix and the icon glyph from the selection
