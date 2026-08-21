@@ -15,12 +15,12 @@ if [ -n "$1" ]; then
     answer="$1"
 else
     # ':X <icon>label' items, same convention as instantstartmenu
-    MENUITEMS=':r cancel
-:r shutdown
-:b logout
-:b reboot
-:b lock screen
-:b suspend'
+    MENUITEMS=':r 󰌍 cancel
+:r 󰐥 shutdown
+:b 󰗽 logout
+:b  reboot
+:b  lock screen
+:b 󰒲 suspend'
     if [ "$XDG_SESSION_TYPE" = wayland ] || [ -n "$WAYLAND_DISPLAY" ]; then
         echo "wayland detected, not offering restart wm"
     else
