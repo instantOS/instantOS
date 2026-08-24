@@ -1,0 +1,104 @@
+# instantOS justfile
+# Run `just` or `just --list` to view available tasks.
+
+set shell := ["bash", "-eo", "pipefail", "-c"]
+
+# Default recipe: list available recipes
+default:
+    @just --list
+
+# Build the live ISO (auto-detects: native on Arch, Docker elsewhere)
+build-iso *FLAGS="":
+    #!/usr/bin/env bash
+    set -eo pipefail
+    if [[ -f /etc/arch-release ]] || command -v pacman >/dev/null 2>&1; then
+      echo "Arch Linux environment detected. Building ISO natively..."
+      just build-iso-native {{FLAGS}}
+    else
+      echo "Non-Arch environment detected. Building ISO in Arch Linux Docker container..."
+      just build-iso-docker {{FLAGS}}
+    fi
+
+# Build the live ISO inside an Arch Linux Docker container
+build-iso-docker *FLAGS="":
+    docker run --privileged --rm \
+      -v "{{justfile_directory()}}:/workspace" \
+      -w /workspace \
+      -e SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date +%s)}" \
+      archlinux:base-devel \
+      bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl; ./iso/build.sh {{FLAGS}}"
+    sudo chown -R $USER:$USER "{{justfile_directory()}}/iso/build"
+
+# Build the live ISO natively (requires an Arch Linux host with pacman)
+build-iso-native *FLAGS="":
+    "{{justfile_directory()}}/iso/build.sh" {{FLAGS}}
+
+# Generate SHA256 checksums for all ISO files in iso/build/iso
+checksums:
+    #!/usr/bin/env bash
+    set -eo pipefail
+    cd "{{justfile_directory()}}/iso/build/iso"
+    shopt -s nullglob
+    iso_files=(./*.iso)
+    if (( ${#iso_files[@]} == 0 )); then
+      echo "No ISO files found in iso/build/iso" >&2
+      exit 1
+    fi
+    for iso_file in "${iso_files[@]}"; do
+      sha256sum "$iso_file" > "${iso_file}.sha256"
+    done
+    ls -lh
+
+# Start the QEMU test VM via docker compose (Web UI at http://localhost:8006)
+vm-up:
+    docker compose up -d
+
+# Stop the QEMU test VM
+vm-down:
+    docker compose down
+
+# Follow logs from the QEMU test VM
+vm-logs:
+    docker compose logs -f
+
+# Check tracked shell scripts with shellcheck and shfmt
+lint:
+    #!/usr/bin/env bash
+    set -eo pipefail
+    cd "{{justfile_directory()}}"
+    while IFS= read -r -d '' file; do
+      if [[ "$file" == iso/releng/* ]]; then
+        continue
+      fi
+      if [[ -f "$file" ]] && head -n 1 "$file" | grep -Eq '^#!.*(/|env[[:space:]]+)(ba|da|k|z)?sh([[:space:]]|$)'; then
+        printf '%s\0' "$file"
+      fi
+    done < <(git ls-files -z) > /tmp/instantos-shell-files
+    
+    count="$(tr -cd '\0' < /tmp/instantos-shell-files | wc -c)"
+    echo "Found ${count} tracked shell scripts"
+    if (( count > 0 )); then
+      xargs -0 --no-run-if-empty shellcheck --severity=warning -- < /tmp/instantos-shell-files
+      xargs -0 --no-run-if-empty shfmt -d -i 4 -ci -- < /tmp/instantos-shell-files
+      echo "All shell checks passed!"
+    fi
+    rm -f /tmp/instantos-shell-files
+
+# Format tracked shell scripts with shfmt
+fmt:
+    #!/usr/bin/env bash
+    set -eo pipefail
+    cd "{{justfile_directory()}}"
+    while IFS= read -r -d '' file; do
+      if [[ "$file" == iso/releng/* ]]; then
+        continue
+      fi
+      if [[ -f "$file" ]] && head -n 1 "$file" | grep -Eq '^#!.*(/|env[[:space:]]+)(ba|da|k|z)?sh([[:space:]]|$)'; then
+        printf '%s\0' "$file"
+      fi
+    done < <(git ls-files -z) | xargs -0 --no-run-if-empty shfmt -w -i 4 -ci --
+    echo "Formatted shell scripts."
+
+# Remove ISO build directory and temporary build artifacts
+clean:
+    sudo rm -rf iso/build/
