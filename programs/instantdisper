@@ -27,7 +27,14 @@ mainmenu() {
 $(monitorchoices)
 :b Default layout
 :g Set default action
-:r Close menu" | instantmenu -l 20 --line-height auto --position center -w auto --border-width 4 --placeholder search -i
+:r Close menu" | instantmenu \
+        --lines 20 \
+        --line-height auto \
+        --position center \
+        --width auto \
+        --border-width 4 \
+        --placeholder search \
+        --insensitive
 }
 
 defaultmenu() {
@@ -35,7 +42,14 @@ defaultmenu() {
 $(monitorchoices)
 :b Ask
 :r None
-:b Back" | instantmenu -l 20 --line-height auto --position center -w auto --border-width 4 --placeholder search -i
+:b Back" | instantmenu \
+        --lines 20 \
+        --line-height auto \
+        --position center \
+        --width auto \
+        --border-width 4 \
+        --placeholder search \
+        --insensitive
 }
 
 restartdunst() {

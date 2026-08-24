@@ -2,19 +2,42 @@
 
 # basic menu activated from the top left
 
-CHOICE="$(echo ':b Applications
-:b Settings
-:b Terminal
-:b Info
-:g Documentation
-:g Keybinds
-:r Shutdown
-:r Close menu' | instantmenu -i --border-width 4 -w auto --line-height auto -n -l 10 --position top-left --match-mode dmenu -a 0)"
+MENUENTRIES=":b Applications
+:b Settings
+:b Terminal
+:b Info
+:g Documentation
+:g Keybinds
+:r Shutdown"
+
+# installing is only offered when running from the live iso
+# (same detection as ins itself: /run/archiso/cowspace)
+if [ -e /run/archiso/cowspace ]; then
+    MENUENTRIES=":g Install instantOS
+$MENUENTRIES"
+fi
+
+CHOICE="$(echo "$MENUENTRIES
+:r Close menu" | instantmenu \
+        --insensitive \
+        --border-width 4 \
+        --width auto \
+        --line-height auto \
+        --auto-confirm \
+        --lines 10 \
+        --position top-left \
+        --match-mode dmenu \
+        --animation-length 0)"
 
 [ -z "$CHOICE" ] && exit
 
 echo "$CHOICE"
 case "$CHOICE" in
+    *Install*)
+        echo "launching installer"
+        # run in a terminal like the welcome app does
+        kitty -e ins arch install &
+        ;;
     *Applications)
         sleep 0.05
         appmenu &

@@ -28,7 +28,15 @@ else
         MENUITEMS="$MENUITEMS
 :b  restart wm"
     fi
-    answer="$(echo "$MENUITEMS" | instantmenu -l 10 -w auto --position center -n --match-mode dmenu -p 'shutdown menu' --placeholder 'select' --border-width 4)"
+    answer="$(echo "$MENUITEMS" | instantmenu \
+        --lines 10 \
+        --width auto \
+        --position center \
+        --auto-confirm \
+        --match-mode dmenu \
+        --prompt 'shutdown menu' \
+        --placeholder 'select' \
+        --border-width 4)"
 fi
 
 # strip the ':X ' prefix and the icon glyph from the selection

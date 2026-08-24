@@ -24,10 +24,20 @@ pickscript() {
     while [ -z "$CHOICE" ]; do
         if [ -z "$(ls)" ]; then
             CHOICE="$(echo 'edit menu
-close' | instantmenu --border-width 4 --follow-cursor -l 15 -w auto -i)"
+close' | instantmenu \
+                --border-width 4 \
+                --follow-cursor \
+                --lines 15 \
+                --width auto \
+                --insensitive)"
 
         else
-            CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu --border-width 4 --follow-cursor -l 15 -w auto -i)"
+            CHOICE="$(ls -p | sed -e '$aedit menu\nclose' | instantmenu \
+                --border-width 4 \
+                --follow-cursor \
+                --lines 15 \
+                --width auto \
+                --insensitive)"
         fi
         if [ -e "$CHOICE" ]; then
             if [ -d "$CHOICE" ]; then
@@ -97,7 +107,12 @@ addmenu() {
 edit entry
 remove entry
 rename entry
-new category' | instantmenu --border-width 4 --follow-cursor -l 7 -w auto -i)"
+new category' | instantmenu \
+                --border-width 4 \
+                --follow-cursor \
+                --lines 7 \
+                --width auto \
+                --insensitive)"
     if [ -z "$ADDCHOICE" ]; then
         echo "no addchoice"
         exit
@@ -105,7 +120,12 @@ new category' | instantmenu --border-width 4 --follow-cursor -l 7 -w auto -i)"
     case "$ADDCHOICE" in
         remove*)
             echo "removing entry"
-            REMOVECHOICE="$(ls -p | instantmenu --border-width 4 --follow-cursor -l 7 -w auto -i)"
+            REMOVECHOICE="$(ls -p | instantmenu \
+                --border-width 4 \
+                --follow-cursor \
+                --lines 7 \
+                --width auto \
+                --insensitive)"
             if [ -d "$REMOVECHOICE" ] && [ -n "$(ls "$REMOVECHOICE/")" ]; then
                 imenu -m "category is not empty"
                 exit
@@ -147,7 +167,12 @@ new category' | instantmenu --border-width 4 --follow-cursor -l 7 -w auto -i)"
             ;;
         edit*)
             echo "editing existing entry"
-            EDITCHOICE="$(ls -p | instantmenu --border-width 4 --follow-cursor -l 7 -w auto -i)"
+            EDITCHOICE="$(ls -p | instantmenu \
+                --border-width 4 \
+                --follow-cursor \
+                --lines 7 \
+                --width auto \
+                --insensitive)"
             [ -z "$EDITCHOICE" ] && exit
             if [ -d "$EDITCHOICE" ]; then
                 imenu -m "selection is not a script"
@@ -160,7 +185,12 @@ new category' | instantmenu --border-width 4 --follow-cursor -l 7 -w auto -i)"
             ;;
         rename*)
             echo "renaming entry"
-            EDITCHOICE="$(ls -p | instantmenu --border-width 4 --follow-cursor -l 7 -w auto -i)"
+            EDITCHOICE="$(ls -p | instantmenu \
+                --border-width 4 \
+                --follow-cursor \
+                --lines 7 \
+                --width auto \
+                --insensitive)"
             [ -z "$EDITCHOICE" ] && exit
 
             if ! [ -e "$EDITCHOICE" ]; then
