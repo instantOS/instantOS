@@ -11,15 +11,16 @@ services:
       # Give the software-emulated VM more resources to compensate for TCG.
       RAM_SIZE: "8G"
       CPU_CORES: "4"
-      # Cap the VM's virtual display to 1080p. The ISO's GRUB uses gfxmode=auto,
-      # so it will pick 1080p (the max the VM advertises) without forcing a fixed
-      # resolution onto real hardware.
-      #
-      # We disable the container's default "-vga virtio" (VGA=none) and instead
-      # add our own virtio GPU with an explicit 1920x1080 resolution via
-      # ARGUMENTS. This keeps the ISO itself unchanged.
+      # Cap the VM's virtual display to 720p. We use the stdvga VGA device
+      # (not virtio-vga) because only VGA/std-vga exposes xmax/ymax, which cap
+      # the EDID mode list itself: without them the compositor re-reads the
+      # mode list on startup and jumps to the largest advertised mode (4K),
+      # as virtio-vga did. With xmax/ymax, modes above 1280x720 aren't
+      # advertised at all, so GRUB, DRM, Xorg, and the compositor all stay at
+      # 720p. xres/yres just mark 720p as the preferred mode. This is a VM-only
+      # change; the ISO is untouched and real hardware is unaffected.
       VGA: "none"
-      ARGUMENTS: "-device virtio-vga,xres=1280,yres=720"
+      ARGUMENTS: "-device VGA,xres=1280,yres=720,xmax=1280,ymax=720"
     cap_add:
       - NET_ADMIN        # Required for network bridging
     devices:
