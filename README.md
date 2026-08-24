@@ -9,7 +9,7 @@
 <a href="https://www.codacy.com/gh/instantOS/instantOS/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=instantOS/instantOS&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/645adc9562204dbda6052d6cb0f5d64f" alt="Codacy Badge"></a>
 <a href="https://dsc.gg/instantos"> <img src="https://img.shields.io/discord/683782260071071764" alt="Discord"> </a>
 <a href="https://colab.research.google.com/github/instantOS/instantOS/blob/main/colab/instantos.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
-<img src="https://img.shields.io/maintenance/yes/2025" alt="Maintenance">
+<img src="https://img.shields.io/maintenance/yes/2026" alt="Maintenance">
 </p>
 <hr>
 
