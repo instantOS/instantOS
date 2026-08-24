@@ -10,15 +10,16 @@ BUILD_DIR="$REPO_ROOT/vm-data/arch-builder"
 mkdir -p "$BUILD_DIR"
 cd "$BUILD_DIR"
 
-ARCH_IMAGE_URL="https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-genericcloud.qcow2"
+ARCH_IMAGE_URL="https://geo.mirror.pkgbuild.com/images/latest/Arch-Linux-x86_64-cloudimg.qcow2"
 BASE_IMAGE="arch-cloud-base.qcow2"
 BUILD_DISK="arch-build-disk.qcow2"
 CIDATA_ISO="cidata.iso"
 
-# 1. Download Arch Linux generic cloud image if not cached
-if [[ ! -f "$BASE_IMAGE" ]]; then
-    echo "==> Downloading official Arch Linux cloud image (~600MB)..."
-    curl -L -o "$BASE_IMAGE" "$ARCH_IMAGE_URL"
+# 1. Download Arch Linux cloud image if not cached or invalid
+if [[ ! -f "$BASE_IMAGE" ]] || ! qemu-img info "$BASE_IMAGE" >/dev/null 2>&1; then
+    echo "==> Downloading official Arch Linux cloud image (~550MB)..."
+    rm -f "$BASE_IMAGE"
+    curl -fL --retry 3 -o "$BASE_IMAGE" "$ARCH_IMAGE_URL"
 fi
 
 # 2. Create a fast copy-on-write snapshot disk for this build
@@ -27,12 +28,12 @@ rm -f "$BUILD_DISK"
 qemu-img create -f qcow2 -b "$BASE_IMAGE" -F qcow2 "$BUILD_DISK" 25G >/dev/null
 
 # 3. Create Cloud-Init configuration
-cat <<'EOF' > meta-data
+cat <<'EOF' >meta-data
 instance-id: arch-iso-builder
 local-hostname: arch-builder
 EOF
 
-cat <<'EOF' > user-data
+cat <<'EOF' >user-data
 #cloud-config
 write_files:
   - path: /root/build.sh
