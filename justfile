@@ -117,17 +117,19 @@ lint:
     fi
     rm -f /tmp/instantos-shell-files
 
-    # Check Jupyter notebooks (JSON syntax + Ruff linter)
+    # Check Jupyter notebooks (JSON syntax + official nbformat schema + Ruff linter)
     mapfile -t notebooks < <(git ls-files "*.ipynb")
     if (( ${#notebooks[@]} > 0 )); then
-      echo "Validating Jupyter notebooks (${#notebooks[@]} found)..."
-      for nb in "${notebooks[@]}"; do
-        python3 -m json.tool "$nb" > /dev/null
-      done
       if command -v uvx >/dev/null 2>&1; then
+        uvx --from nbformat python -c "import sys, nbformat; [nbformat.validate(nbformat.read(p, as_version=4)) for p in sys.argv[1:]]; print('Official Jupyter nbformat schema: PASSED')" "${notebooks[@]}"
         uvx ruff check "${notebooks[@]}"
-      elif command -v ruff >/dev/null 2>&1; then
-        ruff check "${notebooks[@]}"
+      else
+        for nb in "${notebooks[@]}"; do
+          python3 -m json.tool "$nb" > /dev/null
+        done
+        if command -v ruff >/dev/null 2>&1; then
+          ruff check "${notebooks[@]}"
+        fi
       fi
       echo "All notebook checks passed!"
     fi
