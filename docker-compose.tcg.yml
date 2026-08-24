@@ -3,13 +3,14 @@ services:
     image: qemux/qemu
     container_name: arch-installer-vm
     environment:
-      # High-performance hardware virtualization (KVM)
-      KVM: "Y"
-      RAM_SIZE: "4G"
+      # Software emulation (TCG) for hosts without /dev/kvm
+      KVM: "N"
+      RAM_SIZE: "8G"
       CPU_CORES: "4"
-      VGA: "virtio-gpu"
+      # Cap display to 720p with stdvga to reduce software rendering overhead
+      VGA: "none"
+      ARGUMENTS: "-device VGA,xres=1280,yres=720,xmax=1280,ymax=720"
     devices:
-      - /dev/kvm         # Enables KVM hardware acceleration
       - /dev/net/tun     # Required for network bridging
     cap_add:
       - NET_ADMIN        # Required for network bridging

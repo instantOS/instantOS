@@ -49,17 +49,35 @@ checksums:
     done
     ls -lh
 
-# Start the QEMU test VM via docker compose (Web UI at http://localhost:8006)
+# Start the QEMU test VM (auto-detects KVM acceleration vs software TCG mode)
 vm-up:
-    docker compose up -d
+    #!/usr/bin/env bash
+    set -eo pipefail
+    if [[ -e /dev/kvm && -r /dev/kvm && -w /dev/kvm ]]; then
+      echo "KVM acceleration detected (/dev/kvm). Starting high-performance VM..."
+      just vm-up-kvm
+    else
+      echo "No KVM device found. Starting software-emulated VM (720p TCG mode)..."
+      just vm-up-tcg
+    fi
 
-# Stop the QEMU test VM
+# Start the high-performance KVM-accelerated test VM
+vm-up-kvm:
+    docker compose -f "{{justfile_directory()}}/docker-compose.yml" up -d
+
+# Start the software-emulated (no-KVM) test VM
+vm-up-tcg:
+    docker compose -f "{{justfile_directory()}}/docker-compose.tcg.yml" up -d
+
+# Stop any running test VM
 vm-down:
-    docker compose down
+    @docker compose -f "{{justfile_directory()}}/docker-compose.yml" down 2>/dev/null || true
+    @docker compose -f "{{justfile_directory()}}/docker-compose.tcg.yml" down 2>/dev/null || true
 
-# Follow logs from the QEMU test VM
+# Follow logs from the running test VM
 vm-logs:
-    docker compose logs -f
+    @docker compose -f "{{justfile_directory()}}/docker-compose.yml" logs -f 2>/dev/null || \
+     docker compose -f "{{justfile_directory()}}/docker-compose.tcg.yml" logs -f
 
 # Check tracked shell scripts with shellcheck and shfmt
 lint:
