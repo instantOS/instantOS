@@ -1,0 +1,25 @@
+services:
+  arch-installer-vm:
+    image: qemux/qemu
+    container_name: arch-installer-vm
+    environment:
+      # Software emulation (TCG) for hosts without /dev/kvm
+      KVM: "N"
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+      # Cap display to 720p with stdvga to reduce software rendering overhead
+      VGA: "none"
+      ARGUMENTS: "-device VGA,xres=1280,yres=720,xmax=1280,ymax=720"
+    devices:
+      - /dev/net/tun     # Required for network bridging
+    cap_add:
+      - NET_ADMIN        # Required for network bridging
+    ports:
+      - 8006:8006        # Exposes the Web UI
+    volumes:
+      # Map the built instantOS installer ISO to /boot.iso
+      - ./instantos.iso:/boot.iso
+      # Persistent storage for the virtual hard drive
+      - ./vm-data:/storage
+    restart: on-failure
+    stop_grace_period: 2m

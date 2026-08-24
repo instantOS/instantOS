@@ -1,0 +1,35 @@
+{
+  "name": "instantOS Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "enableNonRootDocker": "true"
+    }
+  },
+  "runArgs": [
+    "--privileged",
+    "--device=/dev/kvm",
+    "--device=/dev/net/tun"
+  ],
+  "forwardPorts": [
+    8006
+  ],
+  "portsAttributes": {
+    "8006": {
+      "label": "QEMU Web UI",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y qemu-system qemu-utils libvirt-daemon-system libvirt-clients bridge-utils ovmf make git curl just shellcheck shfmt && sudo usermod -aG kvm,libvirt vscode",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-docker",
+        "skellock.just",
+        "timonwong.shellcheck"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

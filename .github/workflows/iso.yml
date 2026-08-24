@@ -44,35 +44,14 @@ jobs:
           echo "Disk space after cleanup:"
           df -h
 
-      - name: Build ISO in Arch Linux container
-        run: |
-          docker run --privileged --rm \
-            -v "${{ github.workspace }}:/workspace" \
-            -w /workspace \
-            -e SOURCE_DATE_EPOCH \
-            archlinux:base-devel \
-            bash -c "
-              set -e
-              pacman -Syu --noconfirm --needed archiso git sudo curl
-              ./iso/build.sh
-            "
+      - name: Set up Just
+        uses: extractions/setup-just@v2
 
-      - name: Fix output permissions & generate checksums
-        run: |
-          sudo chown -R "$USER:$USER" iso/build
-          cd iso/build/iso
+      - name: Build ISO
+        run: just build-iso
 
-          shopt -s nullglob
-          iso_files=(./*.iso)
-          if (( ${#iso_files[@]} == 0 )); then
-            echo "No ISO was produced" >&2
-            exit 1
-          fi
-
-          for iso_file in "${iso_files[@]}"; do
-            sha256sum "$iso_file" > "${iso_file}.sha256"
-          done
-          ls -lh
+      - name: Generate checksums
+        run: just checksums
 
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4

@@ -1,0 +1,24 @@
+services:
+  arch-installer-vm:
+    image: qemux/qemu
+    container_name: arch-installer-vm
+    environment:
+      # High-performance hardware virtualization (KVM)
+      KVM: "Y"
+      RAM_SIZE: "4G"
+      CPU_CORES: "4"
+      VGA: "virtio-gpu"
+    devices:
+      - /dev/kvm         # Enables KVM hardware acceleration
+      - /dev/net/tun     # Required for network bridging
+    cap_add:
+      - NET_ADMIN        # Required for network bridging
+    ports:
+      - 8006:8006        # Exposes the Web UI
+    volumes:
+      # Map the built instantOS installer ISO to /boot.iso
+      - ./instantos.iso:/boot.iso
+      # Persistent storage for the virtual hard drive
+      - ./vm-data:/storage
+    restart: on-failure
+    stop_grace_period: 2m

@@ -3,3 +3,6 @@ tags
 .vscode
 node_modules
 iso/build
+/instantos.iso
+/*.iso
+/vm-data

@@ -24,29 +24,8 @@ jobs:
           shellcheck --version
           shfmt --version
 
-      - name: Find tracked shell scripts
-        run: |
-          while IFS= read -r -d '' file; do
-            if [[ "$file" == iso/releng/* ]]; then
-              continue
-            fi
+      - name: Set up Just
+        uses: extractions/setup-just@v2
 
-            if [[ -f "$file" ]] &&
-              head -n 1 "$file" |
-                grep -Eq '^#!.*(/|env[[:space:]]+)(ba|da|k|z)?sh([[:space:]]|$)'; then
-              printf '%s\0' "$file"
-            fi
-          done < <(git ls-files -z) > shell-files
-
-          count="$(tr -cd '\0' < shell-files | wc -c)"
-          echo "Found ${count} tracked shell scripts"
-          if (( count == 0 )); then
-            echo "No shell scripts found" >&2
-            exit 1
-          fi
-
-      - name: Run ShellCheck
-        run: xargs -0 --no-run-if-empty shellcheck --severity=warning -- < shell-files
-
-      - name: Check shell formatting
-        run: xargs -0 --no-run-if-empty shfmt -d -i 4 -ci -- < shell-files
+      - name: Run Shell checks
+        run: just lint
