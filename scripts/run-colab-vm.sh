@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Start instantOS QEMU VM and noVNC web server natively (for Colab / bare-metal)
-set -eo pipefail
+if [[ ! -d "/content" ]]; then
+    echo "Error: This script is intended only for Google Colab environments." >&2
+    echo "On local machines or Codespaces, use 'just vm-up'." >&2
+    exit 1
+fi
 
 ISO_PATH="${1:-instantos.iso}"
 DISK_PATH="vm-data/storage.qcow2"

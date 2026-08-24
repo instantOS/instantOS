@@ -24,9 +24,9 @@ instantOS is an Arch based distro that works out of the box but is still aimed a
 
 This repo contains utilities used all around instantOS, but for a proper README refer to the [website](https://instantos.github.io)
 
-## Try instantOS in Google Colab
+## Try instantOS in Google Colab *(Experimental)*
 
-You can build the live ISO and run the instantOS test virtual machine directly inside your browser without installing anything locally:
+You can test the live ISO inside a browser-based virtual machine using Google Colab *(note: running an OS VM in Colab is highly experimental and may be slow or unstable)*:
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/instantOS/instantOS/blob/main/colab/instantos.ipynb)
 

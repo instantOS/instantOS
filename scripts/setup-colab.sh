@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Setup script for running instantOS VM natively inside Google Colab (without Docker)
-set -eo pipefail
+if [[ ! -d "/content" ]]; then
+    echo "Error: This script is intended only for Google Colab environments." >&2
+    echo "On local machines or Codespaces, use 'just build-iso' or 'just vm-up'." >&2
+    exit 1
+fi
 
 echo "==> Setting up native QEMU & noVNC in Google Colab..."
 
