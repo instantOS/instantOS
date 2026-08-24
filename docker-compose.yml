@@ -1,0 +1,35 @@
+services:
+  arch-installer-vm:
+    image: qemux/qemu
+    container_name: arch-installer-vm
+    environment:
+      # This host has no hardware virtualization (no /dev/kvm exists and the CPU
+      # exposes neither VMX nor SVM). Force QEMU's software (TCG) emulation so
+      # the container starts instead of aborting on the missing-kvm check.
+      # Note: TCG runs roughly ~10x slower than KVM.
+      KVM: "N"
+      # Give the software-emulated VM more resources to compensate for TCG.
+      RAM_SIZE: "8G"
+      CPU_CORES: "4"
+      # Cap the VM's virtual display to 1080p. The ISO's GRUB uses gfxmode=auto,
+      # so it will pick 1080p (the max the VM advertises) without forcing a fixed
+      # resolution onto real hardware.
+      #
+      # We disable the container's default "-vga virtio" (VGA=none) and instead
+      # add our own virtio GPU with an explicit 1920x1080 resolution via
+      # ARGUMENTS. This keeps the ISO itself unchanged.
+      VGA: "none"
+      ARGUMENTS: "-device virtio-vga,xres=1280,yres=720"
+    cap_add:
+      - NET_ADMIN        # Required for network bridging
+    devices:
+      - /dev/net/tun     # Required for network bridging
+    ports:
+      - 8006:8006        # Exposes the Web UI
+    volumes:
+      # Map the built instantOS installer ISO to /boot.iso
+      - ./instantos.iso:/boot.iso
+      # Persistent storage for the virtual hard drive
+      - ./vm-data:/storage 
+    restart: on-failure
+    stop_grace_period: 2m
