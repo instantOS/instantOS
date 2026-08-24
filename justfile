@@ -7,16 +7,19 @@ set shell := ["bash", "-eo", "pipefail", "-c"]
 default:
     @just --list
 
-# Build the live ISO (auto-detects: native on Arch, Docker elsewhere)
+# Build the live ISO (auto-detects: native on Arch, Docker on Linux, QEMU VM in Colab)
 build-iso *FLAGS="":
     #!/usr/bin/env bash
     set -eo pipefail
     if [[ -f /etc/arch-release ]] || command -v pacman >/dev/null 2>&1; then
       echo "Arch Linux environment detected. Building ISO natively..."
       just build-iso-native {{FLAGS}}
-    else
-      echo "Non-Arch environment detected. Building ISO in Arch Linux Docker container..."
+    elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+      echo "Docker environment detected. Building ISO in Arch Linux Docker container..."
       just build-iso-docker {{FLAGS}}
+    else
+      echo "No Docker daemon found. Building ISO inside headless Arch Linux QEMU VM..."
+      just build-iso-qemu
     fi
 
 # Build the live ISO inside an Arch Linux Docker container
@@ -28,6 +31,10 @@ build-iso-docker *FLAGS="":
       archlinux:base-devel \
       bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl; ./iso/build.sh {{FLAGS}}"
     sudo chown -R $USER:$USER "{{justfile_directory()}}/iso/build"
+
+# Build the live ISO inside a headless Arch Linux QEMU VM (for Google Colab)
+build-iso-qemu:
+    "{{justfile_directory()}}/scripts/build-iso-qemu.sh"
 
 # Build the live ISO natively (requires an Arch Linux host with pacman)
 build-iso-native *FLAGS="":

@@ -6,7 +6,7 @@ echo "==> Setting up native QEMU & noVNC in Google Colab..."
 
 # 1. Install QEMU, noVNC, websockify, and build tools directly via apt
 sudo apt-get update -qq
-sudo apt-get install -y -qq qemu-system-x86 qemu-utils novnc websockify
+sudo apt-get install -y -qq qemu-system-x86 qemu-utils novnc websockify genisoimage
 
 # 2. Install 'just' task runner if missing
 if ! command -v just >/dev/null 2>&1; then
