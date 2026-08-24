@@ -8,6 +8,7 @@
 <a href="https://www.gnu.org/licenses/gpl-2.0" alt="License: GPLv2"><img src="https://img.shields.io/badge/License-GPL%20v2-blue.svg"></a>
 <a href="https://www.codacy.com/gh/instantOS/instantOS/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=instantOS/instantOS&amp;utm_campaign=Badge_Grade"><img src="https://app.codacy.com/project/badge/Grade/645adc9562204dbda6052d6cb0f5d64f" alt="Codacy Badge"></a>
 <a href="https://dsc.gg/instantos"> <img src="https://img.shields.io/discord/683782260071071764" alt="Discord"> </a>
+<a href="https://colab.research.google.com/github/instantOS/instantOS/blob/main/colab/instantos.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a>
 <img src="https://img.shields.io/maintenance/yes/2025" alt="Maintenance">
 </p>
 <hr>
@@ -22,6 +23,12 @@ instantOS is an Arch based distro that works out of the box but is still aimed a
 ## [website](https://instantos.github.io)
 
 This repo contains utilities used all around instantOS, but for a proper README refer to the [website](https://instantos.github.io)
+
+## Try instantOS in Google Colab
+
+You can build the live ISO and run the instantOS test virtual machine directly inside your browser without installing anything locally:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/instantOS/instantOS/blob/main/colab/instantos.ipynb)
 
 ## Repo info
 
