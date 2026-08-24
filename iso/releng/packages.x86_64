@@ -53,7 +53,16 @@ libfido2
 libusb-compat
 linux
 linux-atm
-linux-firmware
+linux-firmware-amdgpu
+linux-firmware-atheros
+linux-firmware-broadcom
+linux-firmware-cirrus
+linux-firmware-intel
+linux-firmware-mediatek
+linux-firmware-other
+linux-firmware-radeon
+linux-firmware-realtek
+linux-firmware-whence
 linux-firmware-marvell
 livecd-sounds
 lsscsi
