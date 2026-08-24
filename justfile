@@ -117,6 +117,21 @@ lint:
     fi
     rm -f /tmp/instantos-shell-files
 
+    # Check Jupyter notebooks (JSON syntax + Ruff linter)
+    mapfile -t notebooks < <(git ls-files "*.ipynb")
+    if (( ${#notebooks[@]} > 0 )); then
+      echo "Validating Jupyter notebooks (${#notebooks[@]} found)..."
+      for nb in "${notebooks[@]}"; do
+        python3 -m json.tool "$nb" > /dev/null
+      done
+      if command -v uvx >/dev/null 2>&1; then
+        uvx ruff check "${notebooks[@]}"
+      elif command -v ruff >/dev/null 2>&1; then
+        ruff check "${notebooks[@]}"
+      fi
+      echo "All notebook checks passed!"
+    fi
+
 # Format tracked shell scripts with shfmt
 fmt:
     #!/usr/bin/env bash
