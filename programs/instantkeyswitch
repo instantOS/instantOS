@@ -47,9 +47,9 @@ IFS=: read -r -a SL <<<"$NEWLAYOUT"
 
 MSG=$'Keyboard layout: \n'
 if [[ ${SL[1]} ]]; then
-    imenu -t "${MSG}${SL[0]} (${SL[1]})"
+    ins menu toast "${MSG}${SL[0]} (${SL[1]})"
 else
-    imenu -t "${MSG}${SL[0]}"
+    ins menu toast "${MSG}${SL[0]}"
 fi
 
 # save index

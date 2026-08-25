@@ -4,13 +4,11 @@
 
 instantinstall speedtest-cli || exit 1
 
-imenu -w "running speedtest, please wait" &
-SPEEDOUT="$(speedtest-cli --simple)"
-pkill instantmenu
+SPEEDOUT="$(ins menu spin -m "running speedtest, please wait" -- speedtest-cli --simple)"
 
 if [ -z "$SPEEDOUT" ]; then
     echo 'running the speedtest failed
-are you connected to the internet?' | imenu -M
+are you connected to the internet?' | ins menu message
     exit 1
 fi
 

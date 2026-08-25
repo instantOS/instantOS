@@ -10,7 +10,7 @@ echo "{heading} Welcome
 {heading} Font size is set with Ctrl + +/-
 {heading} Configuration is done through ~/.config/kitty/kitty.conf
 OK
-Don't show again" | imenu cli -l "quick info" >/tmp/helpmsg
+Don't show again" | ins menu choice "quick info" >/tmp/helpmsg
 
 if grep '^Don' /tmp/helpmsg; then
     sed -i 's/.*instantterminalhelp.*//g' ~/.zshrc

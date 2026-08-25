@@ -111,11 +111,11 @@ QXL on AMD on QEMU/kvm has been known to cause a severe Xorg memory leak.
 Disabling compositing makes this somewhat bearable,
 but switching really is recommended.
 (or switch to virtualbox, no issues there...)
-Disable compositing for this VM?" | imenu -C; then
+Disable compositing for this VM?" | ins menu confirm; then
                     iconf -i potato 1
                     pkill picom
                 else
-                    if ! imenu -c "ask again next time?"; then
+                    if ! ins menu confirm "ask again next time?"; then
                         iconf -i nopotato 1
                     fi
                 fi
@@ -132,12 +132,12 @@ Disable compositing for this VM?" | imenu -C; then
             echo "guestadditions detected"
         else
             if echo "virtual machine detected.
-Would you like to switch to a 1080p resolution?" | imenu -C; then
+Would you like to switch to a 1080p resolution?" | ins menu confirm; then
                 echo "applying virtual machine workaround"
                 /usr/share/instantassist/assists/t/v.sh
             else
                 if [ -z "$ISLIVE" ]; then
-                    if ! imenu -c "ask again next session"; then
+                    if ! ins menu confirm "ask again next session"; then
                         iconf -i novmfix 1
                     fi
                 fi
@@ -168,7 +168,7 @@ if ! islive; then
 
     if id instantsupport &>/dev/null; then
         if echo 'your computer might have been restarted or crashed during an instantSUPPORT session
-This caused some leftover configuration that can pose a security risk. Clean that up now?' | imenu -C; then
+This caused some leftover configuration that can pose a security risk. Clean that up now?' | ins menu confirm; then
             instantsudo instantsupport -c
             notify-send 'cleaned up instantsupport leftovers'
         fi
@@ -208,22 +208,22 @@ offerdpi() {
     WIDTH=$(iconf max | grep -o '^[0-9]*')
     RESOLUTION="$((HEIGHT * WIDTH))"
     DPIMESSAGE="HiDpi settings can be found in settings->display->dpi"
-    if ! imenu -C <<<"high resolution display detected
+    if ! ins menu confirm "high resolution display detected
 would you like to enable HiDpi?"; then
-        if imenu -c "ask again next time?"; then
+        if ins menu confirm "ask again next time?"; then
             return
         fi
         iconf -i nohidpi 1
-        imenu -m "$DPIMESSAGE"
+        ins menu message "$DPIMESSAGE"
         return
     fi
 
-    DPI=$(imenu -i 'enter dpi (default is 96)')
+    DPI=$(ins menu input 'enter dpi (default is 96)')
     while ! [ "$DPI" -eq "$DPI" ] || [ "$DPI" -gt 500 ] || [ "$DPI" -lt "20" ]; do
-        imenu -m "please enter a number between 20 and 500 (default is 96), enter q to skip hidpi"
-        DPI=$(imenu -i 'enter dpi (default is 96)')
+        ins menu message "please enter a number between 20 and 500 (default is 96), enter q to skip hidpi"
+        DPI=$(ins menu input 'enter dpi (default is 96)')
         if grep -q 'q' <<<"$DPI"; then
-            imenu -m "$DPIMESSAGE"
+            ins menu message "$DPIMESSAGE"
             return
         fi
     done
@@ -232,7 +232,7 @@ would you like to enable HiDpi?"; then
 
     instantdpi
     xrdb ~/.Xresources
-    imenu -m "a restart is needed to globally apply dpi"
+    ins menu message "a restart is needed to globally apply dpi"
 
 }
 
@@ -305,18 +305,18 @@ fi
 
 # prompt to fix configuration if installed from the AUR
 if ! iconf -i norootinstall && ! islive; then
-    if ! command -v imenu || ! command -v instantmenu; then
-        notify-send "please install instantmenu and imenu"
+    if ! command -v ins || ! command -v instantmenu; then
+        notify-send "please install instantCLI and instantmenu"
     else
         if ! [ -e /opt/instantos/rootinstall ]; then
-            imenu -m "instantOS is missing some configuration"
+            ins menu message "instantOS is missing some configuration"
             while ! [ -e /tmp/rootskip ]; do
-                if imenu -c "would you like to fix that?"; then
+                if ins menu confirm "would you like to fix that?"; then
                     touch /tmp/topinstall
                     instantsudo bash -c "instantutils root"
                     touch /tmp/rootskip
                 else
-                    if imenu -c "Are you sure? this will prevent parts of instantOS from functioning correctly"; then
+                    if ins menu confirm "Are you sure? this will prevent parts of instantOS from functioning correctly"; then
                         touch /tmp/rootskip
                     fi
                 fi

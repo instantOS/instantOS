@@ -43,7 +43,7 @@ EOT
     else
         echo "vm detected, disabling blur"
         if pgrep Xorg; then
-            imenu -t 'blur causes massive issues on virtual machines.
+            ins menu toast -t 5 'blur causes massive issues on virtual machines.
 Manually edit ~/.config/picom/picom.conf to force blur. You have been warned'
         fi
     fi

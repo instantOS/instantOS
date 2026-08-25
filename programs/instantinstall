@@ -68,7 +68,7 @@ custom_pacman() {
     {
         echo "Please install the following packages your package manager, automatic installation failed."
         echo "$pkgs"
-    } | imenu -M
+    } | ins menu message
     exit 1
 }
 
@@ -77,13 +77,13 @@ has_cmd pacman || [ -e /usr/bin/pacman ] || custom_pacman "$@"
 for pkg in "$@"; do
     echo "processing package $pkg"
     checkpackage "$pkg" && continue # skip already installed packages
-    if ! imenu -c "the extra package $pkg is required. Download now?"; then
+    if ! ins menu confirm "the extra package $pkg is required. Download now?"; then
         err 1 "package will not be installed"
     fi
     echo "$pkg" >>/tmp/instantinstalllist
     INSTALLPACKAGES="true"
     if ! checkinternet; then
-        imenu -e "internet is required to install packages"
+        ins menu message "internet is required to install packages"
         exit 1
     fi
 done

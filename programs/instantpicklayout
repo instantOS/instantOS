@@ -8,7 +8,7 @@ tcl
 deck
 overview
 bstack
-bstackhoriz" | imenu -l "choose layout")"
+bstackhoriz" | ins menu choice "choose layout")"
 
 if [ -z "$LAYOUT" ]; then
     exit

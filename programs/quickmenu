@@ -14,7 +14,7 @@ launch_terminal() {
     if [ -n "$TERMINAL_CMD" ]; then
         "$TERMINAL_CMD" "$@"
     else
-        imenu -m "kitty terminal not found"
+        ins menu message "kitty terminal not found"
         return 1
     fi
 }
@@ -62,7 +62,7 @@ chooseaddmode() {
     ADDCHOICE="$(echo 'enter command
 edit script
 options
-cancel' | imenu -l)"
+cancel' | ins menu choice)"
 
     if [ -z "$1" ]; then
         echo "#!/bin/bash
@@ -71,7 +71,7 @@ cancel' | imenu -l)"
 
     case "$ADDCHOICE" in
         enter*)
-            COMMAND="$(imenu -i 'enter command')"
+            COMMAND="$(ins menu input 'enter command')"
             echo "$COMMAND" >>"$SCRIPTNAME"
             ;;
         edit*)
@@ -82,7 +82,7 @@ cancel' | imenu -l)"
         options)
             echo "#!/bin/bash" >"$SCRIPTNAME"
             ADDTEMPLATE="$(echo 'run in terminal
-enable argument dialog' | imenu -b)"
+enable argument dialog' | ins menu checklist)"
             if grep -q 'terminal' <<<"$ADDTEMPLATE"; then
                 echo "enabling terminal"
                 echo '#instantosterm' >>"$SCRIPTNAME"
@@ -127,13 +127,13 @@ new category' | instantmenu \
                 --width auto \
                 --insensitive)"
             if [ -d "$REMOVECHOICE" ] && [ -n "$(ls "$REMOVECHOICE/")" ]; then
-                imenu -m "category is not empty"
+                ins menu message "category is not empty"
                 exit
             elif ! [ -e "$REMOVECHOICE" ]; then
-                imenu -m "selection $REMOVECHOICE invalid"
+                ins menu message "selection $REMOVECHOICE invalid"
             fi
 
-            if imenu -c "remove $REMOVECHOICE"; then
+            if ins menu confirm "remove $REMOVECHOICE"; then
                 if [ -d "$REMOVECHOICE" ]; then
                     rm -rf "$REMOVECHOICE"
                 else
@@ -143,15 +143,15 @@ new category' | instantmenu \
 
             ;;
         new*)
-            CATEGORYNAME="$(imenu -i 'enter category name')"
+            CATEGORYNAME="$(ins menu input 'enter category name')"
             [ -n "$CATEGORYNAME" ] && mkdir "$CATEGORYNAME"
             ;;
         add*)
             echo "adding new entry"
-            SCRIPTNAME="$(imenu -i 'enter name')"
+            SCRIPTNAME="$(ins menu input 'enter name')"
 
             if [ -e "$SCRIPTNAME" ]; then
-                imenu -m "script $SCRIPTNAME already existing"
+                ins menu message "script $SCRIPTNAME already existing"
                 exit
             fi
 
@@ -160,7 +160,7 @@ new category' | instantmenu \
             fi
 
             touch "$SCRIPTNAME" || {
-                imenu -m "invalid script name"
+                ins menu message "invalid script name"
                 exit
             }
             chooseaddmode
@@ -175,10 +175,10 @@ new category' | instantmenu \
                 --insensitive)"
             [ -z "$EDITCHOICE" ] && exit
             if [ -d "$EDITCHOICE" ]; then
-                imenu -m "selection is not a script"
+                ins menu message "selection is not a script"
                 exit
             elif ! [ -e "$EDITCHOICE" ]; then
-                imenu -m "selection $EDITCHOICE invalid"
+                ins menu message "selection $EDITCHOICE invalid"
                 exit
             fi
             launch_terminal -e nvim -c ":e $(realpath "$EDITCHOICE")"
@@ -194,10 +194,10 @@ new category' | instantmenu \
             [ -z "$EDITCHOICE" ] && exit
 
             if ! [ -e "$EDITCHOICE" ]; then
-                imenu -m "$EDITCHOICE does not exist"
+                ins menu message "$EDITCHOICE does not exist"
             fi
 
-            NEWNAME="$(imenu -i 'enter new name')"
+            NEWNAME="$(ins menu input 'enter new name')"
             [ -z "$NEWNAME" ] && exit
             mv "$EDITCHOICE" "$NEWNAME"
 
@@ -228,7 +228,7 @@ case "$QUICKCHOICE" in
         fi
 
         if grep -q "^#instantosarg" "$QUICKCHOICE"; then
-            QUICKARGS="$(imenu -i options)"
+            QUICKARGS="$(ins menu input options)"
             [ -z "$QUICKARGS" ] && exit
         fi
 

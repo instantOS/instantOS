@@ -46,7 +46,7 @@ fi
 zconfirm() {
     if wmctrl -l | grep -q '..'; then
         echo "running applications found"
-        if imenu -c "there are apps running, sure you want to $1?"; then
+        if ins menu confirm "there are apps running, sure you want to $1?"; then
             echo "yes"
             return 0
         else
