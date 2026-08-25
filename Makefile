@@ -20,7 +20,6 @@ install_external:
 .PHONY: install_local
 install_local:
 	install -Dm 755 autostart.sh ${DESTDIR}${PREFIX}/bin/instantautostart
-	install -Dm 755 status.sh ${DESTDIR}${PREFIX}/bin/instantstatus
 	install -Dm 755 monitor.sh ${DESTDIR}${PREFIX}/bin/instantmonitor
 	install -Dm 755 instantutils.sh ${DESTDIR}${PREFIX}/bin/instantutils
 	find -regex './manpages/.*1' -exec install -Dm 644 "{}" ${DESTDIR}${PREFIX}/share/man/man1/ \;
@@ -39,7 +38,6 @@ install_local:
 .PHONY: uninstall
 uninstall:
 	rm ${DESTDIR}${PREFIX}/bin/instantautostart
-	rm ${DESTDIR}${PREFIX}/bin/instantstatus
 	rm ${DESTDIR}${PREFIX}/bin/instantmonitor
 	rm ${DESTDIR}${PREFIX}/bin/instantutils
 	rm -rf ${DESTDIR}${PREFIX}/share/instantutils

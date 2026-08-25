@@ -202,11 +202,6 @@ else
 
 fi
 
-# make built in status optional
-if ! iconf -i nostatus; then
-    source /usr/bin/instantstatus &
-fi
-
 #TODO: move this into `ins settings`
 offerdpi() {
     HEIGHT=$(iconf max | grep -o '[0-9]*$')
@@ -345,11 +340,7 @@ confcommand() {
 
 if iconf savebright; then
     export NOBRIGHTMESSAGE=true
-    if command -v ins >/dev/null 2>&1; then
-        ins assist bright "$(iconf savebright)" 2>/dev/null || true
-    elif command -v brightnessctl >/dev/null 2>&1; then
-        brightnessctl set "$(iconf savebright)%" 2>/dev/null || true
-    fi
+    ins assist bright "$(iconf savebright)" 2>/dev/null || true
 fi
 
 if iconf -i alttab; then
