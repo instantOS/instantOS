@@ -92,7 +92,16 @@ while :; do
     # date time
     date="$date^d^  $(date +'%d-%m')  ^c$DARKBACK^  $clock  "
     # volume
-    date="$date^c$LIGHTBACK^  A$(/usr/share/instantassist/utils/p.sh g)%  "
+    cur_vol=""
+    if command -v wpctl >/dev/null 2>&1; then
+        cur_vol="$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | awk '{print int($2 * 100)}')"
+    elif command -v pamixer >/dev/null 2>&1; then
+        cur_vol="$(pamixer --get-volume 2>/dev/null)"
+    elif command -v pactl >/dev/null 2>&1; then
+        cur_vol="$(pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | awk '{print $5}' | tr -d '%' | head -n 1)"
+    fi
+    [ -z "$cur_vol" ] && cur_vol="0"
+    date="$date^c$LIGHTBACK^  A${cur_vol}%  "
 
     # option to disable status text
     if [ -e ~/.instantsilent ] && [ -z "$FORCESTATUS" ]; then

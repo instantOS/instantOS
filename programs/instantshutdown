@@ -4,11 +4,13 @@
 ## shut down pc and break instantwm restart loop ##
 ###################################################
 
-# multiple instances would overlap
-if [ "$(pgrep instantshutdown | wc -l)" -gt 2 ]; then
-    pgrep instantshutdown | wc -l
-    echo "instantshutdown already running"
-    exit
+# Prevent overlapping instances with lockfile
+exec 200>/tmp/instantshutdown.lock 2>/dev/null || true
+if command -v flock >/dev/null 2>&1; then
+    flock -n 200 || {
+        echo "instantshutdown already running"
+        exit 0
+    }
 fi
 
 if [ -n "$1" ]; then
@@ -28,85 +30,99 @@ else
         MENUITEMS="$MENUITEMS
 {blue icon=refresh} restart wm"
     fi
-    answer="$(echo "$MENUITEMS" | instantmenu \
-        --lines 10 \
-        --width auto \
-        --position center \
-        --auto-confirm \
-        --match-mode dmenu \
-        --prompt 'shutdown menu' \
-        --placeholder 'select' \
-        --border-width 4)"
+    answer="$(echo "$MENUITEMS" | ins menu choice "shutdown menu" 2>/dev/null)"
 fi
 
-# markup is metadata: the selection already prints the bare label
-
+# Strip markup and normalize case for reliable matching
+clean_answer="$(echo "$answer" | sed -E 's/^\{[^{}]*\} //; s/^[[:space:]]*//; s/[[:space:]]*$//' | tr '[:upper:]' '[:lower:]')"
 
 # if there are apps open, ask for confirmation
 zconfirm() {
-    if wmctrl -l | grep -q '..'; then
-        echo "running applications found"
-        if ins menu confirm "there are apps running, sure you want to $1?"; then
-            echo "yes"
-            return 0
-        else
-            echo "no"
-            exit
+    if command -v wmctrl >/dev/null 2>&1; then
+        OPEN_APPS="$(wmctrl -l 2>/dev/null | grep -v -i -E 'instantbar|desktop|scratchpad' || true)"
+        if [ -n "$OPEN_APPS" ]; then
+            echo "running applications found"
+            if ins menu confirm "there are apps running, sure you want to $1?"; then
+                echo "yes"
+                return 0
+            else
+                echo "no"
+                exit 0
+            fi
         fi
-    else
-        echo "no running applications found"
     fi
+    echo "no running applications found"
 }
 
 prepareshutdown() {
     # save current brightness
     touch /tmp/shuttingdown
-    if CURBRIGHT="$(/usr/share/instantassist/utils/b.sh g)"; then
-        iconf savebright "$CURBRIGHT"
+    if command -v brightnessctl >/dev/null 2>&1; then
+        CURBRIGHT="$(brightnessctl -m 2>/dev/null | awk -F, '{print $4}' | tr -d '%' || true)"
+        if [ -n "$CURBRIGHT" ]; then
+            iconf savebright "$CURBRIGHT" 2>/dev/null || true
+        fi
     fi
 
-    rm "$(instantruntimedir)"/instantosrunning
+    if command -v instantruntimedir >/dev/null 2>&1; then
+        rm -f "$(instantruntimedir)/instantosrunning" 2>/dev/null || true
+    fi
     # these keep causing stop jobs
-    pkill -f clipnotify
-    pkill -f clipmenud
+    pkill -f clipnotify 2>/dev/null || true
+    pkill -f clipmenud 2>/dev/null || true
 }
 
-case "$answer" in
-    shut*)
+case "$clean_answer" in
+    shut*|*power*)
         zconfirm "shutdown"
         prepareshutdown
         sleep 0.4
-        if command -v systemctl; then
-            shutdown now
+        if command -v systemctl >/dev/null 2>&1; then
+            systemctl poweroff || shutdown -h now || shutdown now
         else
-            # needs root on artix
-            instantsudo poweroff
+            # needs root on Artix / non-systemd
+            instantsudo poweroff || poweroff
         fi
         ;;
-    reb*)
+    reb*|*restart*)
         zconfirm "reboot"
         prepareshutdown
         sleep 0.4
-        reboot
+        if command -v systemctl >/dev/null 2>&1; then
+            systemctl reboot || reboot
+        else
+            instantsudo reboot || reboot
+        fi
         ;;
-    log*)
+    log*|*logout*|*sign*out*)
         zconfirm "sign out"
-        rm "$(instantruntimedir)"/instantosrunning
+        if command -v instantruntimedir >/dev/null 2>&1; then
+            rm -f "$(instantruntimedir)/instantosrunning" 2>/dev/null || true
+        fi
         sleep 0.4
-        kill -9 -1
+        if command -v loginctl >/dev/null 2>&1; then
+            loginctl terminate-session self 2>/dev/null || pkill -u "$USER" -x instantwm || kill -9 -1
+        else
+            pkill -u "$USER" -x instantwm || kill -9 -1
+        fi
         ;;
-    loc*)
+    loc*|*lock*)
         instantutils open lockscreen
         ;;
-    sus*)
-        systemctl suspend
+    sus*|*sleep*)
+        if command -v systemctl >/dev/null 2>&1; then
+            systemctl suspend
+        fi
         export NOILOCKPASSWORD="true"
         instantutils open lockscreen
         ;;
-    res*)
-        pkill instantwm
+    res*|*wm*)
+        pkill -x instantwm
+        ;;
+    cancel*|"")
+        echo "canceled"
         ;;
     *)
-        echo "canceled"
+        echo "unknown option: $answer"
         ;;
 esac

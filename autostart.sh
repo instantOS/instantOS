@@ -134,7 +134,12 @@ Disable compositing for this VM?" | ins menu confirm; then
             if echo "virtual machine detected.
 Would you like to switch to a 1080p resolution?" | ins menu confirm; then
                 echo "applying virtual machine workaround"
-                /usr/share/instantassist/assists/t/v.sh
+                VDISPLAY="$(xrandr 2>/dev/null | grep ' connected' | grep -o '^[^ ]*' | head -1)"
+                if [ -n "$VDISPLAY" ]; then
+                    xrandr --newmode "1920x1080_60.00" 172.80 1920 2040 2248 2576 1080 1081 1084 1118 -HSync +Vsync 2>/dev/null || true
+                    xrandr --addmode "$VDISPLAY" "1920x1080_60.00" 2>/dev/null || true
+                    xrandr --output "$VDISPLAY" --mode "1920x1080_60.00" 2>/dev/null || true
+                fi
             else
                 if [ -z "$ISLIVE" ]; then
                     if ! ins menu confirm "ask again next session"; then
@@ -338,10 +343,13 @@ confcommand() {
     fi &
 }
 
-# TODO: replace with `ins` call
 if iconf savebright; then
     export NOBRIGHTMESSAGE=true
-    /usr/share/instantassist/utils/b.sh 2 "$(iconf savebright)"
+    if command -v ins >/dev/null 2>&1; then
+        ins assist bright "$(iconf savebright)" 2>/dev/null || true
+    elif command -v brightnessctl >/dev/null 2>&1; then
+        brightnessctl set "$(iconf savebright)%" 2>/dev/null || true
+    fi
 fi
 
 if iconf -i alttab; then
