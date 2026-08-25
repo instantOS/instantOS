@@ -14,12 +14,12 @@ if ! [ "$UPDATECOUNT" -gt 1 ]; then
     exit
 fi
 
-echo ">>h Update Notifier
-> there are
-> $UPDATECOUNT updates available
-> ----
-:gupdate now
-:rlater" | instantmenu \
+echo "{heading highlight} Update Notifier
+{heading} there are
+{heading} $UPDATECOUNT updates available
+{heading} ----
+{green} update now
+{red} later" | instantmenu \
     --no-grab \
     --placeholder 'notification' \
     --lines 20 \

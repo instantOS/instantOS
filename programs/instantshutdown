@@ -14,19 +14,19 @@ fi
 if [ -n "$1" ]; then
     answer="$1"
 else
-    # ':X <icon>label' items, same convention as instantstartmenu
-    MENUITEMS=':r 󰌍 cancel
-:r 󰐥 shutdown
-:b 󰗽 logout
-:b  reboot
-:b  lock screen
-:b 󰒲 suspend'
+    # '{color icon=name} label' items, same convention as instantstartmenu
+    MENUITEMS='{red icon=cancel} cancel
+{red icon=power} shutdown
+{blue icon=logout} logout
+{blue icon=restart} reboot
+{blue icon=lock} lock screen
+{blue icon=sleep} suspend'
     if [ "$XDG_SESSION_TYPE" = wayland ] || [ -n "$WAYLAND_DISPLAY" ]; then
         echo "wayland detected, not offering restart wm"
     else
         # restarting instantwm is an X11 thing
         MENUITEMS="$MENUITEMS
-:b  restart wm"
+{blue icon=refresh} restart wm"
     fi
     answer="$(echo "$MENUITEMS" | instantmenu \
         --lines 10 \
@@ -39,8 +39,8 @@ else
         --border-width 4)"
 fi
 
-# strip the ':X ' prefix and the icon glyph from the selection
-answer="${answer#?? ?}"
+# markup is metadata: the selection already prints the bare label
+
 
 # if there are apps open, ask for confirmation
 zconfirm() {

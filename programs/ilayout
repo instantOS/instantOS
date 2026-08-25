@@ -56,11 +56,11 @@ fi
 
 # layout list editor
 while :; do
-    LIST=">>h Keyboard layouts
+    LIST="{heading} Keyboard layouts
 $(cat layouts)
-:gadd layout
-:rclose menu"
-    CHOICE=$(echo "$LIST" | sed 's/^$/>/g' | instantmenu \
+{green} add layout
+{red} close menu"
+    CHOICE=$(echo "$LIST" | grep '.' | instantmenu \
         --position center \
         --width auto \
         --lines 40 \
@@ -69,9 +69,9 @@ $(cat layouts)
         --border-width 4)
     [ -z "$CHOICE" ] && exit
     if grep "^$CHOICE$" layouts; then
-        LAYOUTCHOICE="$(echo ">>h $CHOICE
-:r Delete
-:b Back" | instantmenu \
+        LAYOUTCHOICE="$(echo "{heading} $CHOICE
+{red icon=trash} Delete
+{blue icon=arrow-left} Back" | instantmenu \
             --position center \
             --lines 20 \
             --line-height auto \
@@ -79,8 +79,8 @@ $(cat layouts)
             --placeholder "layout options: $CHOICE")"
 
         # todo feaures
-        #:b Move up
-        #:b Move down
+        # {blue icon=chevron-up} Move up
+        # {blue icon=chevron-down} Move down
 
         case "$LAYOUTCHOICE" in
             *Delete)

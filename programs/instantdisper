@@ -9,25 +9,25 @@ getdisplays() {
 }
 
 getlayouts() {
-    autorandr --list | grep -v "^instantos$" | sed "s/^/:b custom: /g"
+    autorandr --list | grep -v "^instantos$" | sed "s/^/{blue icon=view-dashboard} custom: /g"
 }
 
 # instantmenu formatted list of monitors
 monitorchoices() {
-    echo "           Extend
-              Duplicate
-$(getdisplays | sed 's/^/:b /' | sed 's/$/ only/')
+    echo "{blue icon=monitor-multiple} Extend
+{blue icon=content-copy} Duplicate
+$(getdisplays | sed 's/^/{blue icon=monitor} /' | sed 's/$/ only/')
 $(getlayouts)"
 
 }
 
 mainmenu() {
 
-    echo ">>h PROJECT
+    echo "{heading highlight} PROJECT
 $(monitorchoices)
-:b Default layout
-:g Set default action
-:r Close menu" | instantmenu \
+{blue icon=view-dashboard} Default layout
+{green icon=tune} Set default action
+{red icon=x} Close menu" | instantmenu \
         --lines 20 \
         --line-height auto \
         --position center \
@@ -38,11 +38,11 @@ $(monitorchoices)
 }
 
 defaultmenu() {
-    echo ">>h Default projection settings
+    echo "{heading highlight} Default projection settings
 $(monitorchoices)
-:b Ask
-:r None
-:b Back" | instantmenu \
+{blue icon=help-circle} Ask
+{red icon=ban} None
+{blue icon=arrow-left} Back" | instantmenu \
         --lines 20 \
         --line-height auto \
         --position center \
@@ -63,7 +63,7 @@ restartdunst() {
 }
 
 choicetomonitor() {
-    sed 's/^:b .//' <<<"$1" | sed 's/ only$//g' | sed 's/^only://'
+    sed 's/ only$//g' <<<"$1" | sed 's/^only://'
 }
 
 # set action to execute when a new monitor is connected
@@ -181,7 +181,7 @@ while [ -n "$LOOPING" ]; do
             applydefault
             ;;
         *"custom: "*)
-            autorandr "$(sed 's/^....custom: //g' <<<"$CHOICE")"
+            autorandr "$(sed 's/^custom: //g' <<<"$CHOICE")"
             ;;
         *menu | '')
             exit

@@ -2,19 +2,19 @@
 
 # basic menu activated from the top left
 
-MENUENTRIES=":b Applications
-:b Settings
-:b Terminal
-:b Info
-:g Documentation
-:g Keybinds
-:r Shutdown
-:r Close menu"
+MENUENTRIES="{blue icon=apps} Applications
+{blue icon=settings} Settings
+{blue icon=terminal} Terminal
+{blue icon=info} Info
+{green icon=book-open} Documentation
+{green icon=keyboard} Keybinds
+{red icon=poweroff} Shutdown
+{red icon=x} Close menu"
 
 # installing is only offered when running from the live iso
 # (same detection as ins itself: /run/archiso/cowspace)
 if [ -e /run/archiso/cowspace ]; then
-    MENUENTRIES=":g Install instantOS
+    MENUENTRIES="{green icon=rocket} Install instantOS
 $MENUENTRIES"
 fi
 

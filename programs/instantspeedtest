@@ -25,10 +25,10 @@ sed -i '400,$d' ~/.cache/instantos/speedtest
 while :; do
     CHOICE="$(
         {
-            echo ":b ﴽ$PING"
-            echo ":b $DOWNLOAD"
-            echo ":b $UPLOAD"
-            echo ":b Copy all"
+            echo "{blue icon=speedometer} $PING"
+            echo "{blue icon=download} $DOWNLOAD"
+            echo "{blue icon=upload} $UPLOAD"
+            echo "{blue icon=content-copy} Copy all"
             echo "OK"
         } | instantmenu \
             --lines 20 \
@@ -45,13 +45,13 @@ while :; do
         exit
     fi
 
-    if grep -q 'ﴽ' <<<"$CHOICE"; then
+    if [ "$CHOICE" = "$PING" ]; then
         COPIER="$PING"
-    elif grep -q '' <<<"$CHOICE"; then
+    elif [ "$CHOICE" = "$DOWNLOAD" ]; then
         COPIER="$DOWNLOAD"
-    elif grep -q '' <<<"$CHOICE"; then
+    elif [ "$CHOICE" = "$UPLOAD" ]; then
         COPIER="$UPLOAD"
-    elif grep -q '' <<<"$CHOICE"; then
+    elif [ "$CHOICE" = "Copy all" ]; then
         COPIER="$PING
 Download: $DOWNLOAD
 Upload: $UPLOAD"
