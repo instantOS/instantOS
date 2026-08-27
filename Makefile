@@ -28,7 +28,6 @@ install_local:
 	install -Dm 755 rootinstall.sh ${DESTDIR}${PREFIX}/share/instantutils/rootinstall.sh
 	install -Dm 755 repo.sh ${DESTDIR}${PREFIX}/share/instantutils/repo.sh
 	find -regex './setup/.*' -exec chmod 755 "{}" \;
-	cp -r mirrors ${DESTDIR}${PREFIX}/share/instantutils/
 	cp -r setup ${DESTDIR}${PREFIX}/share/instantutils/
 	find -regex './desktop/.*desktop' -exec install -Dm 644 "{}" ${DESTDIR}${PREFIX}/share/applications/ \;
 	find -regex './programs/.*' -exec install -Dm 755 "{}" ${DESTDIR}${PREFIX}/bin/ \;

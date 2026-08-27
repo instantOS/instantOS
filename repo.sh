@@ -22,15 +22,11 @@ addrepo() {
         echo "Include = /etc/pacman.d/instantmirrorlist"
     } >>/etc/pacman.conf
 
-    if [ -e /usr/share/instantutils/mirrors/"$1" ]; then
-        cat /usr/share/instantutils/mirrors/"$1" >/etc/pacman.d/instantmirrorlist
-    else
-        curl -s https://raw.githubusercontent.com/instantOS/instantOS/main/mirrors/"$1" >/etc/pacman.d/instantmirrorlist
-    fi
+    curl -fsSL https://raw.githubusercontent.com/instantOS/instantCLI/main/src/common/instantmirrorlist >/etc/pacman.d/instantmirrorlist
 
     # allow choosing subdirectory for testing purposes
     if [ -n "$CUSTOMINSTANTREPO" ]; then
-        sed -i 's/.*packages.instantos.io.*/Server = https:\/\/packages.instantos.io\/'"$CUSTOMINSTANTREPO"'/g' /etc/pacman.d/instantmirrorlist
+        sed -i 's/.*instantos.io\/packages.*/Server = https:\/\/instantos.io\/packages\/'"$CUSTOMINSTANTREPO"'/g' /etc/pacman.d/instantmirrorlist
     fi
 
 }
