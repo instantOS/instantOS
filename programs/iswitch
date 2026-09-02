@@ -2,41 +2,41 @@
 
 # alt-tab application switcher using instantmenu
 #
-# instantmenu grabs the keyboard before it reads stdin and lets items stream
-# in, so the window enumeration is piped straight into it and the menu is
-# interactive while the list is still being produced.
+# instantmenu grabs the keyboard before it reads stdin, so the menu pipeline
+# is spawned first and backend detection plus window enumeration run while
+# the menu is already interactive.
 # the window tool is picked by session type: wmctrl on X11, instantwmctl on
 # instantWM wayland and swaymsg on sway
 
-socket=${INSTANTWM_SOCKET:-/tmp/instantwm-$UID.sock}
-
-if [ -n "$WAYLAND_DISPLAY" ] || [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-    if [ -S "$socket" ] && command -v instantwmctl >/dev/null 2>&1; then
-        wm=instantwmctl
-    elif command -v swaymsg >/dev/null 2>&1 && { [ -n "$SWAYSOCK" ] || pgrep -x sway >/dev/null 2>&1; }; then
-        wm=swaymsg
+detectwm() {
+    if [ -n "$WAYLAND_DISPLAY" ] || [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+        if [ -S "${INSTANTWM_SOCKET:-/tmp/instantwm-$UID.sock}" ] && command -v instantwmctl >/dev/null 2>&1; then
+            echo instantwmctl
+        elif command -v swaymsg >/dev/null 2>&1 && { [ -n "$SWAYSOCK" ] || pgrep -x sway >/dev/null 2>&1; }; then
+            echo swaymsg
+        fi
     else
-        exit 1
+        echo wmctrl
     fi
-else
-    wm=wmctrl
-fi
+}
 
 listwindows() {
-    case $wm in
+    # {value=...} markup hides the window id from display and search: only
+    # the title shows, and selecting an entry outputs the id alone
+    case $(detectwm) in
         instantwmctl)
-            instantwmctl --json window list | jq -r '.[] | "\(.id) - \(.title)"'
+            instantwmctl --json window list | jq -r '.[] | "{value=\(.id)} \(.title)"'
             ;;
         swaymsg)
             swaymsg -t get_tree |
-                jq -r '.. | objects | select(.type == "con" and .name != null) | "\(.id) - \(.name)"'
+                jq -r '.. | objects | select(.type == "con" and .name != null) | "{value=\(.id)} \(.name)"'
             ;;
-        *)
+        wmctrl)
             # wmctrl -l: id desktop host title
             wmctrl -l | awk '{
                 id = $1
                 sub(/^[^ \t]+[ \t]+[^ \t]+[ \t]+[^ \t]+[ \t]+/, "")
-                print id " - " $0
+                print "{value=" id "} " $0
             }'
             ;;
     esac
@@ -52,7 +52,13 @@ selection=$(listwindows | instantmenu \
     --prompt "windows")
 [[ -z $selection ]] && exit
 
-id=${selection%% *}
+# detection is re-run here: cheap (builtins plus one stat), and it doubles as
+# the guard against unsupported sessions where the menu opened empty
+wm=$(detectwm)
+[[ -z $wm ]] && exit
+
+# the selection is the hidden {value=...} payload: the bare window id
+id=$selection
 
 # instantmenu also prints typed text that matched nothing, never focus that
 case $wm in
