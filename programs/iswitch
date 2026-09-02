@@ -1,16 +1,67 @@
 #!/bin/bash
 
 # alt-tab application switcher using instantmenu
+#
+# instantmenu grabs the keyboard before it reads stdin and lets items stream
+# in, so the window enumeration is piped straight into it and the menu is
+# interactive while the list is still being produced.
+# the window tool is picked by session type: wmctrl on X11, instantwmctl on
+# instantWM wayland and swaymsg on sway
 
-num=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | nl -w 3 -n rn |
-    sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' |
-    instantmenu \
-        --lines 40 \
-        --alt-tab \
-        --position center \
-        --border-width 4 \
-        --width 700 \
-        --insensitive \
-        --prompt "windows" | cut -d '-' -f -1)
-[[ -z "$num" ]] && exit
-wmctrl -l | sed -n "$num p" | cut -c -10 | xargs wmctrl -i -a
+socket=${INSTANTWM_SOCKET:-/tmp/instantwm-$UID.sock}
+
+if [ -n "$WAYLAND_DISPLAY" ] || [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    if [ -S "$socket" ] && command -v instantwmctl >/dev/null 2>&1; then
+        wm=instantwmctl
+    elif command -v swaymsg >/dev/null 2>&1 && { [ -n "$SWAYSOCK" ] || pgrep -x sway >/dev/null 2>&1; }; then
+        wm=swaymsg
+    else
+        exit 1
+    fi
+else
+    wm=wmctrl
+fi
+
+listwindows() {
+    case $wm in
+        instantwmctl)
+            instantwmctl --json window list | jq -r '.[] | "\(.id) - \(.title)"'
+            ;;
+        swaymsg)
+            swaymsg -t get_tree |
+                jq -r '.. | objects | select(.type == "con" and .name != null) | "\(.id) - \(.name)"'
+            ;;
+        *)
+            # wmctrl -l: id desktop host title
+            wmctrl -l | awk '{
+                id = $1
+                sub(/^[^ \t]+[ \t]+[^ \t]+[ \t]+[^ \t]+[ \t]+/, "")
+                print id " - " $0
+            }'
+            ;;
+    esac
+}
+
+selection=$(listwindows | instantmenu \
+    --lines 40 \
+    --alt-tab \
+    --position center \
+    --border-width 4 \
+    --width 700 \
+    --insensitive \
+    --prompt "windows")
+[[ -z $selection ]] && exit
+
+id=${selection%% *}
+
+# instantmenu also prints typed text that matched nothing, never focus that
+case $wm in
+    wmctrl) [[ $id =~ ^0x[0-9a-fA-F]+$ ]] || exit ;;
+    *) [[ $id =~ ^[0-9]+$ ]] || exit ;;
+esac
+
+case $wm in
+    instantwmctl) exec instantwmctl window focus "$id" ;;
+    swaymsg) exec swaymsg "[con_id=$id] focus" ;;
+    wmctrl) exec wmctrl -i -a "$id" ;;
+esac
