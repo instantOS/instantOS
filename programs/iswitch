@@ -7,6 +7,10 @@
 # the menu is already interactive.
 # the window tool is picked by session type: wmctrl on X11, instantwmctl on
 # instantWM wayland and swaymsg on sway
+#
+# the currently focused window (one cheap lookup before the menu opens) is
+# preselected with --preselect, so the highlight starts on the running window,
+# and its row carries a distinct gutter icon
 
 detectwm() {
     if [ -n "$WAYLAND_DISPLAY" ] || [ "$XDG_SESSION_TYPE" = "wayland" ]; then
@@ -22,25 +26,66 @@ detectwm() {
 
 listwindows() {
     # {value=...} markup hides the window id from display and search: only
-    # the title shows, and selecting an entry outputs the id alone
+    # the title shows, and selecting an entry outputs the id alone. Every
+    # row carries a gutter icon so the list stays aligned; the focused
+    # window's row gets a distinct glyph ($focused is looked up before the
+    # menu opens)
     case $(detectwm) in
         instantwmctl)
-            instantwmctl --json window list | jq -r '.[] | "{value=\(.id)} \(.title)"'
+            instantwmctl --json window list |
+                jq -r '.[] | "{value=\(.id)\(if .is_focused then " icon=codwindowactive" else " icon=codwindow" end)} \(.title)"'
             ;;
         swaymsg)
             swaymsg -t get_tree |
-                jq -r '.. | objects | select(.type == "con" and .name != null) | "{value=\(.id)} \(.name)"'
+                jq -r '.. | objects | select(.type == "con" and .name != null) |
+                    "{value=\(.id)\(if .focused then " icon=codwindowactive" else " icon=codwindow" end)} \(.name)"'
             ;;
         wmctrl)
             # wmctrl -l: id desktop host title
-            wmctrl -l | awk '{
+            wmctrl -l | awk -v focused="$focused" '{
                 id = $1
                 sub(/^[^ \t]+[ \t]+[^ \t]+[ \t]+[^ \t]+[ \t]+/, "")
-                print "{value=" id "} " $0
+                icon = (tolower(id) == tolower(focused)) ? "codwindowactive" : "codwindow"
+                print "{value=" id " icon=" icon "} " $0
             }'
             ;;
     esac
 }
+
+# id of the currently focused window, empty when nothing has focus or the
+# backend cannot tell; instantmenu's --preselect matches by value, so this
+# highlights the running window in the list
+focusedwindow() {
+    case $(detectwm) in
+        instantwmctl)
+            instantwmctl --json window list | jq -r '.[] | select(.is_focused) | .id' | head -n 1
+            ;;
+        swaymsg)
+            swaymsg -t get_tree |
+                jq -r '.. | objects | select(.type == "con" and .focused == true and .name != null) | .id' |
+                head -n 1
+            ;;
+        wmctrl)
+            # xprop: _NET_ACTIVE_WINDOW: window id # 0x1a00003
+            xprop -root _NET_ACTIVE_WINDOW 2>/dev/null | awk '{print $NF}'
+            ;;
+    esac
+}
+
+# the selection and the focus id are bare window ids; everything else
+# (typed text, empty output) must never reach the focus command
+validid() {
+    case $(detectwm) in
+        wmctrl) [[ $1 =~ ^0x[0-9a-fA-F]+$ ]] ;;
+        *) [[ $1 =~ ^[0-9]+$ ]] ;;
+    esac
+}
+
+preselect=()
+focused=$(focusedwindow)
+if validid "$focused"; then
+    preselect=(--preselect "$focused")
+fi
 
 selection=$(listwindows | instantmenu \
     --lines 40 \
@@ -49,6 +94,7 @@ selection=$(listwindows | instantmenu \
     --border-width 4 \
     --width 700 \
     --insensitive \
+    "${preselect[@]}" \
     --prompt "windows")
 [[ -z $selection ]] && exit
 
@@ -61,10 +107,7 @@ wm=$(detectwm)
 id=$selection
 
 # instantmenu also prints typed text that matched nothing, never focus that
-case $wm in
-    wmctrl) [[ $id =~ ^0x[0-9a-fA-F]+$ ]] || exit ;;
-    *) [[ $id =~ ^[0-9]+$ ]] || exit ;;
-esac
+validid "$id" || exit
 
 case $wm in
     instantwmctl) exec instantwmctl window focus "$id" ;;
