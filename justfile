@@ -3,42 +3,42 @@
 
 set shell := ["bash", "-eo", "pipefail", "-c"]
 
-# Default recipe: list available recipes
+mod colab
+
+[private]
 default:
     @just --list
 
-# Build the live ISO (auto-detects: native on Arch, Docker on Linux, QEMU VM in Colab)
+# Build the live ISO (auto-detects: native on Arch, Docker on Linux)
 build-iso *FLAGS="":
     #!/usr/bin/env bash
     set -eo pipefail
     if [[ -f /etc/arch-release ]] || command -v pacman >/dev/null 2>&1; then
       echo "Arch Linux environment detected. Building ISO natively..."
-      just build-iso-native {{FLAGS}}
+      just build-iso-native {{ FLAGS }}
     elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
       echo "Docker environment detected. Building ISO in Arch Linux Docker container..."
-      just build-iso-docker {{FLAGS}}
+      just build-iso-docker {{ FLAGS }}
     else
-      echo "No Docker daemon found. Building ISO inside headless Arch Linux QEMU VM..."
-      just build-iso-qemu
+      echo "Error: Docker daemon not running or not found, and host is not Arch Linux." >&2
+      echo "To build the ISO, please install/start Docker or run on Arch Linux." >&2
+      echo "For headless QEMU VM build (Google Colab), run: just colab build-iso" >&2
+      exit 1
     fi
 
 # Build the live ISO inside an Arch Linux Docker container
 build-iso-docker *FLAGS="":
     docker run --privileged --rm \
-      -v "{{justfile_directory()}}:/workspace" \
+      -v "{{ justfile_directory() }}:/workspace" \
       -w /workspace \
       -e SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date +%s)}" \
       archlinux:base-devel \
-      bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl; ./iso/build.sh {{FLAGS}}"
-    sudo chown -R $USER:$USER "{{justfile_directory()}}/iso/build"
-
-# Build the live ISO inside a headless Arch Linux QEMU VM (for Google Colab)
-build-iso-qemu:
-    "{{justfile_directory()}}/scripts/build-iso-qemu.sh"
+      bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl; ./iso/build.sh {{ FLAGS }}"
+    sudo chown -R $USER:$USER "{{ justfile_directory() }}/iso/build"
 
 # Build the live ISO natively (requires an Arch Linux host with pacman)
 build-iso-native *FLAGS="":
-    "{{justfile_directory()}}/iso/build.sh" {{FLAGS}}
+    "{{ justfile_directory() }}/iso/build.sh" {{ FLAGS }}
 
 # Download the latest prebuilt instantOS release ISO from GitHub
 download-iso:
@@ -52,14 +52,14 @@ download-iso:
       exit 1
     fi
     echo "Downloading from $url..."
-    curl -L -o "{{justfile_directory()}}/instantos.iso" "$url"
-    echo "Downloaded to instantos.iso ($(du -h "{{justfile_directory()}}/instantos.iso" | cut -f1))"
+    curl -L -o "{{ justfile_directory() }}/instantos.iso" "$url"
+    echo "Downloaded to instantos.iso ($(du -h "{{ justfile_directory() }}/instantos.iso" | cut -f1))"
 
 # Generate SHA256 checksums for all ISO files in iso/build/iso
 checksums:
     #!/usr/bin/env bash
     set -eo pipefail
-    cd "{{justfile_directory()}}/iso/build/iso"
+    cd "{{ justfile_directory() }}/iso/build/iso"
     shopt -s nullglob
     iso_files=(./*.iso)
     if (( ${#iso_files[@]} == 0 )); then
@@ -85,27 +85,27 @@ vm-up:
 
 # Start the high-performance KVM-accelerated test VM
 vm-up-kvm:
-    docker compose -f "{{justfile_directory()}}/docker-compose.yml" up -d
+    docker compose -f "{{ justfile_directory() }}/docker-compose.yml" up -d
 
 # Start the software-emulated (no-KVM) test VM
 vm-up-tcg:
-    docker compose -f "{{justfile_directory()}}/docker-compose.tcg.yml" up -d
+    docker compose -f "{{ justfile_directory() }}/docker-compose.tcg.yml" up -d
 
 # Stop any running test VM
 vm-down:
-    @docker compose -f "{{justfile_directory()}}/docker-compose.yml" down 2>/dev/null || true
-    @docker compose -f "{{justfile_directory()}}/docker-compose.tcg.yml" down 2>/dev/null || true
+    @docker compose -f "{{ justfile_directory() }}/docker-compose.yml" down 2>/dev/null || true
+    @docker compose -f "{{ justfile_directory() }}/docker-compose.tcg.yml" down 2>/dev/null || true
 
 # Follow logs from the running test VM
 vm-logs:
-    @docker compose -f "{{justfile_directory()}}/docker-compose.yml" logs -f 2>/dev/null || \
-     docker compose -f "{{justfile_directory()}}/docker-compose.tcg.yml" logs -f
+    @docker compose -f "{{ justfile_directory() }}/docker-compose.yml" logs -f 2>/dev/null || \
+     docker compose -f "{{ justfile_directory() }}/docker-compose.tcg.yml" logs -f
 
 # Check tracked shell scripts with shellcheck and shfmt
 lint:
     #!/usr/bin/env bash
     set -eo pipefail
-    cd "{{justfile_directory()}}"
+    cd "{{ justfile_directory() }}"
     while IFS= read -r -d '' file; do
       if [[ "$file" == iso/releng/* ]]; then
         continue
@@ -114,7 +114,7 @@ lint:
         printf '%s\0' "$file"
       fi
     done < <(git ls-files -z) > /tmp/instantos-shell-files
-    
+
     count="$(tr -cd '\0' < /tmp/instantos-shell-files | wc -c)"
     echo "Found ${count} tracked shell scripts"
     if (( count > 0 )); then
@@ -145,7 +145,7 @@ lint:
 fmt:
     #!/usr/bin/env bash
     set -eo pipefail
-    cd "{{justfile_directory()}}"
+    cd "{{ justfile_directory() }}"
     while IFS= read -r -d '' file; do
       if [[ "$file" == iso/releng/* ]]; then
         continue

@@ -6,15 +6,30 @@ if [[ ! -d "/content" ]]; then
     exit 1
 fi
 
-ISO_PATH="${1:-instantos.iso}"
-DISK_PATH="vm-data/storage.qcow2"
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd)
+
+if [[ -n "$1" ]]; then
+    ISO_PATH="$1"
+elif [[ -f "$REPO_ROOT/instantos.iso" ]]; then
+    ISO_PATH="$REPO_ROOT/instantos.iso"
+else
+    shopt -s nullglob
+    build_isos=("$REPO_ROOT"/iso/build/iso/*.iso)
+    if (( ${#build_isos[@]} > 0 )); then
+        ISO_PATH="${build_isos[0]}"
+    else
+        ISO_PATH="$REPO_ROOT/instantos.iso"
+    fi
+fi
+DISK_PATH="$REPO_ROOT/vm-data/storage.qcow2"
 
 if [[ ! -f "$ISO_PATH" ]]; then
-    echo "Error: ISO not found at '$ISO_PATH'. Run 'just download-iso' first." >&2
+    echo "Error: ISO not found at '$ISO_PATH'. Run 'just download-iso' or 'just colab build-iso' first." >&2
     exit 1
 fi
 
-mkdir -p vm-data
+mkdir -p "$REPO_ROOT/vm-data"
 
 # Create 20G virtual hard drive if it doesn't exist
 if [[ ! -f "$DISK_PATH" ]]; then

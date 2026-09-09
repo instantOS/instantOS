@@ -1,0 +1,32 @@
+# instantOS Google Colab justfile
+# Run `just` or `just --list` from this directory, or `just colab <recipe>` from repo root.
+
+set shell := ["bash", "-eo", "pipefail", "-c"]
+
+[private]
+default:
+    @just --list
+
+# Set up QEMU, noVNC, websockify, and build tools in Google Colab
+setup:
+    "{{ source_directory() }}/scripts/setup-colab.sh"
+
+# Build the live ISO inside a headless Arch Linux QEMU VM
+build-iso:
+    "{{ source_directory() }}/scripts/build-iso-qemu.sh"
+
+alias build-iso-qemu := build-iso
+
+# Start instantOS QEMU VM and noVNC web server on port 8006
+vm-up iso="":
+    "{{ source_directory() }}/scripts/run-colab-vm.sh" {{ if iso != "" { quote(iso) } else { "" } }}
+
+alias start := vm-up
+alias run-vm := vm-up
+
+# Stop instantOS QEMU VM and noVNC web server
+vm-down:
+    "{{ source_directory() }}/scripts/stop-colab-vm.sh"
+
+alias stop := vm-down
+alias stop-vm := vm-down

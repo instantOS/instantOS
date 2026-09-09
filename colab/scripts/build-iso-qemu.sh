@@ -4,7 +4,7 @@
 set -eo pipefail
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." &>/dev/null && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/../.." &>/dev/null && pwd)
 BUILD_DIR="$REPO_ROOT/vm-data/arch-builder"
 
 mkdir -p "$BUILD_DIR"
