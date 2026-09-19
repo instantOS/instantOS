@@ -19,15 +19,15 @@ $MENUENTRIES"
 fi
 
 CHOICE="$(echo "$MENUENTRIES" | instantmenu \
-        --insensitive \
-        --border-width 4 \
-        --width auto \
-        --line-height auto \
-        --auto-confirm \
-        --lines 10 \
-        --position top-left \
-        --match-mode dmenu \
-        --animation-length 0)"
+    --insensitive \
+    --border-width 4 \
+    --width auto \
+    --line-height auto \
+    --auto-confirm \
+    --lines 10 \
+    --position top-left \
+    --match-mode dmenu \
+    --animation-length 0)"
 
 [ -z "$CHOICE" ] && exit
 

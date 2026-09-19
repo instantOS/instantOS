@@ -108,11 +108,11 @@ edit entry
 remove entry
 rename entry
 new category' | instantmenu \
-                --border-width 4 \
-                --follow-cursor \
-                --lines 7 \
-                --width auto \
-                --insensitive)"
+        --border-width 4 \
+        --follow-cursor \
+        --lines 7 \
+        --width auto \
+        --insensitive)"
     if [ -z "$ADDCHOICE" ]; then
         echo "no addchoice"
         exit

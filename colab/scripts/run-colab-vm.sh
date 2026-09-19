@@ -16,7 +16,7 @@ elif [[ -f "$REPO_ROOT/instantos.iso" ]]; then
 else
     shopt -s nullglob
     build_isos=("$REPO_ROOT"/iso/build/iso/*.iso)
-    if (( ${#build_isos[@]} > 0 )); then
+    if ((${#build_isos[@]} > 0)); then
         ISO_PATH="${build_isos[0]}"
     else
         ISO_PATH="$REPO_ROOT/instantos.iso"

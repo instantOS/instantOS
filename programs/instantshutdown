@@ -73,7 +73,7 @@ prepareshutdown() {
 }
 
 case "$clean_answer" in
-    shut*|*power*)
+    shut* | *power*)
         zconfirm "shutdown"
         prepareshutdown
         sleep 0.4
@@ -84,7 +84,7 @@ case "$clean_answer" in
             instantsudo poweroff || poweroff
         fi
         ;;
-    reb*|*restart*)
+    reb* | *restart*)
         zconfirm "reboot"
         prepareshutdown
         sleep 0.4
@@ -94,7 +94,7 @@ case "$clean_answer" in
             instantsudo reboot || reboot
         fi
         ;;
-    log*|*logout*|*sign*out*)
+    log* | *logout* | *sign*out*)
         zconfirm "sign out"
         if command -v instantruntimedir >/dev/null 2>&1; then
             rm -f "$(instantruntimedir)/instantosrunning" 2>/dev/null || true
@@ -106,20 +106,20 @@ case "$clean_answer" in
             pkill -u "$USER" -x instantwm || kill -9 -1
         fi
         ;;
-    loc*|*lock*)
+    loc* | *lock*)
         instantutils open lockscreen
         ;;
-    sus*|*sleep*)
+    sus* | *sleep*)
         if command -v systemctl >/dev/null 2>&1; then
             systemctl suspend
         fi
         export NOILOCKPASSWORD="true"
         instantutils open lockscreen
         ;;
-    res*|*wm*)
+    res* | *wm*)
         pkill -x instantwm
         ;;
-    cancel*|"")
+    cancel* | "")
         echo "canceled"
         ;;
     *)
