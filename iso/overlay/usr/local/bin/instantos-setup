@@ -160,6 +160,22 @@ jq -e '
 [[ "$(runuser -u instantos -- git -C "$dotfiles_dir" remote get-url origin)" == "$DOTFILES_URL" ]] ||
     fail "installed dotfiles origin is incorrect"
 
+# Fresh users have no wallpaper configured, so `ins autostart` bails in
+# apply_configured_wallpaper() before dispatching to the compositor and the
+# session keeps instantwm's bare background (seen on the live ISO: no swaybg,
+# appearance.wallpaper_path unset). Seed the default photo; dotfiles do not
+# ship settings.toml today, so creating it here cannot clobber anything.
+live_settings=/home/instantos/.config/instant/settings.toml
+if [[ ! -e "$live_settings" ]]; then
+    install -d -o instantos -g instantos -m 0755 "$(dirname "$live_settings")"
+    cat >"$live_settings" <<'EOF'
+[appearance]
+wallpaper_path = "/usr/share/instantwallpaper/defaultphoto.png"
+EOF
+    chown instantos:instantos "$live_settings"
+    log "seeded default wallpaper setting"
+fi
+
 if [[ ! -f /etc/default/grub ]] || ! grep -q 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' /etc/default/grub; then
     log "setting grub theme"
     echo 'GRUB_THEME="/usr/share/grub/themes/instantos/theme.txt"' >>/etc/default/grub
