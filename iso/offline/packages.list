@@ -46,11 +46,9 @@ instantos
 intel-media-driver
 intel-ucode
 inter-font
-lib32-libva-mesa-driver
 lib32-mesa
 lib32-vulkan-intel
 lib32-vulkan-radeon
-libva-mesa-driver
 lightdm
 lightdm-gtk-greeter
 linux
@@ -84,9 +82,9 @@ nano
 networkmanager
 niri
 ntfs-3g
-nvidia
-nvidia-dkms
-nvidia-lts
+nvidia-open
+nvidia-open-dkms
+nvidia-open-lts
 nvidia-settings
 nvidia-utils
 open-vm-tools
