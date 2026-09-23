@@ -357,7 +357,7 @@ echo "union contains $count explicit packages (pacman -Sw expands this to the
 full dependency closure when the bundle is built)" >&2
 # The manifest is the union of explicit wizard packages, so it is small;
 # what must never be missing are the sentinels of every swept axis.
-for sentinel in linux linux-zen nvidia-dkms sway hyprland lightdm \
+for sentinel in linux linux-zen nvidia-open-dkms sway hyprland lightdm \
     linux-firmware-nvidia blueman instantos gum ntfs-3g; do
     grep -qx "$sentinel" "$workdir/packages.list" || {
         echo "error: sentinel package $sentinel missing from the union; the oracle sweep failed" >&2
