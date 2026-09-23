@@ -197,7 +197,13 @@ log "installing developer tools from bundled source"
 [[ "$(</usr/local/share/instanttools/version)" == "${INSTANTTOOLS_COMMIT:0:10}" ]] ||
     fail "installed instantTOOLS version does not match the source manifest"
 
-rm -rf "$build_inputs"
+# The bundled source snapshots stay on the image for offline installs:
+# `ins` copies the dotfiles snapshot into the target when no network is
+# available (offline-image marker written by build.sh --offline). Online
+# images keep slimming themselves by dropping the sources after setup.
+if [[ ! -e /usr/share/instantos/offline-image ]]; then
+    rm -rf "$build_inputs"
+fi
 
 cat >"$flag" <<EOF
 status=complete

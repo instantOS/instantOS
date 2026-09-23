@@ -56,19 +56,16 @@ cp "$SCRIPT_DIR"/syslinux/* "$ISO_BUILD/instantlive/syslinux/"
 
 if ((offline)); then
     # Offline variant: a file://-first mirrorlist ships in the live image
-    # (network mirrors below heal bundle gaps), and the [instant] section
-    # gains the bundle as its first server. The mkarchiso build chroot has
-    # no /run/archiso, so the https entry after it keeps build-time pacman
-    # working (proven file://-missing fallback, offlineiso.md §10.6).
+    # (network mirrors below heal bundle gaps). The profile's pacman.conf
+    # is build-time-only — mkarchiso does not propagate it into the
+    # airootfs (offlineiso.md §10.4) — and the installer appends the
+    # [instant] section to the target's pacman.conf at install time, so
+    # nothing else is needed here.
     cp -a "$SCRIPT_DIR/overlay-offline/." "$ISO_BUILD/instantlive/airootfs/"
-    sed -i \
-        's|^Server = https://instantos.io/packages|Server = file:///run/archiso/bootmnt/offline-repo/$repo/os/$arch\nServer = https://instantos.io/packages|' \
-        "$ISO_BUILD/instantlive/pacman.conf"
-    grep -q 'file:///run/archiso/bootmnt/offline-repo' \
-        "$ISO_BUILD/instantlive/pacman.conf" || {
-        echo "error: bundle server injection into pacman.conf failed" >&2
-        exit 1
-    }
+    # Tells instantos-setup to keep the bundled source snapshots: the
+    # offline installer copies the dotfiles snapshot into the target.
+    mkdir -p "$ISO_BUILD/instantlive/airootfs/usr/share/instantos"
+    touch "$ISO_BUILD/instantlive/airootfs/usr/share/instantos/offline-image"
 fi
 
 install -Dm755 "$REPO_ROOT/rootinstall.sh" \

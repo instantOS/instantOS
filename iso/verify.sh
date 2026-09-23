@@ -179,10 +179,12 @@ if ((offline)); then
     [[ -z "$oversized" ]] ||
         fail "file crosses the 4 GiB single-file safety margin: $oversized"
 
-    # the live image must carry and prefer the bundle
+    # the live image must carry and prefer the bundle. The shipped
+    # /etc/pacman.conf is stock pacman (mkarchiso does not propagate the
+    # profile conf, §10.4); the [instant] repo is appended to the target
+    # by the installer at install time.
+    assert_file usr/share/instantos/offline-image
     assert_file usr/share/instantos/build-inputs/dotfiles/.git/config
-    assert_contains etc/pacman.conf 'Server = file:///run/archiso/bootmnt/offline-repo/$repo/os/$arch'
-    assert_contains etc/pacman.conf 'SigLevel    = Optional TrustAll'
     assert_contains etc/pacman.d/mirrorlist \
         'Server = file:///run/archiso/bootmnt/offline-repo/$repo/os/$arch'
     first_server="$(image_cat etc/pacman.d/mirrorlist | grep -E '^[[:space:]]*Server' | head -n 1)"

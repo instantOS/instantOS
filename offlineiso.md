@@ -644,9 +644,16 @@ tests run during Phase 0 / implementation — no further decisions needed.
    shallow clone, `resolve_repo_name` falls back to the basename (`dotfiles`).
    Implemented with a new `--origin <url>` flag that rewrites git's origin and
    the stored `dots.toml` URL after a local clone (§4.5.8).
-4. *(verification)* **Does pacstrap `-C` propagate `pacman.conf` into airootfs?**
-   Determines whether the live `[instant]` section exists at runtime (nothing critical
-   rides on it — no live dep comes from `[instant]` — but confirm).
+4. **Does pacstrap `-C` propagate `pacman.conf` into airootfs?** —
+   *(verification)* **Resolved 2026-09-23: NO.** The shipped
+   `/etc/pacman.conf` is the stock pacman package config (`[core]`,
+   `[extra]`); the profile's `releng/pacman.conf` is build-time-only.
+   Consequence: the offline build does **not** sed a `file://` server into
+   it (removed from `build.sh` — dead plumbing); the live session needs no
+   `[instant]` repo (live deps come from core/extra via the shipped
+   `file://`-first mirrorlist), and the installer appends `[instant]` plus
+   the mode-aware `/etc/pacman.d/instantmirrorlist` to the **target** at
+   install time, inside the chroot where the bind resolves the bundle.
 5. *(verification)* **`gum`'s repository** (extra vs instant) — affects the bundle list
    and live-dep resolution.
 6. *(verification)* **Missing-`file://`-path-first fallback** test (db + package level)
