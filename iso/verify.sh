@@ -3,7 +3,7 @@
 set -euo pipefail
 
 usage() {
-    echo "usage: $0 ISO_PATH [EXPECTED_VERSION]" >&2
+    echo "usage: $0 ISO_PATH [EXPECTED_VERSION] [--offline]" >&2
     exit 2
 }
 
@@ -12,10 +12,18 @@ fail() {
     exit 1
 }
 
-[[ $# -ge 1 && $# -le 2 ]] || usage
+offline=0
+positional=()
+for arg in "$@"; do
+    case "$arg" in
+        --offline) offline=1 ;;
+        *) positional+=("$arg") ;;
+    esac
+done
+((${#positional[@]} >= 1 && ${#positional[@]} <= 2)) || usage
 
-iso_path="$1"
-expected_version="${2:-}"
+iso_path="${positional[0]}"
+expected_version="${positional[1]:-}"
 [[ -f "$iso_path" ]] || fail "ISO does not exist: $iso_path"
 
 for command in bsdtar git unsquashfs; do
@@ -122,6 +130,66 @@ fi
 
 if image_cat etc/pacman.d/hooks/90-instantos-setup.hook >/dev/null 2>&1; then
     fail "build-only instantOS setup hook remains in the final image"
+fi
+
+# ---------------------------------------------------------------------------
+# Offline bundle checks (offline variant only)
+# ---------------------------------------------------------------------------
+if ((offline)); then
+    bundle_listing="$tmpdir/bundle-listing.txt"
+    bsdtar -tf "$iso_path" >"$bundle_listing"
+
+    for repo in core extra multilib instant; do
+        grep -Fxq "offline-repo/$repo/os/x86_64/$repo.db" "$bundle_listing" ||
+            fail "bundle repository database missing: offline-repo/$repo"
+    done
+
+    grep -Fxq "offline-repo/regions/regions.html" "$bundle_listing" ||
+        fail "bundle mirror-region snapshot is missing regions.html"
+    grep -qE '^offline-repo/regions/mirrorlists/[^/]+\.txt$' "$bundle_listing" ||
+        fail "bundle mirror-region snapshot has no per-country mirrorlists"
+
+    # every manifest package must be staged, whatever its version
+    bsdtar -xOf "$iso_path" offline-repo/packages.list >"$tmpdir/manifest.txt" ||
+        fail "bundle manifest packages.list is missing"
+    grep -E '^offline-repo/(core|extra|multilib|instant)/os/x86_64/[^/]+\.pkg\.tar\.zst$' \
+        "$bundle_listing" |
+        awk '{p=$0; sub(/^.*x86_64\//, "", p); sub(/-[^-]+-[^-]+-[^-]+\.pkg\.tar\.zst$/, "", p); print p}' |
+        sort -u >"$tmpdir/staged-names.txt"
+    grep -Ev '^\s*$|^#' "$tmpdir/manifest.txt" | sort -u >"$tmpdir/manifest-names.txt"
+    missing_packages=$(comm -23 "$tmpdir/manifest-names.txt" "$tmpdir/staged-names.txt")
+    [[ -z "$missing_packages" ]] ||
+        fail "packages in the manifest but not in the bundle: $missing_packages"
+
+    # signed repositories must ship every signature; the instant repo is
+    # unsigned (SigLevel = Optional TrustAll travels with the section)
+    while IFS= read -r archive; do
+        grep -Fxq "$archive.sig" "$bundle_listing" ||
+            fail "package archive without a signature: $archive"
+    done < <(grep -E '^offline-repo/(core|extra|multilib)/os/x86_64/[^/]+\.pkg\.tar\.zst$' \
+        "$bundle_listing")
+
+    # ISO9660 has a 4 GiB single-file limit; keep every file well under it
+    bsdtar -tvf "$iso_path" >"$tmpdir/bundle-sizes.txt"
+    [[ -s "$tmpdir/bundle-sizes.txt" ]] || fail "ISO content listing is empty"
+    bad_format=$(awk '$5 !~ /^[0-9]+$/ { print $0; exit }' "$tmpdir/bundle-sizes.txt")
+    [[ -z "$bad_format" ]] ||
+        fail "could not assert file sizes; unexpected bsdtar -tvf output: $bad_format"
+    oversized=$(awk '$5 + 0 > 4227858432 { print $0; exit }' "$tmpdir/bundle-sizes.txt")
+    [[ -z "$oversized" ]] ||
+        fail "file crosses the 4 GiB single-file safety margin: $oversized"
+
+    # the live image must carry and prefer the bundle
+    assert_file usr/share/instantos/build-inputs/dotfiles/.git/config
+    assert_contains etc/pacman.conf 'Server = file:///run/archiso/bootmnt/offline-repo/$repo/os/$arch'
+    assert_contains etc/pacman.conf 'SigLevel    = Optional TrustAll'
+    assert_contains etc/pacman.d/mirrorlist \
+        'Server = file:///run/archiso/bootmnt/offline-repo/$repo/os/$arch'
+    first_server="$(image_cat etc/pacman.d/mirrorlist | grep -E '^[[:space:]]*Server' | head -n 1)"
+    grep -Fq 'file://' <<<"$first_server" ||
+        fail "the shipped mirrorlist does not prefer the offline bundle: $first_server"
+
+    echo "verified offline bundle in $(basename "$iso_path")"
 fi
 
 echo "verified instantOS customizations in $(basename "$iso_path")"

@@ -33,12 +33,41 @@ build-iso-docker *FLAGS="":
       -w /workspace \
       -e SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date +%s)}" \
       archlinux:base-devel \
-      bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl; ./iso/build.sh {{ FLAGS }}"
+      bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl jq; ./iso/build.sh {{ FLAGS }}"
     sudo chown -R $USER:$USER "{{ justfile_directory() }}/iso/build"
 
 # Build the live ISO natively (requires an Arch Linux host with pacman)
 build-iso-native *FLAGS="":
     "{{ justfile_directory() }}/iso/build.sh" {{ FLAGS }}
+
+# Build the offline-install capable ISO (auto-detects: native on Arch, Docker)
+build-iso-offline *FLAGS="":
+    #!/usr/bin/env bash
+    set -eo pipefail
+    if [[ -f /etc/arch-release ]] || command -v pacman >/dev/null 2>&1; then
+      echo "Arch Linux environment detected. Building offline ISO natively..."
+      just build-iso-offline-native {{ FLAGS }}
+    elif command -v docker >/dev/null 2>&1 && docker info >/dev/null 2>&1; then
+      echo "Docker environment detected. Building offline ISO in Docker container..."
+      just build-iso-offline-docker {{ FLAGS }}
+    else
+      echo "Error: Docker daemon not running or not found, and host is not Arch Linux." >&2
+      exit 1
+    fi
+
+# Build the offline ISO inside an Arch Linux Docker container
+build-iso-offline-docker *FLAGS="":
+    docker run --privileged --rm \
+      -v "{{ justfile_directory() }}:/workspace" \
+      -w /workspace \
+      -e SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date +%s)}" \
+      archlinux:base-devel \
+      bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl jq; ./iso/build.sh --offline {{ FLAGS }}"
+    sudo chown -R $USER:$USER "{{ justfile_directory() }}/iso/build"
+
+# Build the offline ISO natively (requires an Arch Linux host with pacman)
+build-iso-offline-native *FLAGS="":
+    "{{ justfile_directory() }}/iso/build.sh" --offline {{ FLAGS }}
 
 # Download the latest prebuilt instantOS release ISO from GitHub
 download-iso:

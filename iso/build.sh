@@ -3,9 +3,25 @@
 # produce an installation iso for instantOS
 # run this on an instantOS installation
 # Depending on your setup might also work on Arch or Manjaro
+#
+# Flags:
+#   --offline  build the offline-install capable variant: bundles a local
+#              pacman repository (iso/offline/) into the ISO and ships a
+#              file://-first mirrorlist (see offlineiso.md)
 
 echo "starting build of instantOS live iso"
 set -eo pipefail
+
+offline=0
+for arg in "$@"; do
+    case "$arg" in
+        --offline) offline=1 ;;
+        *)
+            echo "unknown flag: $arg (supported: --offline)" >&2
+            exit 2
+            ;;
+    esac
+done
 
 if ! command -v mkarchiso >/dev/null 2>&1; then
     echo "installing archiso build tools"
@@ -37,6 +53,23 @@ cp -r "$SCRIPT_DIR/releng" "$ISO_BUILD/instantlive"
 # `overlay/` is the single source of truth for instantOS airootfs additions.
 cp -a "$SCRIPT_DIR/overlay/." "$ISO_BUILD/instantlive/airootfs/"
 cp "$SCRIPT_DIR"/syslinux/* "$ISO_BUILD/instantlive/syslinux/"
+
+if ((offline)); then
+    # Offline variant: a file://-first mirrorlist ships in the live image
+    # (network mirrors below heal bundle gaps), and the [instant] section
+    # gains the bundle as its first server. The mkarchiso build chroot has
+    # no /run/archiso, so the https entry after it keeps build-time pacman
+    # working (proven file://-missing fallback, offlineiso.md §10.6).
+    cp -a "$SCRIPT_DIR/overlay-offline/." "$ISO_BUILD/instantlive/airootfs/"
+    sed -i \
+        's|^Server = https://instantos.io/packages|Server = file:///run/archiso/bootmnt/offline-repo/$repo/os/$arch\nServer = https://instantos.io/packages|' \
+        "$ISO_BUILD/instantlive/pacman.conf"
+    grep -q 'file:///run/archiso/bootmnt/offline-repo' \
+        "$ISO_BUILD/instantlive/pacman.conf" || {
+        echo "error: bundle server injection into pacman.conf failed" >&2
+        exit 1
+    }
+fi
 
 install -Dm755 "$REPO_ROOT/rootinstall.sh" \
     "$ISO_BUILD/instantlive/airootfs/usr/share/instantos/rootinstall.sh"
@@ -115,6 +148,13 @@ add_liveutils_assets() {
 prepare_build_inputs
 add_liveutils_assets
 
+if ((offline)); then
+    echo "building the offline package bundle (downloads the dependency closure)"
+    "$SCRIPT_DIR/offline/mk-package-list.sh" -o "$ISO_BUILD/packages.list"
+    "$SCRIPT_DIR/offline/mk-bundle.sh" "$ISO_BUILD/packages.list" \
+        "$ISO_BUILD/offline-repo"
+fi
+
 cd "$ISO_BUILD/"
 mkdir "$ISO_BUILD"/iso
 sudo mkarchiso -v -o "$ISO_BUILD/iso/" "$ISO_BUILD/instantlive"
@@ -125,7 +165,31 @@ if ((${#iso_files[@]} != 1)); then
     echo "expected exactly one ISO, found ${#iso_files[@]}" >&2
     exit 1
 fi
+iso_path="${iso_files[0]}"
 
-"$SCRIPT_DIR/verify.sh" "${iso_files[0]}" "$ISO_VERSION"
+if ((offline)); then
+    # The bundle goes in at ISO root after the fact: inside airootfs.sfs it
+    # would hit the ISO9660 4 GiB single-file limit (offlineiso.md §4.2).
+    # -boot_image any replay preserves the hybrid MBR/El Torito/GPT layout.
+    if ! command -v xorriso >/dev/null 2>&1; then
+        echo "xorriso is required for the offline bundle injection" >&2
+        exit 1
+    fi
+    echo "injecting the offline bundle into the ISO root"
+    sudo xorriso -indev "$iso_path" -outdev "$iso_path.new" \
+        -boot_image any replay \
+        -map "$ISO_BUILD/offline-repo" /offline-repo \
+        -commit
+    sudo mv "$iso_path.new" "$iso_path"
+    sudo chown "$(id -u):$(id -g)" "$iso_path"
+    iso_path="$ISO_BUILD/iso/instantos-$ISO_VERSION-offline.iso"
+    mv "${iso_files[0]}" "$iso_path"
+fi
+
+if ((offline)); then
+    "$SCRIPT_DIR/verify.sh" "$iso_path" "$ISO_VERSION" --offline
+else
+    "$SCRIPT_DIR/verify.sh" "$iso_path" "$ISO_VERSION"
+fi
 
 echo "finished building instantOS installation iso"
