@@ -20,7 +20,6 @@ hidefile gtk-lshw
 hidefile xfce4-about
 hidefile lxsession-default-apps
 hidefile lstopo
-hidefile rox
 hidefile qv4l2
 hidefile qvidcap
 hidefile fma-config-tool
