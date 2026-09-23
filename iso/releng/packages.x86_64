@@ -8,7 +8,6 @@ bcachefs-tools
 bind
 bolt
 brltty
-broadcom-wl
 btrfs-progs
 clonezilla
 cloud-init
@@ -159,6 +158,9 @@ mako
 netctl
 os-prober
 pamixer
+# instantwm's Wayland set_wallpaper() spawns swaybg (X11 uses feh); without it
+# `ins wallpaper set` fails and sessions render the bare compositor background.
+swaybg
 ripgrep
 wget
 pipewire-jack
@@ -168,8 +170,8 @@ ttf-liberation
 tzupdate
 xdg-desktop-portal-gtk
 xdg-user-dirs-gtk
-xf86-input-evdev
-xf86-input-synaptics
-xorg
-xorg-drivers
-xorg-xinit
+# X clients from instantdepend (feh/rofi/xdotool/xclip) run in the Wayland
+# session through XWayland; the Xorg server itself is not shipped — greetd
+# autologins straight into instantwm --backend drm and no package depends on
+# xorg-server.
+xorg-xwayland
