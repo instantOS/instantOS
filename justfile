@@ -57,10 +57,11 @@ build-iso-offline *FLAGS="":
 
 # Build the offline ISO inside an Arch Linux Docker container
 build-iso-offline-docker *FLAGS="":
-    docker run --privileged --rm \
+    docker run --rm --privileged \
       -v "{{ justfile_directory() }}:/workspace" \
       -w /workspace \
       -e SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(date +%s)}" \
+      -e LOCAL_INS_BIN="${LOCAL_INS_BIN:-}" \
       archlinux:base-devel \
       bash -c "set -e; pacman -Syu --noconfirm --needed archiso git sudo curl jq; ./iso/build.sh --offline {{ FLAGS }}"
     sudo chown -R $USER:$USER "{{ justfile_directory() }}/iso/build"

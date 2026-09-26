@@ -4,6 +4,7 @@ tags
 node_modules
 iso/build
 iso/build*.log
+iso/local-ins/
 /instantos.iso
 /*.iso
 /vm-data

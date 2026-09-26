@@ -8,6 +8,13 @@
 #   --offline  build the offline-install capable variant: bundles a local
 #              pacman repository (iso/offline/) into the ISO and ships a
 #              file://-first mirrorlist (see offlineiso.md)
+#
+# Environment:
+#   LOCAL_INS_BIN  optionally inject a freshly built installer binary into
+#                  the live image at /usr/local/bin/ins, where PATH shadows
+#                  the packaged /usr/bin/ins. Lets a local ISO carry
+#                  checkout-fresh installer code without publishing a
+#                  package release (used by the e2e suite's --offline mode).
 
 echo "starting build of instantOS live iso"
 set -eo pipefail
@@ -75,6 +82,12 @@ install -Dm755 "$REPO_ROOT/rootinstall.sh" \
 mkdir -p "$ISO_BUILD/instantlive/airootfs/etc/instantos"
 ISO_VERSION="$(date -u --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)"
 echo "$ISO_VERSION" >"$ISO_BUILD/instantlive/airootfs/etc/instantos/version"
+
+if [ -n "${LOCAL_INS_BIN:-}" ]; then
+    install -Dm755 "$LOCAL_INS_BIN" \
+        "$ISO_BUILD/instantlive/airootfs/usr/local/bin/ins"
+    echo "injected local ins ($LOCAL_INS_BIN) at /usr/local/bin/ins"
+fi
 
 fetch_source_repo() {
     local url="$1"
