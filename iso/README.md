@@ -82,6 +82,39 @@ with no network at all. The design and its evidence live in
 
 The installer (`ins`) detects the bundle at `/run/archiso/bootmnt/offline-repo`
 and switches to opportunistic offline mode on its own; nothing about the
-online ISO or the online install path changes. Phase 3 (a no-NIC end-to-end
-install test) and Phase 4 (release hosting: the offline ISO exceeds GitHub's
-2 GiB asset cap and needs SourceForge) are still pending — see offlineiso.md.
+online ISO or the online install path changes. See offlineiso.md for the
+design and installation testing.
+
+## Publishing offline releases
+
+The release workflow builds the online and offline variants on separate runners.
+Pushes to `release`, and manual runs with `create_release` enabled, publish the
+offline ISO using SFTP to the SourceForge `instantos` project as `paperbenni`.
+Add the **`SOURCEFORGE_SSH_KEY`** GitHub Actions repository secret containing
+the complete, unencrypted SSH private key authorized on that SourceForge account.
+The optional repository variable `SOURCEFORGE_USERNAME` overrides `paperbenni`.
+The publisher checks the server against SourceForge's
+[published SSH fingerprints](https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/).
+
+Stable website download links:
+
+- [Offline ISO](https://sourceforge.net/projects/instantos/files/offline/latest/instantos-offline-latest.iso/download)
+- [SHA256 checksum](https://sourceforge.net/projects/instantos/files/offline/latest/instantos-offline-latest.iso.sha256/download)
+
+`iso/publish-sourceforge.py` manages only `/home/frs/project/instantos/offline`.
+It keeps four ISOs total: the real file in `latest/` and three archived builds in
+`build-<workflow run number>-<attempt>/`. Each directory includes a checksum and
+build identifier. The stable filename does not require symlink support or store
+an extra ISO copy. Other SourceForge files are untouched.
+
+Publishing is serialized by the workflow's `sourceforge-offline` concurrency group.
+Before transfer, the publisher removes abandoned `pending/` uploads and prunes
+archives to leave room for the incoming ISO within the four-ISO budget. A failed
+upload preserves the previous latest, but already pruned archives stay deleted.
+The complete ISO and checksum are promoted by directory renames; there can be a
+brief gap at the stable path between renames, and SourceForge mirrors may take
+time to reflect changes. A failure during promotion restores the previous latest
+when the connection remains available. A runner interruption between renames
+can leave the previous latest in its archive until the next successful upload.
+Older workflow runs never replace a newer latest build. GitHub concurrency can
+replace queued pending runs, so intermediate builds may be skipped.

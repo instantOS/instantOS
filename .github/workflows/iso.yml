@@ -16,6 +16,63 @@ permissions:
   contents: write
 
 jobs:
+  publish-offline:
+    name: Build and publish offline ISO to SourceForge
+    if: github.ref_name == 'release' || inputs.create_release
+    runs-on: ubuntu-26.04
+    # Retention and latest promotion must never run concurrently.
+    concurrency:
+      group: sourceforge-offline
+      cancel-in-progress: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check SourceForge configuration
+        env:
+          SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
+        run: |
+          if [[ -z "$SOURCEFORGE_SSH_KEY" ]]; then
+            echo 'Add the SOURCEFORGE_SSH_KEY repository secret before publishing.' >&2
+            exit 1
+          fi
+
+      - name: Set build version
+        run: echo "SOURCE_DATE_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Free runner disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          df -h
+
+      - name: Set up Just
+        uses: extractions/setup-just@v2
+
+      - name: Install SFTP client dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes python3-paramiko
+
+      - name: Test SourceForge publisher
+        run: /usr/bin/python3 -m unittest discover -s iso/tests -v
+
+      - name: Build offline ISO
+        run: just build-iso-offline
+
+      - name: Publish offline ISO
+        env:
+          SOURCEFORGE_USERNAME: ${{ vars.SOURCEFORGE_USERNAME || 'paperbenni' }}
+          SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
+        run: |
+          shopt -s nullglob
+          iso_files=(iso/build/iso/*-offline.iso)
+          if (( ${#iso_files[@]} != 1 )); then
+            echo 'Expected exactly one offline ISO' >&2
+            exit 1
+          fi
+          /usr/bin/python3 iso/publish-sourceforge.py "${iso_files[0]}" \
+            "build-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+
   build-iso:
     name: Build instantOS ISO
     runs-on: ubuntu-26.04
@@ -86,6 +143,8 @@ jobs:
           # instantOS Live ISO Release (${VERSION_DATE})
 
           Automated build from commit [\`${{ github.sha }}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) on branch \`${{ github.ref_name }}\`.
+
+          [Download the latest offline ISO](https://sourceforge.net/projects/instantos/files/offline/latest/instantos-offline-latest.iso/download) ([SHA256](https://sourceforge.net/projects/instantos/files/offline/latest/instantos-offline-latest.iso.sha256/download)). The offline build publishes separately; check its workflow job for completion.
 
           ### Checksums (SHA256)
           \`\`\`text
