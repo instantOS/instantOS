@@ -229,7 +229,7 @@ already merges overlays), **and** make `verify.sh` assert
 |---|---|---|
 | `iso/overlay-offline/etc/pacman.d/mirrorlist` *(offline build only, merged after `overlay/`)* | `Server = file:///run/archiso/bootmnt/offline-repo/$repo/os/$arch` **first**, stock https mirrors below | N/A — online build doesn't ship the overlay; deterministic content regardless of build host (today's live mirrorlist = build host's!) |
 | `releng/pacman.conf` `[instant]` (`:87–89`) | Insert the same `file://` line first, keep `https://instantos.io/packages` second. Recommended: insert conditionally in `build.sh` for the offline variant (zero risk to current builds); unconditional-with-fallback also works | fallback → https (needs the §10.6 missing-path test) |
-| `INSTANT_MIRRORLIST` constant (`instantCLI/src/common/instantmirrorlist`, exposed at `common/pacman.rs:5`) | Prepend the `file://` line when a bundle is detected — opportunistic keeps https below, strict goes file://-only (used for the **target's** `[instant]`); online writes unchanged | `file://` stat fails → https fallback → unchanged behavior |
+| `INSTANT_MIRRORLIST` constant (`instantCLI/src/arch/instantmirrorlist`, exposed at `src/arch/execution/pacman.rs:20`) | Prepend the `file://` line when a bundle is detected — opportunistic keeps https below, strict goes file://-only (used for the **target's** `[instant]`); online writes unchanged | `file://` stat fails → https fallback → unchanged behavior |
 | Target `/etc/pacman.d/mirrorlist` | **No explicit change needed**: pacstrap copies the live one into the target, and the chroot bind (§4.4) makes the same absolute path resolve inside the chroot | n/a |
 
 Fallback ordering is proven at **database level and package level** ✅ (`test7.sh`
