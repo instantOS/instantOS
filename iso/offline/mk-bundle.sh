@@ -82,6 +82,14 @@ fi
 
 pacman_args=(--config "$scratch_conf" --dbpath "$scratch/db" --cachedir "$scratch/cache")
 
+# This script also runs independently of build.sh. Initialize the keyring
+# selected by the scratch config before fetching the signed instant database.
+if ((EUID == 0)); then
+    "$script_dir/../../repo.sh" --bootstrap-key "$scratch_conf"
+else
+    sudo "$script_dir/../../repo.sh" --bootstrap-key "$scratch_conf"
+fi
+
 echo "syncing databases (scratch db: $scratch/db)"
 pacman "${pacman_args[@]}" -Sy
 
