@@ -23,6 +23,7 @@ firefox-i18n-pt-pt
 firefox-i18n-ru
 firefox-i18n-zh-cn
 firefox-i18n-zh-tw
+fuzzel
 fzf
 gdm
 git
@@ -46,6 +47,7 @@ instantos
 intel-media-driver
 intel-ucode
 inter-font
+kbd
 lib32-mesa
 lib32-vulkan-intel
 lib32-vulkan-radeon
@@ -81,6 +83,9 @@ mesa
 nano
 networkmanager
 niri
+noto-fonts
+noto-fonts-cjk
+noto-fonts-emoji
 ntfs-3g
 nvidia-open
 nvidia-open-dkms
@@ -95,9 +100,11 @@ polkit
 qemu-guest-agent
 sudo
 sway
+swaybg
 swayidle
 swaylock
 ttf-jetbrains-mono-nerd
+ttf-liberation
 vim
 virtualbox-guest-utils
 vulkan-intel

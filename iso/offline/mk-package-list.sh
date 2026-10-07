@@ -199,10 +199,15 @@ collect_packages() {
             program = tok[1]
             i = 2
             if (program == "pacstrap") {
-                while (i <= n && tok[i] ~ /^-/) i++
+                while (i <= n && tok[i] ~ /^-/) {
+                    if (tok[i] == "-C") i += 2
+                    else i++
+                }
                 if (i > n) next
                 i++                        # mount point
             } else if (program == "pacman") {
+                # Current commands put --config before the operation.
+                while (i <= n && (tok[i] == "--config" || tok[i] == "--sysroot")) i += 2
                 if (i > n || tok[i] != "-S") next
                 i++
             } else {
