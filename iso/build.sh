@@ -135,6 +135,13 @@ prepare_build_inputs() {
         "$INSTANTTOOLS_REF" "$INSTANTTOOLS_BRANCH"
     fetch_source_repo "$LIVEUTILS_URL" liveutils "$LIVEUTILS_REF" "$LIVEUTILS_BRANCH"
 
+    # Resolve plugin sources on the host, before entering the network-free
+    # mkarchiso chroot. The live hook generates caches at their final paths.
+    if ! command -v sheldon >/dev/null 2>&1; then
+        sudo pacman -S --needed --noconfirm sheldon
+    fi
+    "$SCRIPT_DIR/prepare-sheldon.sh" "$ISO_BUILD/sources/dotfiles" "$inputs/sheldon"
+
     mkdir -p "$inputs"
     cp -a "$ISO_BUILD/sources/dotfiles" "$inputs/dotfiles"
     cp -a "$ISO_BUILD/sources/instantTOOLS" "$inputs/instantTOOLS"

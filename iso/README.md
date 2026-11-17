@@ -21,7 +21,7 @@ The live image version in `/etc/instantos/version` is generated at build time
 from `SOURCE_DATE_EPOCH`, or from the current time when it is unset. The same
 UTC date is used by the archiso profile for its ISO version and label.
 
-The live user is configured for GDM autologin and its default instantOS
+The live user is configured for greetd autologin and its default instantOS
 dotfiles repository is cloned and applied with `ins dot` by `instantos-setup`.
 The welcome app starts via XDG autostart and launches the TUI installer in a
 terminal.
@@ -51,6 +51,27 @@ customization therefore fails the entire ISO build.
 Set `DOTFILES_REF`, `INSTANTTOOLS_REF`, or `LIVEUTILS_REF` to build from a
 specific branch, tag, or commit. Their corresponding `*_BRANCH` variables
 control the branch retained in the bundled Git checkout and default to `main`.
+
+## Live shell and boot appearance
+
+Before `mkarchiso`, `prepare-sheldon.sh` resolves the plugins pinned by the
+bundled dotfiles and relocates their lock file to the live user's paths.
+The build host needs `sheldon` (installed automatically when missing) and
+Python 3. `instantos-setup` copies the plugin sources into the live home and
+runs the same interactive zsh initialization as the installer, generating
+Sheldon's source and compiled caches without downloading in the chroot.
+Image verification requires these caches.
+
+The BIOS Syslinux menu uses a flat Catppuccin Mocha background, no logo,
+and a menu width and offset that fit its 80-column screen. UEFI keeps
+systemd-boot's plain menu. Normal boot entries enable `quiet splash`;
+speech entries keep verbose boot output. The live initramfs includes KMS
+and Plymouth, using the instantOS theme with no display delay.
+
+Releng was refreshed from the installed archiso 92 profile. Downstream
+branding, package repositories, signing initialization, KMS, initramfs preset,
+and file permissions were reapplied. Upstream's architecture-specific Memtest
+EFI filenames, ARM profile inputs, and current profile options were retained.
 
 ## Offline-install variant
 

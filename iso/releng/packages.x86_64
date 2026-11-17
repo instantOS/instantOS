@@ -175,3 +175,8 @@ xdg-user-dirs-gtk
 # autologins straight into instantwm --backend drm and no package depends on
 # xorg-server.
 xorg-xwayland
+
+# Live shell bootstrap and early boot splash
+sheldon
+plymouth
+plymouth-theme-instantos

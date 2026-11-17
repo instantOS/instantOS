@@ -116,6 +116,10 @@ class ImageVerificationTests(unittest.TestCase):
         for path in ("opt/instantos/rootinstall", "usr/local/bin/ibuild", "usr/share/instantos/offline-image", "usr/share/instantos/build-inputs/dotfiles/.git/config"):
             self.write(path, "fixture\n")
         self.write("home/instantos/.zshrc", "fixture\n")
+        for path in ("home/instantos/.config/sheldon/source.zsh", "home/instantos/.config/sheldon/source.zsh.zwc", "home/instantos/.local/share/sheldon/plugins.lock"):
+            self.write(path, "fixture\n")
+        self.write("etc/mkinitcpio.conf.d/archiso.conf", "HOOKS=(base udev kms plymouth archiso)\n")
+        self.write("etc/plymouth/plymouthd.conf", "[Daemon]\nTheme=instantos\n")
         self.write(f"{dots}/dots/.zshrc", "fixture\n")
         self.write(f"{dots}/.git/config", "https://github.com/instantOS/dotfiles\n")
         self.write(f"{dots}/.git/HEAD", "ref: refs/heads/main\n")
@@ -163,6 +167,12 @@ class ImageVerificationTests(unittest.TestCase):
             for file in sorted(self.bundle.rglob("*")):
                 output.add(file, arcname=str(file.relative_to(self.bundle)), recursive=False)
         return run("bash", str(REPO / "iso/verify.sh"), str(archive), "--offline")
+
+    def test_missing_shell_cache_is_rejected(self):
+        (self.image / "home/instantos/.config/sheldon/source.zsh").unlink()
+        result = self.verify()
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("sheldon/source.zsh", result.stderr)
 
     def test_valid_signed_bundle(self):
         result = self.verify()

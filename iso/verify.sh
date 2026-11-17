@@ -86,6 +86,11 @@ done
 
 assert_file opt/instantos/rootinstall
 assert_file home/instantos/.zshrc
+assert_file home/instantos/.config/sheldon/source.zsh
+assert_file home/instantos/.config/sheldon/source.zsh.zwc
+assert_file home/instantos/.local/share/sheldon/plugins.lock
+assert_contains etc/mkinitcpio.conf.d/archiso.conf 'kms plymouth'
+assert_contains etc/plymouth/plymouthd.conf 'Theme=instantos'
 assert_file home/instantos/.config/instant/dots.toml
 assert_file home/instantos/.local/share/instant/dots/dotfiles/.git/config
 assert_file usr/local/bin/ibuild

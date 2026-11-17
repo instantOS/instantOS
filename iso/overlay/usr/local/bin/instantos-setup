@@ -121,6 +121,16 @@ fi
 log "running instantOS rootinstall"
 bash /usr/share/instantos/rootinstall.sh
 
+# plymouth owns this config, so write it after package extraction and before
+# the later 90-mkinitcpio hook builds the live initramfs.
+[[ -f /usr/share/plymouth/themes/instantos/instantos.plymouth ]] || fail "instantOS Plymouth theme is missing"
+install -d /etc/plymouth
+cat >/etc/plymouth/plymouthd.conf <<'EOF'
+[Daemon]
+Theme=instantos
+ShowDelay=0
+EOF
+
 log "seeding and applying instantOS dotfiles for the live user"
 dotfiles_dir="/home/instantos/.local/share/instant/dots/dotfiles"
 if [[ ! -d "$dotfiles_dir/.git" ]]; then
@@ -144,6 +154,18 @@ if ! runuser -u instantos -- env HOME=/home/instantos \
         --read-only
 fi
 runuser -u instantos -- env HOME=/home/instantos ins dot apply
+
+log "initializing the live user's shell from bundled plugin sources"
+require_command sheldon
+[[ -s "$build_inputs/sheldon/plugins.lock" ]] || fail "bundled Sheldon lock is missing"
+install -d -o instantos -g instantos /home/instantos/.local/share/sheldon
+cp -a "$build_inputs/sheldon/." /home/instantos/.local/share/sheldon/
+chown -R instantos:instantos /home/instantos/.local/share/sheldon
+# Dotfiles were just applied, so make the relocated lock current as well.
+touch /home/instantos/.local/share/sheldon/plugins.lock
+runuser -l instantos -s /bin/sh -c '/bin/zsh -ic exit'
+[[ -s /home/instantos/.config/sheldon/source.zsh ]] || fail "Sheldon source cache is missing"
+[[ -s /home/instantos/.config/sheldon/source.zsh.zwc ]] || fail "compiled Sheldon cache is missing"
 
 dot_status="$(runuser -u instantos -- env HOME=/home/instantos \
     ins --output json --no-color dot status)"
