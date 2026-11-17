@@ -119,15 +119,15 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
-      - name: Test GitLab publisher
-        run: python3 -m unittest discover -s iso/tests -p test_publish_gitlab.py -v
+      - name: Test package upload and release publication
+        run: python3 -m unittest discover -s iso/tests -p 'test_publish_git*.py' -v
       - name: Download verified ISOs
         uses: actions/download-artifact@v8
         with:
           pattern: instantos-iso-*
           merge-multiple: true
           path: iso/artifacts
-      - name: Publish complete release
+      - name: Upload and verify GitLab package
         id: gitlab
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
@@ -145,13 +145,5 @@ jobs:
         if: steps.gitlab.outputs.published == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISO_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
-          tag="v${ISO_VERSION}-${GITHUB_RUN_NUMBER}"
-          if gh release view "$tag" >/dev/null 2>&1; then
-            gh release edit "$tag" \
-              --title "instantOS Release ${ISO_VERSION}" --notes-file release-notes.md
-          else
-            gh release create "$tag" --target "$GITHUB_SHA" \
-              --title "instantOS Release ${ISO_VERSION}" --notes-file release-notes.md
-          fi
+          python3 iso/publish-github.py

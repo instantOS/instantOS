@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish a verified ISO pair to GitLab without deleting previous builds."""
+"""Upload and verify an ISO pair in the GitLab Package Registry."""
 
 import argparse
 import hashlib
@@ -129,7 +129,7 @@ def release_notes(manifest):
         lines += [f"- [{label}]({item['url']}) ([SHA256]({item['sha256Url']}))"]
     lines += [
         "",
-        f"[GitLab releases]({manifest['projectUrl']}/-/releases)",
+        f"[Build metadata]({manifest['live']['url'].rsplit('/', 1)[0]}/build.json)",
         "",
         "SHA256 checksums:",
         "",
@@ -142,8 +142,10 @@ def release_notes(manifest):
     return "\n".join(lines + ["```", ""])
 
 
-def publish(api, live, offline, build, version, commit, epoch, notes_path):
-    order = build_order(build)
+def publish(
+    api, live, offline, build, version, commit, epoch, notes_path, metadata_path
+):
+    build_order(build)
     if not re.fullmatch(r"[0-9a-f]{40}", commit) or not re.fullmatch(
         r"\d{4}\.\d{2}\.\d{2}", version
     ):
@@ -153,15 +155,8 @@ def publish(api, live, offline, build, version, commit, epoch, notes_path):
     if live.name == offline.name or not offline.name.endswith("-offline.iso"):
         raise ValueError("Expected distinct live and offline ISO filenames")
     project = api.request("GET", "")
-    if project["visibility"] != "public" or not project.get("default_branch"):
-        raise ValueError(
-            "GitLab project must be public and initialized with a default branch"
-        )
-    releases = api.pages("/releases")
-    managed = [r for r in releases if BUILD.fullmatch(r["tag_name"])]
-    if any(build_order(r["tag_name"]) > order for r in managed):
-        print("A newer build is already published; skipping this build")
-        return False
+    if project["visibility"] != "public":
+        raise ValueError("GitLab project must be public")
 
     base = f"{api.base}/packages/generic/{PACKAGE}/{build}"
     manifest = {
@@ -209,30 +204,31 @@ def publish(api, live, offline, build, version, commit, epoch, notes_path):
             )
         )
         existing = [
-            p
-            for p in packages
-            if p["name"] == PACKAGE and p["version"] == build
+            p for p in packages if p["name"] == PACKAGE and p["version"] == build
         ]
         if len(existing) > 1:
-            raise RuntimeError("Multiple packages for this build; use a new build attempt")
+            raise RuntimeError(
+                "Multiple packages for this build; use a new build attempt"
+            )
         stored = (
-            api.pages(f"/packages/{existing[0]['id']}/package_files") if existing else []
+            api.pages(f"/packages/{existing[0]['id']}/package_files")
+            if existing
+            else []
         )
         actual = {f["file_name"]: (f["size"], f["file_sha256"]) for f in stored}
         if len(actual) != len(stored) or any(
-            name not in expected or info != expected[name] for name, info in actual.items()
+            name not in expected or info != expected[name]
+            for name, info in actual.items()
         ):
             raise RuntimeError(
                 "Existing package files conflict with this build; use a new build attempt"
             )
-        completed = any(r["tag_name"] == build for r in managed)
-        if not completed:
-            # Resume matching uploads without replacing files or requiring delete access.
-            for path in files:
-                if path.name in actual:
-                    continue
-                print(f"Uploading {path.name}", flush=True)
-                api.upload(build, path)
+        # Resume matching uploads without replacing files or requiring delete access.
+        for path in files:
+            if path.name in actual:
+                continue
+            print(f"Uploading {path.name}", flush=True)
+            api.upload(build, path)
 
         # Validate GitLab's stored sizes and hashes before promoting the release.
         for attempt in range(8):
@@ -265,40 +261,9 @@ def publish(api, live, offline, build, version, commit, epoch, notes_path):
         for path in files:
             api.public_head(f"{base}/{quote(path.name)}", expected[path.name][0])
 
-        notes = release_notes(manifest)
-        links = []
-        for key in ("live", "offline"):
-            item = manifest[key]
-            for suffix in ("", ".sha256"):
-                links.append(
-                    {
-                        "name": item["name"] + suffix,
-                        "url": item["url"] + suffix,
-                        "direct_asset_path": f"/{key}/instantos.iso{suffix}",
-                        "link_type": "package",
-                    }
-                )
-        links.append(
-            {
-                "name": "Build metadata",
-                "url": f"{base}/build.json",
-                "direct_asset_path": "/build.json",
-                "link_type": "other",
-            }
-        )
-        if not completed:
-            api.request(
-                "POST",
-                "/releases",
-                {
-                    "name": f"instantOS {version}",
-                    "tag_name": build,
-                    "ref": project["default_branch"],
-                    "description": notes,
-                    "assets": {"links": links},
-                },
-            )
-        notes_path.write_text(notes)
+        # Only expose metadata for GitHub publication after verification succeeds.
+        notes_path.write_text(release_notes(manifest))
+        metadata_path.write_text(metadata.read_text())
 
     return True
 
@@ -312,6 +277,7 @@ def main():
     parser.add_argument("--commit", required=True)
     parser.add_argument("--epoch", required=True, type=int)
     parser.add_argument("--notes", type=Path, default=Path("release-notes.md"))
+    parser.add_argument("--metadata", type=Path, default=Path("build.json"))
     args = parser.parse_args()
     api = GitLab(
         os.environ.get("GITLAB_PROJECT_ID", ""), os.environ.get("GITLAB_TOKEN", "")
@@ -325,6 +291,7 @@ def main():
         args.commit,
         args.epoch,
         args.notes,
+        args.metadata,
     )
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a") as output:

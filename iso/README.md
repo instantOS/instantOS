@@ -85,27 +85,29 @@ and switches to opportunistic offline mode on its own; nothing about the
 online ISO or the online install path changes. See offlineiso.md for the
 design and installation testing.
 
-## Publishing releases to GitLab
+## Publishing releases
 
 The release workflow builds the live and offline ISOs on separate runners, using
 one shared build timestamp. Both verified ISOs are transferred to a publishing
 job through temporary GitHub Actions artifacts. Pushes to `release`, and manual
 runs with `create_release` enabled, publish them to the public
-[GitLab release project](https://gitlab.com/instantos/instantos-releases).
-GitHub releases contain the release notes, SHA256 hashes, and GitLab download
-links; they no longer have ISO attachments.
+[GitLab package-hosting project](https://gitlab.com/instantos/instantos-releases).
+GitHub releases contain the release notes, SHA256 hashes, GitLab download
+links, and a small `build.json` attachment. ISOs are hosted only in GitLab’s
+Package Registry; no GitLab releases are created.
 
 Repository settings under **Secrets and variables → Actions**:
 
 - Secret **`GITLAB_TOKEN`**: a fine-grained personal access token scoped to the
-  release project with **Project: Read**, **Package: Read and Create**, and
-  **Release: Read and Create** permissions. Delete permissions are not needed.
+  release project with **Project: Read** and **Package: Read and Create** permissions.
+  Release and Delete permissions are not needed.
   A legacy personal access token with `api` scope also works; a deploy token
-  cannot create releases. Renew the token before its expiry date.
+  is not supported by the publisher’s project and package-metadata API calls.
+  Renew the token before its expiry date.
 - Variable **`GITLAB_PROJECT_ID`**: `89059216`.
 
-The GitLab project must be public, have its package registry enabled, and have
-an initialized default branch (for example, a README on `main`). No GitLab CI
+The GitLab project must be public, have its package registry enabled, and allow
+anonymous package downloads. No GitLab repository initialization, GitLab CI
 runners or paid subscription are needed.
 
 `iso/publish-gitlab.py` uploads the two ISOs, generated SHA256 files, and
@@ -113,29 +115,33 @@ runners or paid subscription are needed.
 `build-<workflow run number>-<attempt>`. It checks both ISO sizes against the
 5 GiB per-file limit before any upload, then verifies the stored sizes and
 SHA256 hashes through the GitLab API and checks anonymous download access.
-Only after all checks succeed does it create a GitLab release with permanent
-asset paths. A failed build or upload leaves the previous latest release intact.
+Only after all checks succeed does it write local release notes and `build.json`
+for `iso/publish-github.py`. That script attaches the manifest to a draft GitHub
+release, then publishes it as latest. A failed build or upload leaves the
+previous latest GitHub release intact. Tags include both the workflow run number
+and attempt: `v<date>-<run>-<attempt>`.
 
-Stable download links:
+Download discovery:
 
-- [Live ISO](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/live/instantos.iso)
-- [Live SHA256](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/live/instantos.iso.sha256)
-- [Offline ISO](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/offline/instantos.iso)
-- [Offline SHA256](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/offline/instantos.iso.sha256)
-- [Build metadata](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/build.json)
+- [Latest release and download links](https://github.com/instantOS/instantOS/releases/latest)
+- [Latest build metadata](https://github.com/instantOS/instantOS/releases/latest/download/build.json)
+
+The metadata contains `live.url`, `offline.url`, and their `sha256Url` fields,
+which point directly to immutable, build-specific GitLab package files.
 
 Publication is serialized with the workflow's `gitlab-iso-release` concurrency
-group. Older workflow runs cannot replace a newer release. Previous releases
-and packages are kept; the publisher never deletes them. Retrying the same
+group. Older workflow runs or attempts cannot replace a newer published GitHub
+release. Previous GitHub releases and GitLab packages are kept; the publisher
+never deletes them. Retrying the same
 build skips files whose stored sizes and SHA256 hashes match and uploads only
 missing files. Conflicting or duplicate files require a new build attempt,
 which GitHub Actions reruns provide automatically. Incomplete uploads are kept
 and can be removed manually if desired.
 
-The website uses the permanent latest links for downloads and checksums, and
-looks up `build.json` during its build for optional version and size labels.
-The checksum is linked rather than embedded so it stays current when the
-latest release changes between website builds.
+The website fetches the latest GitHub `build.json` during its build and uses its
+verified package URLs, checksums, version, and sizes. If fetching fails, cached
+package links remain valid because old builds are retained; a fresh site build
+falls back to the GitHub release page. Rebuild the website to pick up a new release.
 
 The previous SourceForge publisher and its tests remain available for historical
 reference, but the workflow no longer uploads there or needs SourceForge secrets.

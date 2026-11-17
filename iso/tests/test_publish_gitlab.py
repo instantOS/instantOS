@@ -2,6 +2,7 @@
 
 import hashlib
 import importlib.util
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -19,12 +20,10 @@ class FakeGitLab:
 
     def __init__(self):
         self.packages = []
-        self.releases = []
         self.contents = {}
         self.uploads = []
         self.fail_upload = None
         self.fail_public = False
-        self.fail_release = False
         self.corrupt_upload = False
         self.next_id = 1
 
@@ -35,16 +34,9 @@ class FakeGitLab:
                 "default_branch": "main",
                 "web_url": "https://gitlab.com/instantos/instantos-releases",
             }
-        if method == "POST" and path == "/releases":
-            if self.fail_release:
-                raise RuntimeError("release creation failed")
-            self.releases.append(data)
-            return data
         raise AssertionError((method, path, data))
 
     def pages(self, path):
-        if path == "/releases":
-            return list(self.releases)
         if path.startswith("/packages?"):
             return list(self.packages)
         if path.endswith("/package_files"):
@@ -99,6 +91,7 @@ class PublishTests(unittest.TestCase):
         self.live.write_bytes(b"live ISO")
         self.offline.write_bytes(b"offline ISO")
         self.notes = root / "notes.md"
+        self.metadata = root / "build.json"
         self.api = FakeGitLab()
 
     def publish(self, number, attempt=1):
@@ -112,6 +105,7 @@ class PublishTests(unittest.TestCase):
                 "a" * 40,
                 1794916800,
                 self.notes,
+                self.metadata,
             )
 
     def test_complete_release_links_checksums_and_all_builds_preserved(self):
@@ -121,23 +115,13 @@ class PublishTests(unittest.TestCase):
             {p["version"] for p in self.api.packages},
             {f"build-{number}-1" for number in range(1, 12)},
         )
-        self.assertEqual(
-            {r["tag_name"] for r in self.api.releases},
-            {f"build-{number}-1" for number in range(1, 12)},
-        )
-        links = self.api.releases[-1]["assets"]["links"]
-        self.assertEqual(
-            {l["direct_asset_path"] for l in links},
-            {
-                "/live/instantos.iso",
-                "/live/instantos.iso.sha256",
-                "/offline/instantos.iso",
-                "/offline/instantos.iso.sha256",
-                "/build.json",
-            },
-        )
+        manifest = json.loads(self.metadata.read_text())
+        self.assertEqual(manifest["build"], "build-11-1")
+        for key in ("live", "offline"):
+            self.assertIn(manifest[key]["url"], self.notes.read_text())
+            self.assertIn(manifest[key]["sha256Url"], self.notes.read_text())
+        self.assertIn("Build metadata", self.notes.read_text())
         self.assertIn(hashlib.sha256(b"live ISO").hexdigest(), self.notes.read_text())
-        self.assertIn("GitLab releases", self.notes.read_text())
 
     def test_failed_second_iso_resumes_without_reuploading_verified_files(self):
         self.publish(1)
@@ -145,9 +129,6 @@ class PublishTests(unittest.TestCase):
         self.api.fail_upload = self.offline.name
         with self.assertRaisesRegex(RuntimeError, "upload failure"):
             self.publish(3)
-        self.assertEqual(
-            {r["tag_name"] for r in self.api.releases}, {"build-1-1", "build-2-1"}
-        )
         self.api.fail_upload = None
         self.publish(3)
         self.assertEqual(
@@ -161,36 +142,23 @@ class PublishTests(unittest.TestCase):
         self.api.corrupt_upload = True
         with self.assertRaisesRegex(RuntimeError, "checksums"):
             self.publish(1)
-        self.assertEqual(self.api.releases, [])
+        self.assertFalse(self.metadata.exists())
 
     def test_private_download_blocks_release(self):
         self.api.fail_public = True
         with self.assertRaisesRegex(RuntimeError, "anonymous"):
             self.publish(1)
-        self.assertEqual(self.api.releases, [])
+        self.assertFalse(self.metadata.exists())
 
-    def test_failed_release_creation_reuses_verified_package(self):
+    def test_retry_after_announcement_failure_reuses_verified_package(self):
         self.publish(1)
-        self.publish(2)
-        self.api.fail_release = True
-        with self.assertRaisesRegex(RuntimeError, "release creation"):
-            self.publish(3)
-        self.assertEqual(
-            {r["tag_name"] for r in self.api.releases}, {"build-1-1", "build-2-1"}
-        )
-        self.assertTrue(
-            {"build-1-1", "build-2-1"}.issubset(
-                {p["version"] for p in self.api.packages}
-            )
-        )
-        self.api.fail_release = False
         uploads = list(self.api.uploads)
-        self.publish(3)
+        self.metadata.unlink()
+        self.notes.unlink()
+        self.assertTrue(self.publish(1))
         self.assertEqual(self.api.uploads, uploads)
-        self.assertEqual(
-            {p["version"] for p in self.api.packages},
-            {"build-1-1", "build-2-1", "build-3-1"},
-        )
+        self.assertTrue(self.metadata.exists())
+        self.assertTrue(self.notes.exists())
 
     def test_conflicting_incomplete_package_requires_new_attempt(self):
         self.api.fail_upload = self.offline.name
@@ -202,33 +170,24 @@ class PublishTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "conflict.*new build attempt"):
             self.publish(1)
         self.assertEqual(self.api.uploads, uploads)
-        self.assertEqual(self.api.releases, [])
+        self.assertFalse(self.metadata.exists())
         self.assertTrue(self.publish(1, 2))
 
     def test_duplicate_or_unexpected_package_files_block_resume(self):
         for duplicate in (True, False):
             with self.subTest(duplicate=duplicate):
                 self.api = FakeGitLab()
-                self.api.fail_release = True
-                with self.assertRaisesRegex(RuntimeError, "release creation"):
-                    self.publish(1)
+                self.publish(1)
+                self.metadata.unlink()
                 extra = dict(self.api.contents[1][0])
                 if not duplicate:
                     extra["file_name"] = "unexpected.iso"
                 self.api.contents[1].append(extra)
-                self.api.fail_release = False
-                with self.assertRaisesRegex(RuntimeError, "conflict.*new build attempt"):
+                with self.assertRaisesRegex(
+                    RuntimeError, "conflict.*new build attempt"
+                ):
                     self.publish(1)
-                self.assertEqual(self.api.releases, [])
-
-    def test_older_runs_cannot_replace_newer_builds_and_retries_are_idempotent(self):
-        self.publish(10)
-        self.assertFalse(self.publish(9))
-        self.assertTrue(self.publish(10))
-        self.assertEqual(len(self.api.packages), 1)
-        self.assertEqual(len(self.api.releases), 1)
-        self.publish(10, 2)
-        self.assertEqual(len(self.api.releases), 2)
+                self.assertFalse(self.metadata.exists())
 
     def test_size_limit_is_checked_before_any_upload(self):
         with (

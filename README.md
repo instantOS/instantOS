@@ -26,11 +26,9 @@ This repo contains utilities used all around instantOS, but for a proper README 
 
 ## Download
 
-Download the [Live ISO](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/live/instantos.iso)
-or [Offline ISO](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/offline/instantos.iso)
-from [GitLab releases](https://gitlab.com/instantos/instantos-releases/-/releases).
-Checksums: [Live ISO SHA256](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/live/instantos.iso.sha256)
-and [Offline ISO SHA256](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/offline/instantos.iso.sha256).
+Download the live or offline ISO and its SHA256 checksum from the
+[latest GitHub release](https://github.com/instantOS/instantOS/releases/latest).
+The release notes link directly to the files in GitLab’s Package Registry.
 
 Previous builds are kept available. GitHub releases contain release notes and
 GitLab download links; the ISOs are hosted on GitLab.
