@@ -16,77 +16,64 @@ permissions:
   contents: write
 
 jobs:
-  publish-offline:
-    name: Build and publish offline ISO to SourceForge
-    if: github.ref_name == 'release' || inputs.create_release
+  prepare:
     runs-on: ubuntu-26.04
-    # Retention and latest promotion must never run concurrently.
-    concurrency:
-      group: sourceforge-offline
-      cancel-in-progress: false
+    outputs:
+      epoch: ${{ steps.version.outputs.epoch }}
+      version: ${{ steps.version.outputs.version }}
+      publish: ${{ steps.version.outputs.publish }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Check SourceForge configuration
+      - name: Set shared build version and check publishing configuration
+        id: version
         env:
-          SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
+          PUBLISH: ${{ github.ref_name == 'release' || inputs.create_release }}
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_PROJECT_ID: ${{ vars.GITLAB_PROJECT_ID }}
         run: |
-          if [[ -z "$SOURCEFORGE_SSH_KEY" ]]; then
-            echo 'Add the SOURCEFORGE_SSH_KEY repository secret before publishing.' >&2
+          if [[ "$PUBLISH" == true && ( -z "$GITLAB_TOKEN" || -z "$GITLAB_PROJECT_ID" ) ]]; then
+            echo 'Set the GITLAB_TOKEN secret and GITLAB_PROJECT_ID variable before publishing.' >&2
             exit 1
           fi
+          epoch="$(date +%s)"
+          {
+            echo "epoch=$epoch"
+            echo "version=$(date -u --date="@$epoch" +%Y.%m.%d)"
+            echo "publish=$PUBLISH"
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Set build version
-        run: echo "SOURCE_DATE_EPOCH=$(date +%s)" >> "$GITHUB_ENV"
-
+  build-offline:
+    name: Build offline ISO
+    needs: prepare
+    if: needs.prepare.outputs.publish == 'true'
+    runs-on: ubuntu-26.04
+    env:
+      SOURCE_DATE_EPOCH: ${{ needs.prepare.outputs.epoch }}
+    steps:
+      - uses: actions/checkout@v4
       - name: Free runner disk space
-        run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
-          df -h
-
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-
-      - name: Install SFTP client dependency
-        run: |
-          sudo apt-get update
-          sudo apt-get install --yes python3-paramiko
-
-      - name: Test SourceForge publisher
-        run: /usr/bin/python3 -m unittest discover -s iso/tests -v
-
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+      - uses: extractions/setup-just@v2
       - name: Build offline ISO
         run: just build-iso-offline
-
-      - name: Publish offline ISO
-        env:
-          SOURCEFORGE_USERNAME: ${{ vars.SOURCEFORGE_USERNAME || 'paperbenni' }}
-          SOURCEFORGE_SSH_KEY: ${{ secrets.SOURCEFORGE_SSH_KEY }}
-        run: |
-          shopt -s nullglob
-          iso_files=(iso/build/iso/*-offline.iso)
-          if (( ${#iso_files[@]} != 1 )); then
-            echo 'Expected exactly one offline ISO' >&2
-            exit 1
-          fi
-          /usr/bin/python3 iso/publish-sourceforge.py "${iso_files[0]}" \
-            "build-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+      - name: Upload offline ISO for publishing
+        uses: actions/upload-artifact@v4
+        with:
+          name: instantos-iso-offline
+          path: iso/build/iso/*-offline.iso
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
 
   build-iso:
     name: Build instantOS ISO
+    needs: prepare
     runs-on: ubuntu-26.04
+    env:
+      SOURCE_DATE_EPOCH: ${{ needs.prepare.outputs.epoch }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set build version
-        run: |
-          source_date_epoch="$(date +%s)"
-          version_date="$(date -u --date="@${source_date_epoch}" +'%Y.%m.%d')"
-          echo "SOURCE_DATE_EPOCH=${source_date_epoch}" >> "$GITHUB_ENV"
-          echo "VERSION_DATE=${version_date}" >> "$GITHUB_ENV"
 
       - name: Free runner disk space
         run: |
@@ -113,7 +100,7 @@ jobs:
       - name: Upload ISO Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: instantos-iso
+          name: instantos-iso-live
           path: |
             iso/build/iso/*.iso
             iso/build/iso/*.sha256
@@ -121,49 +108,50 @@ jobs:
           compression-level: 0
           if-no-files-found: error
 
-      - name: Publish GitHub Release
-        if: github.ref_name == 'release' || inputs.create_release
+  publish:
+    name: Publish ISOs to GitLab and announce on GitHub
+    needs: [prepare, build-iso, build-offline]
+    if: needs.prepare.outputs.publish == 'true'
+    runs-on: ubuntu-26.04
+    # Serialize promotion and retention; an older build must never replace a newer one.
+    concurrency:
+      group: gitlab-iso-release
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test GitLab publisher
+        run: python3 -m unittest discover -s iso/tests -p test_publish_gitlab.py -v
+      - name: Download verified ISOs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: instantos-iso-*
+          merge-multiple: true
+          path: iso/artifacts
+      - name: Publish complete release and prune old builds
+        id: gitlab
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITLAB_PROJECT_ID: ${{ vars.GITLAB_PROJECT_ID }}
+          ISO_VERSION: ${{ needs.prepare.outputs.version }}
+          SOURCE_DATE_EPOCH: ${{ needs.prepare.outputs.epoch }}
+        run: |
+          python3 iso/publish-gitlab.py \
+            "iso/artifacts/instantos-${ISO_VERSION}-x86_64.iso" \
+            "iso/artifacts/instantos-${ISO_VERSION}-offline.iso" \
+            "build-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}" \
+            --version "$ISO_VERSION" --commit "$GITHUB_SHA" \
+            --epoch "$SOURCE_DATE_EPOCH" --notes release-notes.md
+      - name: Publish GitHub release with GitLab download links
+        if: steps.gitlab.outputs.published == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISO_VERSION: ${{ needs.prepare.outputs.version }}
         run: |
-          TAG_NAME="v${VERSION_DATE}-${GITHUB_RUN_NUMBER}"
-          RELEASE_TITLE="instantOS Release ${VERSION_DATE}"
-
-          cd iso/build/iso
-
-          shopt -s nullglob
-          iso_files=(./*.iso)
-          checksum_files=(./*.sha256)
-          if (( ${#iso_files[@]} == 0 || ${#checksum_files[@]} == 0 )); then
-            echo "ISO or checksum is missing" >&2
-            exit 1
-          fi
-
-          cat <<EOF > release_notes.md
-          # instantOS Live ISO Release (${VERSION_DATE})
-
-          Automated build from commit [\`${{ github.sha }}\`](${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}) on branch \`${{ github.ref_name }}\`.
-
-          [Download the latest offline ISO](https://sourceforge.net/projects/instantos/files/offline/latest/instantos-offline-latest.iso/download) ([SHA256](https://sourceforge.net/projects/instantos/files/offline/latest/instantos-offline-latest.iso.sha256/download)). The offline build publishes separately; check its workflow job for completion.
-
-          ### Checksums (SHA256)
-          \`\`\`text
-          $(cat -- "${checksum_files[@]}")
-          \`\`\`
-          EOF
-
-          if gh release view "$TAG_NAME" >/dev/null 2>&1; then
-            gh release edit "$TAG_NAME" \
-              --title "$RELEASE_TITLE" \
-              --notes-file release_notes.md
-            gh release upload "$TAG_NAME" \
-              "${iso_files[@]}" \
-              "${checksum_files[@]}" \
-              --clobber
+          tag="v${ISO_VERSION}-${GITHUB_RUN_NUMBER}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release edit "$tag" \
+              --title "instantOS Release ${ISO_VERSION}" --notes-file release-notes.md
           else
-            gh release create "$TAG_NAME" \
-              "${iso_files[@]}" \
-              "${checksum_files[@]}" \
-              --title "$RELEASE_TITLE" \
-              --notes-file release_notes.md
+            gh release create "$tag" --target "$GITHUB_SHA" \
+              --title "instantOS Release ${ISO_VERSION}" --notes-file release-notes.md
           fi
