@@ -49,14 +49,14 @@ jobs:
     env:
       SOURCE_DATE_EPOCH: ${{ needs.prepare.outputs.epoch }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Free runner disk space
         run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
-      - uses: extractions/setup-just@v2
+      - uses: extractions/setup-just@v4
       - name: Build offline ISO
         run: just build-iso-offline
       - name: Upload offline ISO for publishing
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: instantos-iso-offline
           path: iso/build/iso/*-offline.iso
@@ -73,7 +73,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Free runner disk space
         run: |
@@ -89,7 +89,7 @@ jobs:
           df -h
 
       - name: Set up Just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@v4
 
       - name: Build ISO
         run: just build-iso
@@ -98,7 +98,7 @@ jobs:
         run: just checksums
 
       - name: Upload ISO Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: instantos-iso-live
           path: |
@@ -118,11 +118,11 @@ jobs:
       group: gitlab-iso-release
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Test GitLab publisher
         run: python3 -m unittest discover -s iso/tests -p test_publish_gitlab.py -v
       - name: Download verified ISOs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: instantos-iso-*
           merge-multiple: true

@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install shell tools
         run: |
@@ -25,7 +25,7 @@ jobs:
           shfmt --version
 
       - name: Set up Just
-        uses: extractions/setup-just@v2
+        uses: extractions/setup-just@v4
 
       - name: Run Shell checks
         run: just lint
