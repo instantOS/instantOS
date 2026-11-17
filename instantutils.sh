@@ -40,6 +40,10 @@ case "$1" in
             echo "usage: instantutils open defaultappname"
             exit
         fi
+        if [ "$2" = terminal ]; then
+            shift 2
+            exec ins terminal "$@"
+        fi
         if ! [ -e ~/.config/instantos/default/"$2" ]; then
             instantutils default
             chmod +x ~/.config/instantos/default/"$2"

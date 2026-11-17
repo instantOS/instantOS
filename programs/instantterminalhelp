@@ -3,12 +3,12 @@
 # first time help message when opening the terminal
 
 echo "{heading} Welcome
-{heading} instantOS is using the kitty terminal emulator and tmux terminal multiplexer
-{heading} Because of this, some things work differently
+{heading} Choose your terminal emulator in ins settings
+{heading} When using tmux, some things work differently
 {heading} selecting text is done with Shift + Left mouse button
 {heading} Copy Paste is Ctrl + Shift + C/V
-{heading} Font size is set with Ctrl + +/-
-{heading} Configuration is done through ~/.config/kitty/kitty.conf
+{heading} Font size shortcuts depend on your terminal emulator
+{heading} Terminal appearance is configured in your chosen emulator
 OK
 Don't show again" | ins menu choice "quick info" >/tmp/helpmsg
 

@@ -8,6 +8,7 @@ echo "setting up default applications"
 if [ -e ~/.config/instantos/default ]; then
     cd ~/.config/instantos/default || exit
     for i in ./*; do
+        [ "$i" = ./terminal ] && continue
         [ -L ./"$i" ] || continue
         if [ ! -e "$i" ]; then
             echo "link $i is broken, repairing"
@@ -49,7 +50,8 @@ setprogram() {
     fi
 }
 
-setprogram terminal kitty
+# Preserve the configured terminal; selection and repair use the shared policy.
+ins terminal --ensure-default
 setprogram graphicaleditor code
 setprogram appmenu appmenu
 setprogram browser firefox

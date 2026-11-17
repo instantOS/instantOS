@@ -90,7 +90,7 @@ done
 
 if [ -n "$INSTALLPACKAGES" ]; then
     echo "running terminal emulator"
-    kitty -e "bash" -c "instantinstall -i"
+    ins terminal -- "bash" -c "instantinstall -i"
 fi
 
 for pkg in "$@"; do

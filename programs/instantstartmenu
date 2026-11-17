@@ -36,7 +36,7 @@ case "$CHOICE" in
     *Install*)
         echo "launching installer"
         # run in a terminal like the welcome app does
-        kitty -e ins arch install &
+        ins terminal -- ins arch install &
         ;;
     *Applications)
         sleep 0.05
@@ -49,13 +49,13 @@ case "$CHOICE" in
         ins settings --gui &
         ;;
     *Info)
-        kitty -e sh -c 'fastfetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
+        ins terminal -- sh -c 'fastfetch && echo -ne "$(cat /usr/share/instantutils/thanks.txt | sed "s/^/   /g")" && sleep 60m' &
         ;;
     *Shutdown)
         instantshutdown &
         ;;
     *Terminal)
-        kitty &
+        ins terminal &
         ;;
     *Documentation)
         xdg-open 'https://instantos.io/docs/' &
@@ -65,7 +65,7 @@ case "$CHOICE" in
         ;;
     *)
         echo "other choice"
-        instantmenu_smartrun "startmenu" "$CHOICE"
+        ins launch --include-path --initial-text "$CHOICE"
         ;;
 esac
 
