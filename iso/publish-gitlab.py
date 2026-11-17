@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish a complete ISO pair to GitLab, retaining two successful builds."""
+"""Publish a verified ISO pair to GitLab without deleting previous builds."""
 
 import argparse
 import hashlib
@@ -121,10 +121,7 @@ def release_notes(manifest):
             f"(https://github.com/instantOS/instantOS/commit/{manifest['commit']})."
         ),
         "",
-        (
-            "ISO downloads are hosted on GitLab. This rolling release retains the latest two builds; "
-            "older download links may expire."
-        ),
+        "ISO downloads are hosted on GitLab. Previous builds are kept available.",
         "",
     ]
     for key, label in (("live", "Live ISO"), ("offline", "Offline ISO")):
@@ -203,20 +200,37 @@ def publish(api, live, offline, build, version, commit, epoch, notes_path):
 
         packages = api.pages(
             "/packages?"
-            + urlencode({"package_type": "generic", "package_name": PACKAGE})
+            + urlencode(
+                {
+                    "package_type": "generic",
+                    "package_name": PACKAGE,
+                    "package_version": build,
+                }
+            )
         )
-        packages = [
+        existing = [
             p
             for p in packages
-            if p["name"] == PACKAGE and BUILD.fullmatch(p["version"])
+            if p["name"] == PACKAGE and p["version"] == build
         ]
-        existing = [p for p in packages if p["version"] == build]
+        if len(existing) > 1:
+            raise RuntimeError("Multiple packages for this build; use a new build attempt")
+        stored = (
+            api.pages(f"/packages/{existing[0]['id']}/package_files") if existing else []
+        )
+        actual = {f["file_name"]: (f["size"], f["file_sha256"]) for f in stored}
+        if len(actual) != len(stored) or any(
+            name not in expected or info != expected[name] for name, info in actual.items()
+        ):
+            raise RuntimeError(
+                "Existing package files conflict with this build; use a new build attempt"
+            )
         completed = any(r["tag_name"] == build for r in managed)
         if not completed:
-            # A retry can replace only its own incomplete package, never a published build.
-            for package in existing:
-                api.request("DELETE", f"/packages/{package['id']}")
+            # Resume matching uploads without replacing files or requiring delete access.
             for path in files:
+                if path.name in actual:
+                    continue
                 print(f"Uploading {path.name}", flush=True)
                 api.upload(build, path)
 
@@ -286,19 +300,6 @@ def publish(api, live, offline, build, version, commit, epoch, notes_path):
             )
         notes_path.write_text(notes)
 
-    # Only prune after a complete release is publicly available. Leave unrelated packages alone.
-    successful = sorted(
-        {r["tag_name"] for r in managed} | {build}, key=build_order, reverse=True
-    )
-    retained = set(successful[:2])
-    for release in managed:
-        tag = release["tag_name"]
-        if tag not in retained:
-            api.request("DELETE", f"/releases/{quote(tag)}")
-    for package in packages:
-        tag = package["version"]
-        if tag not in retained and build_order(tag) <= order:
-            api.request("DELETE", f"/packages/{package['id']}")
     return True
 
 

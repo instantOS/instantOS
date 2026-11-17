@@ -113,7 +113,7 @@ jobs:
     needs: [prepare, build-iso, build-offline]
     if: needs.prepare.outputs.publish == 'true'
     runs-on: ubuntu-26.04
-    # Serialize promotion and retention; an older build must never replace a newer one.
+    # Serialize promotion; an older build must never replace a newer one.
     concurrency:
       group: gitlab-iso-release
       cancel-in-progress: false
@@ -127,7 +127,7 @@ jobs:
           pattern: instantos-iso-*
           merge-multiple: true
           path: iso/artifacts
-      - name: Publish complete release and prune old builds
+      - name: Publish complete release
         id: gitlab
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}

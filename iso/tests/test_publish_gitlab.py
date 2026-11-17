@@ -1,4 +1,4 @@
-"""Verify release promotion and retention without credentials or large uploads."""
+"""Verify release promotion and resumable uploads without credentials or large files."""
 
 import hashlib
 import importlib.util
@@ -21,6 +21,7 @@ class FakeGitLab:
         self.packages = []
         self.releases = []
         self.contents = {}
+        self.uploads = []
         self.fail_upload = None
         self.fail_public = False
         self.fail_release = False
@@ -39,16 +40,6 @@ class FakeGitLab:
                 raise RuntimeError("release creation failed")
             self.releases.append(data)
             return data
-        if method == "DELETE" and path.startswith("/releases/"):
-            self.releases = [
-                r for r in self.releases if r["tag_name"] != path.split("/")[-1]
-            ]
-            return
-        if method == "DELETE" and path.startswith("/packages/"):
-            self.packages = [
-                p for p in self.packages if p["id"] != int(path.split("/")[-1])
-            ]
-            return
         raise AssertionError((method, path, data))
 
     def pages(self, path):
@@ -64,6 +55,7 @@ class FakeGitLab:
     def upload(self, version, path):
         if self.fail_upload == path.name:
             raise RuntimeError("simulated upload failure")
+        self.uploads.append((version, path.name))
         package = next(
             (
                 p
@@ -122,14 +114,16 @@ class PublishTests(unittest.TestCase):
                 self.notes,
             )
 
-    def test_complete_release_links_checksums_and_two_build_retention(self):
+    def test_complete_release_links_checksums_and_all_builds_preserved(self):
         for number in range(1, 12):
             self.assertTrue(self.publish(number))
         self.assertEqual(
-            {p["version"] for p in self.api.packages}, {"build-10-1", "build-11-1"}
+            {p["version"] for p in self.api.packages},
+            {f"build-{number}-1" for number in range(1, 12)},
         )
         self.assertEqual(
-            {r["tag_name"] for r in self.api.releases}, {"build-10-1", "build-11-1"}
+            {r["tag_name"] for r in self.api.releases},
+            {f"build-{number}-1" for number in range(1, 12)},
         )
         links = self.api.releases[-1]["assets"]["links"]
         self.assertEqual(
@@ -145,7 +139,7 @@ class PublishTests(unittest.TestCase):
         self.assertIn(hashlib.sha256(b"live ISO").hexdigest(), self.notes.read_text())
         self.assertIn("GitLab releases", self.notes.read_text())
 
-    def test_failed_second_iso_does_not_promote_or_prune(self):
+    def test_failed_second_iso_resumes_without_reuploading_verified_files(self):
         self.publish(1)
         self.publish(2)
         self.api.fail_upload = self.offline.name
@@ -157,8 +151,11 @@ class PublishTests(unittest.TestCase):
         self.api.fail_upload = None
         self.publish(3)
         self.assertEqual(
-            {p["version"] for p in self.api.packages}, {"build-2-1", "build-3-1"}
+            {p["version"] for p in self.api.packages},
+            {"build-1-1", "build-2-1", "build-3-1"},
         )
+        self.assertEqual(self.api.uploads.count(("build-3-1", self.live.name)), 1)
+        self.assertEqual(len(self.api.contents[3]), 5)
 
     def test_checksum_mismatch_blocks_release(self):
         self.api.corrupt_upload = True
@@ -172,7 +169,7 @@ class PublishTests(unittest.TestCase):
             self.publish(1)
         self.assertEqual(self.api.releases, [])
 
-    def test_failed_release_creation_keeps_the_previous_two_builds(self):
+    def test_failed_release_creation_reuses_verified_package(self):
         self.publish(1)
         self.publish(2)
         self.api.fail_release = True
@@ -187,10 +184,42 @@ class PublishTests(unittest.TestCase):
             )
         )
         self.api.fail_release = False
+        uploads = list(self.api.uploads)
         self.publish(3)
+        self.assertEqual(self.api.uploads, uploads)
         self.assertEqual(
-            {p["version"] for p in self.api.packages}, {"build-2-1", "build-3-1"}
+            {p["version"] for p in self.api.packages},
+            {"build-1-1", "build-2-1", "build-3-1"},
         )
+
+    def test_conflicting_incomplete_package_requires_new_attempt(self):
+        self.api.fail_upload = self.offline.name
+        with self.assertRaisesRegex(RuntimeError, "upload failure"):
+            self.publish(1)
+        self.api.fail_upload = None
+        self.live.write_bytes(b"changed ISO")
+        uploads = list(self.api.uploads)
+        with self.assertRaisesRegex(RuntimeError, "conflict.*new build attempt"):
+            self.publish(1)
+        self.assertEqual(self.api.uploads, uploads)
+        self.assertEqual(self.api.releases, [])
+        self.assertTrue(self.publish(1, 2))
+
+    def test_duplicate_or_unexpected_package_files_block_resume(self):
+        for duplicate in (True, False):
+            with self.subTest(duplicate=duplicate):
+                self.api = FakeGitLab()
+                self.api.fail_release = True
+                with self.assertRaisesRegex(RuntimeError, "release creation"):
+                    self.publish(1)
+                extra = dict(self.api.contents[1][0])
+                if not duplicate:
+                    extra["file_name"] = "unexpected.iso"
+                self.api.contents[1].append(extra)
+                self.api.fail_release = False
+                with self.assertRaisesRegex(RuntimeError, "conflict.*new build attempt"):
+                    self.publish(1)
+                self.assertEqual(self.api.releases, [])
 
     def test_older_runs_cannot_replace_newer_builds_and_retries_are_idempotent(self):
         self.publish(10)

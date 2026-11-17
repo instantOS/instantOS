@@ -32,7 +32,7 @@ from [GitLab releases](https://gitlab.com/instantos/instantos-releases/-/release
 Checksums: [Live ISO SHA256](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/live/instantos.iso.sha256)
 and [Offline ISO SHA256](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/offline/instantos.iso.sha256).
 
-The latest two builds are retained. GitHub releases contain release notes and
+Previous builds are kept available. GitHub releases contain release notes and
 GitLab download links; the ISOs are hosted on GitLab.
 See the [download page](https://instantos.io/download) for installation instructions.
 

@@ -97,9 +97,11 @@ links; they no longer have ISO attachments.
 
 Repository settings under **Secrets and variables → Actions**:
 
-- Secret **`GITLAB_TOKEN`**: a personal access token with `api` scope. Publishing
-  and deleting old packages require this scope; a deploy token cannot perform
-  the cleanup API calls. Renew the token before its expiry date.
+- Secret **`GITLAB_TOKEN`**: a fine-grained personal access token scoped to the
+  release project with **Project: Read**, **Package: Read and Create**, and
+  **Release: Read and Create** permissions. Delete permissions are not needed.
+  A legacy personal access token with `api` scope also works; a deploy token
+  cannot create releases. Renew the token before its expiry date.
 - Variable **`GITLAB_PROJECT_ID`**: `89059216`.
 
 The GitLab project must be public, have its package registry enabled, and have
@@ -123,12 +125,12 @@ Stable download links:
 - [Build metadata](https://gitlab.com/instantos/instantos-releases/-/releases/permalink/latest/downloads/build.json)
 
 Publication is serialized with the workflow's `gitlab-iso-release` concurrency
-group. Older workflow runs cannot replace a newer release. After promotion, the
-publisher retains two complete builds and removes older managed releases and
-packages, plus abandoned older uploads. Other package names and versions are
-untouched. Uploading a replacement temporarily requires storage for a third
-build. Git tags are small and remain as build records; deleting a release does
-not delete its tag. Retried incomplete uploads replace only their own package.
+group. Older workflow runs cannot replace a newer release. Previous releases
+and packages are kept; the publisher never deletes them. Retrying the same
+build skips files whose stored sizes and SHA256 hashes match and uploads only
+missing files. Conflicting or duplicate files require a new build attempt,
+which GitHub Actions reruns provide automatically. Incomplete uploads are kept
+and can be removed manually if desired.
 
 The website uses the permanent latest links for downloads and checksums, and
 looks up `build.json` during its build for optional version and size labels.
