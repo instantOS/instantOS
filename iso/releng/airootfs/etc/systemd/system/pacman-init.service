@@ -3,7 +3,7 @@ Description=Initializes Pacman keyring
 Requires=etc-pacman.d-gnupg.mount
 After=etc-pacman.d-gnupg.mount time-sync.target
 BindsTo=etc-pacman.d-gnupg.mount
-Before=archlinux-keyring-wkd-sync.service
+Before=archlinux-keyring-wkd-sync.service instantos-keyring-wkd-sync.service
 
 [Service]
 Type=oneshot

@@ -24,6 +24,16 @@ instantOS is an Arch based distro that works out of the box but is still aimed a
 
 This repo contains utilities used all around instantOS, but for a proper README refer to the [website](https://instantos.github.io)
 
+## Download
+
+Download the live or offline ISO and its SHA256 checksum from the
+[latest GitHub release](https://github.com/instantOS/instantOS/releases/latest).
+The release notes link directly to the files in GitLab’s Package Registry.
+
+Previous builds are kept available. GitHub releases contain release notes and
+GitLab download links; the ISOs are hosted on GitLab.
+See the [download page](https://instantos.io/download) for installation instructions.
+
 ## Try instantOS in Google Colab *(Experimental)*
 
 You can test the live ISO inside a browser-based virtual machine using Google Colab *(note: running an OS VM in Colab is highly experimental and may be slow or unstable)*:

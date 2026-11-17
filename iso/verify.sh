@@ -26,7 +26,7 @@ iso_path="${positional[0]}"
 expected_version="${positional[1]:-}"
 [[ -f "$iso_path" ]] || fail "ISO does not exist: $iso_path"
 
-for command in bsdtar git unsquashfs; do
+for command in bsdtar git unsquashfs gpg gpgv; do
     command -v "$command" >/dev/null 2>&1 || fail "required command is unavailable: $command"
 done
 
@@ -132,6 +132,31 @@ if image_cat etc/pacman.d/hooks/90-instantos-setup.hook >/dev/null 2>&1; then
     fail "build-only instantOS setup hook remains in the final image"
 fi
 
+# Verify the trust material independently of the builder's pacman keyring.
+# The live image mounts a fresh GPGDir and populates it at boot, so test the
+# installed keyring and enabled initializer rather than a build-time trustdb.
+instant_master=E5C4740F883910B29694D6BE10DA645A82CF5206
+instant_signer=86D0589DC0EC55E4E5DFCE4436276C1C0A17CCD1
+assert_file usr/share/pacman/keyrings/instantos.gpg
+assert_contains usr/share/pacman/keyrings/instantos-trusted "$instant_master:4:"
+assert_file usr/share/pacman/keyrings/instantos-revoked
+assert_file usr/bin/instantos-keyring-wkd-sync
+assert_contains etc/systemd/system/pacman-init.service 'ExecStart=/usr/bin/pacman-key --init'
+assert_contains etc/systemd/system/pacman-init.service 'ExecStart=/usr/bin/pacman-key --populate'
+unsquashfs -ll "$rootfs" etc/systemd/system/multi-user.target.wants/pacman-init.service |
+    grep -Eq '^l.*pacman-init.service ->' || fail "pacman keyring initialization is not enabled"
+image_cat usr/share/pacman/keyrings/instantos.gpg >"$tmpdir/instantos.gpg"
+mkdir -m 700 "$tmpdir/verify-gnupg"
+gpg --homedir "$tmpdir/verify-gnupg" --batch --with-colons --with-subkey-fingerprint \
+    --show-keys "$tmpdir/instantos.gpg" >"$tmpdir/key-listing" || fail "invalid instantOS public keyring"
+awk -F: -v master="$instant_master" -v signer="$instant_signer" '
+    $1 == "pub" { kind = "pub"; count++; if ($2 ~ /^[redi]$/) bad = 1 }
+    $1 == "sub" { kind = "sub"; usable = ($2 !~ /^[redi]$/ && $12 ~ /s/) }
+    $1 == "fpr" && kind == "pub" && $10 != master { bad = 1 }
+    $1 == "fpr" && kind == "sub" && $10 == signer && usable { found = 1 }
+    END { exit !(count == 1 && !bad && found) }
+' "$tmpdir/key-listing" || fail "instantOS keyring does not contain the pinned master and usable signing subkey"
+
 # ---------------------------------------------------------------------------
 # Offline bundle checks (offline variant only)
 # ---------------------------------------------------------------------------
@@ -161,13 +186,24 @@ if ((offline)); then
     [[ -z "$missing_packages" ]] ||
         fail "packages in the manifest but not in the bundle: $missing_packages"
 
-    # signed repositories must ship every signature; the instant repo is
-    # unsigned (SigLevel = Optional TrustAll travels with the section)
+    # Every bundled package, including instantOS packages, must be signed.
     while IFS= read -r archive; do
         grep -Fxq "$archive.sig" "$bundle_listing" ||
             fail "package archive without a signature: $archive"
-    done < <(grep -E '^offline-repo/(core|extra|multilib)/os/x86_64/[^/]+\.pkg\.tar\.zst$' \
+    done < <(grep -E '^offline-repo/(core|extra|multilib|instant)/os/x86_64/[^/]+\.pkg\.tar\.zst$' \
         "$bundle_listing")
+
+    # Verify instant signatures using only the pinned image keyring. A signature
+    # file existing beside an archive does not establish that it is valid.
+    while IFS= read -r archive; do
+        bsdtar -xOf "$iso_path" "$archive" >"$tmpdir/instant-package.pkg.tar.zst" ||
+            fail "could not extract $archive"
+        bsdtar -xOf "$iso_path" "$archive.sig" >"$tmpdir/instant-package.sig" ||
+            fail "could not extract $archive.sig"
+        gpgv --homedir "$tmpdir/verify-gnupg" --keyring "$tmpdir/instantos.gpg" \
+            "$tmpdir/instant-package.sig" "$tmpdir/instant-package.pkg.tar.zst" ||
+            fail "invalid instantOS package signature: $archive"
+    done < <(grep -E '^offline-repo/instant/os/x86_64/[^/]+\.pkg\.tar\.zst$' "$bundle_listing")
 
     # ISO9660 has a 4 GiB single-file limit; keep every file well under it
     bsdtar -tvf "$iso_path" >"$tmpdir/bundle-sizes.txt"

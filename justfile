@@ -70,19 +70,19 @@ build-iso-offline-docker *FLAGS="":
 build-iso-offline-native *FLAGS="":
     "{{ justfile_directory() }}/iso/build.sh" --offline {{ FLAGS }}
 
-# Download the latest prebuilt instantOS release ISO from GitHub
+# Discover the latest live ISO through GitHub and download it from GitLab
 download-iso:
     #!/usr/bin/env bash
     set -eo pipefail
     echo "Fetching latest instantOS release ISO metadata..."
-    url=$(curl -s https://api.github.com/repos/instantOS/instantOS/releases/latest | \
-      grep "browser_download_url.*\.iso\"" | cut -d : -f 2,3 | tr -d '\" ' | head -n 1)
+    url=$(curl -fsSL https://github.com/instantOS/instantOS/releases/latest/download/build.json | \
+      python3 -c 'import json, sys; print(json.load(sys.stdin)["live"]["url"])')
     if [[ -z "$url" ]]; then
       echo "Error: Could not find release ISO URL" >&2
       exit 1
     fi
     echo "Downloading from $url..."
-    curl -L -o "{{ justfile_directory() }}/instantos.iso" "$url"
+    curl -fL -o "{{ justfile_directory() }}/instantos.iso" "$url"
     echo "Downloaded to instantos.iso ($(du -h "{{ justfile_directory() }}/instantos.iso" | cut -f1))"
 
 # Generate SHA256 checksums for all ISO files in iso/build/iso

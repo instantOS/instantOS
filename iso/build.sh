@@ -30,13 +30,23 @@ for arg in "$@"; do
     esac
 done
 
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." &>/dev/null && pwd)
+
+# Bootstrap before any pacman operation, including installing archiso tools.
+# Read the profile's GPGDir because mkarchiso and the bundle downloader use it.
+if ((EUID == 0)); then
+    "$REPO_ROOT/repo.sh" --bootstrap-key "$SCRIPT_DIR/releng/pacman.conf"
+else
+    sudo "$REPO_ROOT/repo.sh" --bootstrap-key "$SCRIPT_DIR/releng/pacman.conf"
+fi
+
 if ! command -v mkarchiso >/dev/null 2>&1; then
     echo "installing archiso build tools"
+    sudo "$REPO_ROOT/repo.sh" --bootstrap-key /etc/pacman.conf
     sudo pacman -S --needed archiso
 fi
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
-REPO_ROOT=$(cd -- "$SCRIPT_DIR/.." &>/dev/null && pwd)
 [ "$ISO_BUILD" ] || ISO_BUILD="$SCRIPT_DIR/build"
 echo "iso will be built in $ISO_BUILD"
 
